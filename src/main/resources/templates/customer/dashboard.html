@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My account</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <style>
+
+        .dash-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .dash-head h1 {
+            font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+        }
+
+        .dash-head p {
+            color: #4b5048;
+            margin-top: 0.3rem;
+        }
+
+        .dash-link {
+            font-size: 0.88rem;
+            border-bottom: 1px solid var(--gold);
+            padding-bottom: 2px;
+            color: var(--green);
+        }
+
+        /* Stats */
+        .dash-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            background: var(--ivory-soft);
+            border: 1px solid var(--grey);
+            margin-bottom: 3rem;
+        }
+
+        .dash-stat {
+            padding: 1.3rem 1.4rem;
+            border-left: 1px solid var(--grey);
+        }
+
+        .dash-stat:first-child {
+            border-left: none;
+        }
+
+        .dash-stat span {
+            display: block;
+            font-size: 0.82rem;
+            color: var(--olive);
+        }
+
+        .dash-stat strong {
+            display: block;
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 500;
+            color: var(--green);
+            line-height: 1.2;
+            margin-top: 0.2rem;
+        }
+
+        /* Blocks */
+        .dash-block+.dash-block {
+            margin-top: 3rem;
+        }
+
+        .dash-block-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .dash-block-head h2 {
+            font-size: 1.5rem;
+        }
+
+        /* Order rows */
+        .order-row {
+            display: grid;
+            grid-template-columns: 230px minmax(0, 1fr);
+            gap: 1.5rem;
+            padding: 1.6rem 0;
+            border-top: 1px solid var(--grey);
+        }
+
+        .order-row:last-child {
+            border-bottom: 1px solid var(--grey);
+        }
+
+        .order-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            font-size: 0.88rem;
+        }
+
+        .order-meta .order-no {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            color: var(--green);
+        }
+
+        .order-meta .muted {
+            color: var(--olive);
+        }
+
+        .order-meta .total {
+            font-weight: 500;
+        }
+
+        .order-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem 1.1rem;
+            margin-top: 0.4rem;
+        }
+
+        .order-links a {
+            font-size: 0.84rem;
+            border-bottom: 1px solid var(--gold);
+            padding-bottom: 1px;
+        }
+
+        .order-thumbs {
+            display: flex;
+            gap: 0.6rem;
+            overflow-x: auto;
+            align-items: flex-start;
+            scrollbar-width: thin;
+        }
+
+        .order-thumb {
+            flex: 0 0 auto;
+            width: 96px;
+            aspect-ratio: 4 / 5;
+            background: var(--ivory-soft);
+            border: 1px solid var(--grey);
+            overflow: hidden;
+        }
+
+        .order-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .order-more {
+            align-self: center;
+            padding: 0 0.6rem;
+            font-size: 0.84rem;
+            color: var(--green);
+            text-decoration: underline;
+            text-decoration-color: var(--gold);
+            text-underline-offset: 3px;
+            white-space: nowrap;
+        }
+
+        /* Status badge */
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            width: fit-content;
+            padding: 0.22rem 0.7rem;
+            font-size: 0.74rem;
+            letter-spacing: 0.03em;
+            border-radius: 999px;
+        }
+
+        .status::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .status-pending {
+            background: rgba(201, 162, 75, 0.2);
+            color: #7a5d1a;
+        }
+
+        .status-shipped {
+            background: rgba(92, 107, 78, 0.2);
+            color: var(--olive);
+        }
+
+        .status-delivered {
+            background: rgba(20, 50, 36, 0.12);
+            color: var(--green);
+        }
+
+        .status-cancelled {
+            background: rgba(181, 83, 60, 0.15);
+            color: var(--terracotta);
+        }
+
+        /* Info cards */
+        .dash-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--gap);
+        }
+
+        .dash-card {
+            background: var(--ivory-soft);
+            border: 1px solid var(--grey);
+            padding: 1.5rem;
+        }
+
+        .dash-card h3 {
+            font-size: 1.15rem;
+            margin-bottom: 0.7rem;
+        }
+
+        .dash-card address,
+        .dash-card p {
+            font-style: normal;
+            font-size: 0.9rem;
+            color: #3a3f37;
+        }
+
+        .dash-card .dash-link {
+            display: inline-block;
+            margin-top: 1rem;
+            margin-right: 1.2rem;
+        }
+
+        /* Empty state */
+        .dash-empty {
+            text-align: center;
+            padding: 3rem 1rem;
+            border: 1px dashed var(--grey);
+            background: var(--ivory-soft);
+        }
+
+        .dash-empty p {
+            margin: 0.4rem auto 1.4rem;
+            color: #4b5048;
+        }
+
+        @media (max-width: 720px) {
+            .dash-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .dash-stat:nth-child(3) {
+                border-left: none;
+            }
+
+            .dash-stat:nth-child(n+3) {
+                border-top: 1px solid var(--grey);
+            }
+
+            .order-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .order-thumb {
+                width: 82px;
+            }
+
+            .dash-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <main class="dash-page">
+        <div class="container dash-layout">
+
+            <aside th:replace="~{customer/fragments/sidebar :: sidebar('overview')}"></aside>
+
+            <div class="dash-main">
+
+                <header class="dash-head">
+                    <div>
+                        <h1 th:text="'Welcome back, ' + ${user.firstName}">Welcome back</h1>
+                        <p>Track your orders and manage your account.</p>
+                    </div>
+                    <a th:href="@{/shop}" class="dash-link">Continue shopping</a>
+                </header>
+
+                <section class="dash-stats" aria-label="Account summary">
+                    <div class="dash-stat"><span>Total orders</span><strong th:text="${stats.totalOrders}">0</strong>
+                    </div>
+                    <div class="dash-stat"><span>In progress</span><strong th:text="${stats.activeOrders}">0</strong>
+                    </div>
+                    <div class="dash-stat"><span>Wishlist</span><strong th:text="${stats.wishlistCount}">0</strong>
+                    </div>
+                    <div class="dash-stat"><span>Saved addresses</span><strong
+                            th:text="${stats.addressCount}">0</strong></div>
+                </section>
+
+                <section class="dash-block">
+                    <div class="dash-block-head">
+                        <h2>Recent orders</h2>
+                        <a th:href="@{/customer/orders}" class="dash-link">View all</a>
+                    </div>
+
+                    <div th:if="${#lists.isEmpty(recentOrders)}" class="dash-empty">
+                        <h3>No orders yet</h3>
+                        <p>When you place an order, you can track it here.</p>
+                        <a th:href="@{/shop}" class="btn btn-primary">Start shopping</a>
+                    </div>
+
+                    <article class="order-row" th:each="o : ${recentOrders}">
+                        <div class="order-meta">
+                            <span class="status" th:classappend="'status-' + ${#strings.toLowerCase(o.status)}"
+                                th:text="${#strings.capitalize(#strings.toLowerCase(o.status))}">Shipped</span>
+                            <a class="order-no" th:href="@{/customer/orders/{id}(id=${o.id})}"
+                                th:text="'Order #' + ${o.orderNumber}">Order #1001</a>
+                            <span class="muted"
+                                th:text="'Placed ' + ${#temporals.format(o.createdAt, 'dd MMM yyyy')}">Placed 01 Jan
+                                2026</span>
+                            <span class="muted" th:if="${o.status == 'SHIPPED' and o.estimatedDelivery != null}"
+                                th:text="'Estimated delivery ' + ${#temporals.format(o.estimatedDelivery, 'dd MMM yyyy')}">Estimated
+                                delivery</span>
+                            <span class="total"
+                                th:text="'₹' + ${#numbers.formatDecimal(o.total, 1, 'COMMA', 2, 'POINT')}">₹0.00</span>
+
+                            <div class="order-links">
+                                <a th:href="@{/customer/orders/{id}(id=${o.id})}">View details</a>
+                                <a th:if="${o.status == 'SHIPPED'}"
+                                    th:href="@{/customer/orders/{id}/track(id=${o.id})}">Track package</a>
+                            </div>
+                        </div>
+
+                        <div class="order-thumbs">
+                            <div class="order-thumb" th:each="item, st : ${o.items}" th:if="${st.index < 5}">
+                                <img th:src="@{${item.imageUrl}}" th:alt="${item.productName}" loading="lazy">
+                            </div>
+                            <a class="order-more" th:if="${#lists.size(o.items) > 5}"
+                                th:href="@{/customer/orders/{id}(id=${o.id})}"
+                                th:text="'+' + ${#lists.size(o.items) - 5} + ' items'">+2 items</a>
+                        </div>
+                    </article>
+                </section>
+
+                <section class="dash-block dash-cards">
+                    <div class="dash-card">
+                        <h3>Default address</h3>
+                        <address th:if="${defaultAddress != null}">
+                            <span th:text="${defaultAddress.fullName}">Name</span><br>
+                            <span th:text="${defaultAddress.line1}">Line 1</span><br>
+                            <span
+                                th:text="${defaultAddress.city} + ', ' + ${defaultAddress.state} + ' ' + ${defaultAddress.pincode}">City,
+                                State 000000</span>
+                        </address>
+                        <p th:if="${defaultAddress == null}">You haven't saved an address yet.</p>
+                        <a th:href="@{/customer/addresses}" class="dash-link"
+                            th:text="${defaultAddress != null} ? 'Manage addresses' : 'Add an address'">Manage
+                            addresses</a>
+                    </div>
+
+                    <div class="dash-card">
+                        <h3>Need help?</h3>
+                        <p>Questions about an order, delivery or returns? Our FAQ covers most of it, and we're a message
+                            away.</p>
+                        <a th:href="@{/faq}" class="dash-link">Read the FAQ</a>
+                        <a th:href="@{/contact}" class="dash-link">Contact us</a>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- change to match your existing footer fragment name -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <!-- base JS shared by the whole site; this page needs no extra JS -->
+    <script th:src="@{/js/script.js}"></script>
+
+</body>
+
+</html>

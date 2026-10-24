@@ -1,0 +1,63 @@
+<div th:fragment="navbar" id="navbar">
+  <div class="announce-bar">
+    Handcrafted in Bhilwara, Rajasthan &nbsp;·&nbsp; <strong>Free shipping across India on orders above ₹2,999</strong>
+  </div>
+
+  <header class="site-header" id="siteHeader">
+    <div class="nav-inner">
+
+      <a th:href="@{/}" class="brand-mark" aria-label="Sutra Textiles India, home">
+        <img th:src="@{/image/sutra-logo.png}" alt="Sutra Textiles - Every Thread Tells a Story" class="brand-logo">
+      </a>
+
+      <div class="nav-scrim" id="navScrim"></div>
+      <nav>
+        <ul class="nav-links" id="navLinks">
+          <li><a th:href="@{/}">Home</a></li>
+          <li><a th:href="@{/shop}">Shop</a></li>
+          <li><a th:href="@{/about}">About Us</a></li>
+          <li><a th:href="@{/contact}">Contact Us</a></li>
+        </ul>
+      </nav>
+
+
+      <div class="nav-actions">
+        <a th:href="@{/search}" aria-label="Search" title="Search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+        </a>
+        <a th:href="@{/account}" aria-label="My Account" title="My Account">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <circle cx="12" cy="8" r="4" />
+            <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" />
+          </svg>
+        </a>
+        <a th:href="@{/wishlist}" aria-label="Wishlist" title="Wishlist">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <path d="M12 20s-7-4.3-9.5-8.8C.8 7.8 2.6 4 6.3 4
+               8.6 4 10.6 5.3 12 7.2
+               13.4 5.3 15.4 4 17.7 4
+               c3.7 0 5.5 3.8 3.8 7.2
+               C19 15.7 12 20 12 20Z" />
+          </svg>
+        </a>
+        <a th:href="@{/cart}" class="cart-btn" aria-label="Shopping Cart" title="Shopping Cart">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <path d="M3 4h2l2.4 12.2a2 2 0 0 0 2 1.6h7.2
+               a2 2 0 0 0 2-1.6L21 8H6" />
+            <circle cx="9.5" cy="20.5" r="1.3" />
+            <circle cx="17.5" cy="20.5" r="1.3" />
+          </svg>
+          <span class="cart-count" id="cartCount">0</span>
+        </a>
+        <button type="button" class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+</div>

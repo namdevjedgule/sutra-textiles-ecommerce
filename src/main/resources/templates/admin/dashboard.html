@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard | Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+
+  <style>
+    /* ===== Admin: Dashboard page only ===== */
+
+    .range {
+      display: flex;
+      flex: none;
+      justify-content: flex-start;
+      border: 1px solid var(--grey);
+      background: var(--ivory-soft);
+    }
+
+    .range a {
+      padding: 0.55rem 1rem;
+      font-size: 0.84rem;
+      color: var(--charcoal);
+    }
+
+    .range a+a {
+      border-left: 1px solid var(--grey);
+    }
+
+    .range a.is-active {
+      background: var(--green);
+      color: var(--ivory);
+    }
+
+    /* Stat cards */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat {
+      background: var(--ivory-soft);
+      border: 1px solid var(--grey);
+      padding: 1.2rem 1.3rem;
+    }
+
+    .stat span.label {
+      display: block;
+      font-size: 0.84rem;
+      color: var(--olive);
+    }
+
+    .stat strong {
+      display: block;
+      margin: 0.25rem 0;
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 500;
+      color: var(--green);
+      line-height: 1.2;
+    }
+
+    .change {
+      font-size: 0.8rem;
+    }
+
+    .change.up {
+      color: #2f7a4d;
+    }
+
+    .change.down {
+      color: var(--terracotta);
+    }
+
+    .change.note {
+      color: var(--olive);
+    }
+
+    /* Cards */
+    .card {
+      background: var(--ivory-soft);
+      border: 1px solid var(--grey);
+      padding: 1.4rem;
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .card-head h2 {
+      font-size: 1.2rem;
+    }
+
+    .card-head a {
+      font-size: 0.84rem;
+      border-bottom: 1px solid var(--gold);
+      color: var(--green);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .stack {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Sales bar chart (pure CSS) */
+    .chart {
+      display: flex;
+      align-items: stretch;
+      gap: 0.5rem;
+      height: 240px;
+    }
+
+    .bar-col {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .bar-track {
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      border-bottom: 1px solid var(--grey);
+    }
+
+    .bar {
+      width: 100%;
+      max-width: 38px;
+      min-height: 2px;
+      background: var(--green);
+      transition: background .2s var(--ease);
+    }
+
+    .bar-col:hover .bar {
+      background: var(--gold);
+    }
+
+    .bar-label {
+      margin-top: 0.4rem;
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--olive);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Table */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 500;
+      font-size: 0.8rem;
+      color: var(--olive);
+      padding: 0 0.8rem 0.7rem 0;
+      border-bottom: 1px solid var(--grey);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.8rem 0.8rem 0.8rem 0;
+      border-bottom: 1px solid rgba(217, 210, 196, 0.6);
+      white-space: nowrap;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    td a.link {
+      font-family: var(--font-display);
+      color: var(--green);
+    }
+
+    /* Status pill */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.2rem 0.65rem;
+      font-size: 0.74rem;
+      border-radius: 999px;
+    }
+
+    .pill::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .pill-pending {
+      background: rgba(201, 162, 75, 0.2);
+      color: #7a5d1a;
+    }
+
+    .pill-shipped {
+      background: rgba(92, 107, 78, 0.2);
+      color: var(--olive);
+    }
+
+    .pill-delivered {
+      background: rgba(20, 50, 36, 0.12);
+      color: var(--green);
+    }
+
+    .pill-cancelled {
+      background: rgba(181, 83, 60, 0.15);
+      color: var(--terracotta);
+    }
+
+    /* Product lists */
+    .plist li {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.7rem 0;
+      border-bottom: 1px solid rgba(217, 210, 196, 0.6);
+    }
+
+    .plist li:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .plist li:first-child {
+      padding-top: 0;
+    }
+
+    .plist img {
+      width: 44px;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      border: 1px solid var(--grey);
+      background: var(--ivory);
+    }
+
+    .plist .name {
+      flex: 1;
+      min-width: 0;
+      font-size: 0.88rem;
+      line-height: 1.3;
+    }
+
+    .plist .name small {
+      display: block;
+      color: var(--olive);
+      font-size: 0.78rem;
+    }
+
+    .plist .val {
+      font-size: 0.86rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .plist .val.warn {
+      color: var(--terracotta);
+    }
+
+    .empty {
+      font-size: 0.88rem;
+      color: var(--olive);
+    }
+
+    @media (max-width: 1200px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .chart {
+        gap: 0.25rem;
+      }
+    }
+  </style>
+</head>
+
+<body class="adm-body">
+  <div class="adm-shell">
+
+    <div th:replace="~{admin/fragments/layout :: sidebar('dashboard')}"></div>
+
+    <div class="adm-main">
+      <header th:replace="~{admin/fragments/layout :: topbar}"></header>
+
+      <main class="adm-content">
+
+        <div class="adm-head">
+          <div>
+            <h1>Dashboard</h1>
+            <p>How your store is doing.</p>
+          </div>
+          <nav class="range" aria-label="Date range">
+            <a th:href="@{/admin/dashboard(range='7d')}" th:classappend="${range == '7d'} ? 'is-active'">7 days</a>
+            <a th:href="@{/admin/dashboard(range='30d')}" th:classappend="${range == '30d'} ? 'is-active'">30 days</a>
+            <a th:href="@{/admin/dashboard(range='12m')}" th:classappend="${range == '12m'} ? 'is-active'">12 months</a>
+          </nav>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats">
+          <div class="stat">
+            <span class="label">Revenue</span>
+            <strong th:text="'₹' + ${#numbers.formatDecimal(stats.revenue, 1, 'COMMA', 0, 'POINT')}">₹0</strong>
+            <span class="change" th:if="${stats.revenueChange != null}"
+              th:classappend="${stats.revenueChange >= 0} ? 'up' : 'down'"
+              th:text="(${stats.revenueChange >= 0} ? '+' : '') + ${#numbers.formatDecimal(stats.revenueChange, 1, 1)} + '% vs previous period'">+0%</span>
+          </div>
+          <div class="stat">
+            <span class="label">Orders</span>
+            <strong th:text="${stats.orders}">0</strong>
+            <span class="change" th:if="${stats.ordersChange != null}"
+              th:classappend="${stats.ordersChange >= 0} ? 'up' : 'down'"
+              th:text="(${stats.ordersChange >= 0} ? '+' : '') + ${#numbers.formatDecimal(stats.ordersChange, 1, 1)} + '% vs previous period'">+0%</span>
+          </div>
+          <div class="stat">
+            <span class="label">New customers</span>
+            <strong th:text="${stats.customers}">0</strong>
+            <span class="change" th:if="${stats.customersChange != null}"
+              th:classappend="${stats.customersChange >= 0} ? 'up' : 'down'"
+              th:text="(${stats.customersChange >= 0} ? '+' : '') + ${#numbers.formatDecimal(stats.customersChange, 1, 1)} + '% vs previous period'">+0%</span>
+          </div>
+          <div class="stat">
+            <span class="label">Orders to process</span>
+            <strong th:text="${stats.pendingOrders}">0</strong>
+            <a class="change note" th:href="@{/admin/orders(status='PENDING')}">View pending orders</a>
+          </div>
+        </div>
+
+        <!-- Chart + top products -->
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head">
+              <h2>Sales</h2>
+              <a th:href="@{/admin/reports}">Full report</a>
+            </div>
+            <p class="empty" th:if="${#lists.isEmpty(salesChart)}">No sales in this period yet.</p>
+            <div class="chart" th:unless="${#lists.isEmpty(salesChart)}" role="img" aria-label="Sales chart">
+              <div class="bar-col" th:each="p : ${salesChart}">
+                <div class="bar-track">
+                  <div class="bar" th:style="'height:' + ${p.percent} + '%'"
+                    th:title="${p.label} + ': ₹' + ${#numbers.formatDecimal(p.amount, 1, 'COMMA', 0, 'POINT')}"></div>
+                </div>
+                <span class="bar-label" th:text="${p.label}">Mon</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <h2>Top products</h2>
+              <a th:href="@{/admin/products}">All products</a>
+            </div>
+            <p class="empty" th:if="${#lists.isEmpty(topProducts)}">No product sales in this period.</p>
+            <ul class="plist" th:unless="${#lists.isEmpty(topProducts)}">
+              <li th:each="p : ${topProducts}">
+                <img th:src="@{${p.imageUrl}}" th:alt="${p.name}" loading="lazy">
+                <div class="name"><span th:text="${p.name}">Product</span>
+                  <small th:text="${p.unitsSold} + ' sold'">0 sold</small></div>
+                <span class="val" th:text="'₹' + ${#numbers.formatDecimal(p.revenue, 1, 'COMMA', 0, 'POINT')}">₹0</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Recent orders + low stock -->
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head">
+              <h2>Recent orders</h2>
+              <a th:href="@{/admin/orders}">View all</a>
+            </div>
+            <p class="empty" th:if="${#lists.isEmpty(recentOrders)}">No orders yet.</p>
+            <div class="table-wrap" th:unless="${#lists.isEmpty(recentOrders)}">
+              <table>
+                <thead>
+                  <tr><th>Order</th><th>Customer</th><th>Date</th><th>Total</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                  <tr th:each="o : ${recentOrders}">
+                    <td><a class="link" th:href="@{/admin/orders/{id}(id=${o.id})}" th:text="'#' + ${o.orderNumber}">#1001</a></td>
+                    <td th:text="${o.customerName}">Customer</td>
+                    <td th:text="${#temporals.format(o.createdAt, 'dd MMM yyyy')}">01 Jan 2026</td>
+                    <td th:text="'₹' + ${#numbers.formatDecimal(o.total, 1, 'COMMA', 2, 'POINT')}">₹0.00</td>
+                    <td><span class="pill" th:classappend="'pill-' + ${#strings.toLowerCase(o.status)}"
+                        th:text="${#strings.capitalize(#strings.toLowerCase(o.status))}">Pending</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <h2>Low stock</h2>
+              <a th:href="@{/admin/inventory}">Inventory</a>
+            </div>
+            <p class="empty" th:if="${#lists.isEmpty(lowStock)}">All products are well stocked.</p>
+            <ul class="plist" th:unless="${#lists.isEmpty(lowStock)}">
+              <li th:each="p : ${lowStock}">
+                <img th:src="@{${p.imageUrl}}" th:alt="${p.name}" loading="lazy">
+                <div class="name"><a th:href="@{/admin/products/{id}/edit(id=${p.id})}" th:text="${p.name}">Product</a></div>
+                <span class="val warn" th:text="${p.stock == 0} ? 'Out of stock' : ${p.stock} + ' left'">3 left</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- base JS shared by the whole site; this page needs no extra JS -->
+  <script th:src="@{/js/script.js}"></script>
+</body>
+
+</html>

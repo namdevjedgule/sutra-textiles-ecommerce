@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Addresses</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+
+  <style>
+    /* ===== Customer dashboard: Addresses page only ===== */
+
+    .dash-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.8rem;
+    }
+
+    .dash-head h1 {
+      font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+    }
+
+    .dash-head p {
+      color: #4b5048;
+      margin-top: 0.3rem;
+    }
+
+    .dash-head .btn {
+      padding: 0.75rem 1.5rem;
+      font-size: 0.86rem;
+      cursor: pointer;
+    }
+
+    .alert {
+      padding: 0.85rem 1.1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+      border: 1px solid var(--grey);
+      background: var(--ivory-soft);
+    }
+
+    .alert-success {
+      border-left: 3px solid var(--olive);
+    }
+
+    .alert-error {
+      border-left: 3px solid var(--terracotta);
+    }
+
+    /* Address cards */
+    .addr-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--gap);
+    }
+
+    .addr-card {
+      display: flex;
+      flex-direction: column;
+      background: var(--ivory-soft);
+      border: 1px solid var(--grey);
+      padding: 1.4rem;
+      font-size: 0.9rem;
+      color: #3a3f37;
+    }
+
+    .addr-card.is-default {
+      border-color: var(--gold);
+    }
+
+    .addr-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .addr-top h3 {
+      font-size: 1.1rem;
+    }
+
+    .badge-default {
+      font-size: 0.72rem;
+      letter-spacing: 0.03em;
+      padding: 0.2rem 0.65rem;
+      border-radius: 999px;
+      background: rgba(201, 162, 75, 0.2);
+      color: #7a5d1a;
+      white-space: nowrap;
+    }
+
+    .addr-card address {
+      font-style: normal;
+      flex: 1;
+    }
+
+    .addr-card .muted {
+      color: var(--olive);
+    }
+
+    .addr-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem 1.2rem;
+      margin-top: 1.1rem;
+      padding-top: 0.9rem;
+      border-top: 1px solid var(--grey);
+    }
+
+    .addr-actions button {
+      font-size: 0.84rem;
+      border-bottom: 1px solid var(--gold);
+      padding: 0 0 1px;
+      color: var(--charcoal);
+    }
+
+    .addr-actions .danger {
+      border-bottom-color: var(--terracotta);
+      color: var(--terracotta);
+    }
+
+    /* Empty state */
+    .dash-empty {
+      text-align: center;
+      padding: 3rem 1rem;
+      border: 1px dashed var(--grey);
+      background: var(--ivory-soft);
+    }
+
+    .dash-empty p {
+      margin: 0.4rem auto 1.4rem;
+      color: #4b5048;
+    }
+
+    /* Dialogs */
+    dialog {
+      margin: auto;
+      width: min(94vw, 540px);
+      max-height: 92vh;
+      padding: 1.8rem;
+      background: var(--ivory-soft);
+      color: var(--charcoal);
+      border: 1px solid var(--grey);
+      border-radius: var(--radius);
+    }
+
+    dialog::backdrop {
+      background: rgba(20, 38, 32, 0.5);
+    }
+
+    dialog h3 {
+      margin-bottom: 1.1rem;
+    }
+
+    dialog p {
+      font-size: 0.9rem;
+      color: #4b5048;
+      margin-bottom: 1.2rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.82rem;
+      margin-bottom: 0.3rem;
+      color: var(--green);
+    }
+
+    .field input[type="text"],
+    .field input[type="tel"] {
+      width: 100%;
+      padding: 0.7rem 0.85rem;
+      font-size: 0.92rem;
+      background: var(--ivory);
+      border: 1px solid var(--grey);
+      border-radius: var(--radius);
+      color: var(--charcoal);
+    }
+
+    .field input:focus {
+      border-color: var(--gold);
+      outline: none;
+    }
+
+    .check {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.88rem;
+    }
+
+    .check input {
+      accent-color: var(--green);
+      width: 16px;
+      height: 16px;
+    }
+
+    .dialog-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.6rem;
+      margin-top: 1.4rem;
+    }
+
+    .dialog-actions .btn {
+      padding: 0.65rem 1.3rem;
+      font-size: 0.84rem;
+      cursor: pointer;
+    }
+
+    .btn-danger {
+      border: 1px solid var(--terracotta);
+      color: var(--terracotta);
+    }
+
+    .btn-danger:hover {
+      background: var(--terracotta);
+      color: var(--ivory);
+    }
+
+    @media (max-width: 720px) {
+
+      .addr-grid,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- change to match your existing navbar fragment name -->
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <main class="dash-page">
+    <div class="container dash-layout">
+
+      <aside th:replace="~{customer/fragments/sidebar :: sidebar('addresses')}"></aside>
+
+      <div class="dash-main">
+
+        <header class="dash-head">
+          <div>
+            <h1>Addresses</h1>
+            <p>Saved addresses are available at checkout.</p>
+          </div>
+          <button type="button" class="btn btn-primary" id="add-address">Add address</button>
+        </header>
+
+        <div class="alert alert-success" th:if="${message}" th:text="${message}" role="status"></div>
+        <div class="alert alert-error" th:if="${error}" th:text="${error}" role="alert"></div>
+
+        <div class="dash-empty" th:if="${#lists.isEmpty(addresses)}">
+          <h3>No saved addresses</h3>
+          <p>Add an address now to check out faster next time.</p>
+        </div>
+
+        <div class="addr-grid">
+          <article class="addr-card" th:each="a : ${addresses}" th:classappend="${a.primary} ? 'is-default'">
+            <div class="addr-top">
+              <h3 th:text="${a.fullName}">Name</h3>
+              <span class="badge-default" th:if="${a.primary}">Default</span>
+            </div>
+
+            <address>
+              <span th:text="${a.line1}">Line 1</span><br>
+              <th:block th:if="${a.line2 != null and !#strings.isEmpty(a.line2)}">
+                <span th:text="${a.line2}">Line 2</span><br>
+              </th:block>
+              <span th:text="${a.city} + ', ' + ${a.state} + ' ' + ${a.pincode}">City, State 000000</span><br>
+              <span class="muted" th:text="${a.phone}">Phone</span>
+            </address>
+
+            <div class="addr-actions">
+              <button type="button" class="edit-address"
+                th:data-id="${a.id}" th:data-full-name="${a.fullName}" th:data-phone="${a.phone}"
+                th:data-line1="${a.line1}" th:data-line2="${a.line2}" th:data-city="${a.city}"
+                th:data-state="${a.state}" th:data-pincode="${a.pincode}" th:data-primary="${a.primary}">Edit</button>
+
+              <form th:unless="${a.primary}" th:action="@{/customer/addresses/{id}/default(id=${a.id})}" method="post">
+                <button type="submit">Set as default</button>
+              </form>
+
+              <button type="button" class="danger delete-address" th:unless="${a.primary}"
+                th:data-id="${a.id}">Delete</button>
+            </div>
+          </article>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Add / edit dialog (one form for both) -->
+  <dialog id="address-dialog">
+    <form th:data-base="@{/customer/addresses}" th:action="@{/customer/addresses}" method="post">
+      <h3 id="address-title">Add address</h3>
+      <div class="form-grid">
+        <div class="field full">
+          <label for="fullName">Full name</label>
+          <input id="fullName" name="fullName" type="text" autocomplete="name" maxlength="100" required>
+        </div>
+        <div class="field full">
+          <label for="phone">Phone number</label>
+          <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" pattern="[0-9+\s-]{10,15}" title="Enter a valid phone number" required>
+        </div>
+        <div class="field full">
+          <label for="line1">Address line 1</label>
+          <input id="line1" name="line1" type="text" autocomplete="address-line1" maxlength="150" required>
+        </div>
+        <div class="field full">
+          <label for="line2">Address line 2 (optional)</label>
+          <input id="line2" name="line2" type="text" autocomplete="address-line2" maxlength="150">
+        </div>
+        <div class="field">
+          <label for="city">City</label>
+          <input id="city" name="city" type="text" autocomplete="address-level2" maxlength="80" required>
+        </div>
+        <div class="field">
+          <label for="state">State</label>
+          <input id="state" name="state" type="text" autocomplete="address-level1" maxlength="80" required>
+        </div>
+        <div class="field">
+          <label for="pincode">PIN code</label>
+          <input id="pincode" name="pincode" type="text" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{6}" title="Enter a 6-digit PIN code" required>
+        </div>
+        <div class="field full">
+          <label class="check"><input type="checkbox" name="primary" value="true"> Make this my default address</label>
+        </div>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+        <button type="submit" class="btn btn-primary">Save address</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Delete dialog -->
+  <dialog id="delete-dialog">
+    <form method="post" th:data-base="@{/customer/addresses}">
+      <h3>Delete this address?</h3>
+      <p>It will be removed from your saved addresses. Past orders are not affected.</p>
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-ghost" data-close>Keep address</button>
+        <button type="submit" class="btn btn-danger">Delete</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- change to match your existing footer fragment name -->
+  <div th:replace="~{fragments/footer :: footer}"></div>
+
+  <script th:src="@{/js/script.js}"></script>
+  <script>
+    var addrDialog = document.getElementById('address-dialog');
+    var addrForm = addrDialog.querySelector('form');
+    var delDialog = document.getElementById('delete-dialog');
+    var delForm = delDialog.querySelector('form');
+    var fields = ['fullName', 'phone', 'line1', 'line2', 'city', 'state', 'pincode'];
+
+    function openAddress(title, action, d) {
+      document.getElementById('address-title').textContent = title;
+      addrForm.action = action;
+      fields.forEach(function (f) { addrForm.elements[f].value = d[f] || ''; });
+      addrForm.elements.primary.checked = d.primary === 'true';
+      addrDialog.showModal();
+    }
+
+    document.getElementById('add-address').addEventListener('click', function () {
+      openAddress('Add address', addrForm.dataset.base, {});
+    });
+
+    document.querySelectorAll('.edit-address').forEach(function (b) {
+      b.addEventListener('click', function () {
+        openAddress('Edit address', addrForm.dataset.base + '/' + b.dataset.id, b.dataset);
+      });
+    });
+
+    document.querySelectorAll('.delete-address').forEach(function (b) {
+      b.addEventListener('click', function () {
+        delForm.action = delForm.dataset.base + '/' + b.dataset.id + '/delete';
+        delDialog.showModal();
+      });
+    });
+
+    document.querySelectorAll('[data-close]').forEach(function (b) {
+      b.addEventListener('click', function () { b.closest('dialog').close(); });
+    });
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Customers | Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+
+  <style>
+    /* ===== Admin: Customers list page only ===== */
+
+    .card {
+      background: var(--ivory-soft);
+      border: 1px solid var(--grey);
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem 1.5rem;
+      flex-wrap: wrap;
+      padding: 0.9rem 1.1rem;
+      border-bottom: 1px solid var(--grey);
+    }
+
+    .tabs {
+      display: flex;
+      flex: none;
+      justify-content: flex-start;
+      gap: 0.3rem;
+      background: var(--ivory);
+      padding: 3px;
+      border: 1px solid var(--grey);
+    }
+
+    .tabs a {
+      padding: 0.4rem 0.9rem;
+      font-size: 0.84rem;
+      color: var(--charcoal);
+      white-space: nowrap;
+    }
+
+    .tabs a.is-active {
+      background: var(--green);
+      color: var(--ivory);
+    }
+
+    .tabs small {
+      opacity: 0.7;
+      margin-left: 0.2rem;
+    }
+
+    .filters {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filters input {
+      width: 250px;
+      max-width: 100%;
+      padding: 0.5rem 0.8rem;
+      font: inherit;
+      font-size: 0.86rem;
+      background: var(--ivory);
+      border: 1px solid var(--grey);
+      border-radius: var(--radius);
+      color: var(--charcoal);
+    }
+
+    .filters button {
+      padding: 0.5rem 1.1rem;
+      font-size: 0.84rem;
+      border: 1px solid var(--green);
+      color: var(--green);
+      border-radius: var(--radius);
+      transition: background .25s var(--ease), color .25s var(--ease);
+    }
+
+    .filters button:hover {
+      background: var(--green);
+      color: var(--ivory);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 500;
+      font-size: 0.8rem;
+      color: var(--olive);
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid var(--grey);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid rgba(217, 210, 196, 0.6);
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    tbody tr:hover {
+      background: rgba(245, 240, 230, 0.6);
+    }
+
+    .cust {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .avatar {
+      flex: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--green);
+      color: var(--gold-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+    }
+
+    .cust a {
+      font-weight: 500;
+      color: var(--green);
+    }
+
+    .cust small {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--olive);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.2rem 0.65rem;
+      font-size: 0.74rem;
+      border-radius: 999px;
+    }
+
+    .pill::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .pill-active {
+      background: rgba(20, 50, 36, 0.12);
+      color: var(--green);
+    }
+
+    .pill-blocked {
+      background: rgba(181, 83, 60, 0.15);
+      color: var(--terracotta);
+    }
+
+    td .open {
+      font-size: 0.84rem;
+      border-bottom: 1px solid var(--gold);
+      color: var(--charcoal);
+    }
+
+    .pager {
+      display: flex;
+      flex: none;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.9rem 1.1rem;
+      font-size: 0.86rem;
+      color: var(--olive);
+    }
+
+    .pager div {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .pager a,
+    .pager .off {
+      padding: 0.4rem 0.9rem;
+      border: 1px solid var(--green);
+      border-radius: var(--radius);
+      color: var(--green);
+    }
+
+    .pager a:hover {
+      background: var(--green);
+      color: var(--ivory);
+    }
+
+    .pager .off {
+      border-color: var(--grey);
+      color: var(--grey);
+    }
+
+    .empty {
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+
+    .empty p {
+      margin: 0.4rem auto 0;
+      color: #4b5048;
+    }
+  </style>
+</head>
+
+<body class="adm-body">
+  <div class="adm-shell">
+
+    <div th:replace="~{admin/fragments/layout :: sidebar('customers')}"></div>
+
+    <div class="adm-main">
+      <header th:replace="~{admin/fragments/layout :: topbar}"></header>
+
+      <main class="adm-content">
+
+        <div class="adm-head">
+          <div>
+            <h1>Customers</h1>
+            <p>See who is shopping with you and manage their accounts.</p>
+          </div>
+          <div class="adm-head-actions">
+            <a class="btn btn-ghost" th:href="@{/admin/customers/export(status=${status}, q=${q})}">Export CSV</a>
+          </div>
+        </div>
+
+        <div class="adm-alert ok" th:if="${message}" th:text="${message}" role="status"></div>
+        <div class="adm-alert err" th:if="${error}" th:text="${error}" role="alert"></div>
+
+        <div class="card">
+
+          <div class="toolbar">
+            <nav class="tabs" aria-label="Filter by status">
+              <a th:href="@{/admin/customers(q=${q})}" th:classappend="${status == null} ? 'is-active'">All<small th:text="${counts.all}">0</small></a>
+              <a th:href="@{/admin/customers(status='ACTIVE', q=${q})}" th:classappend="${status == 'ACTIVE'} ? 'is-active'">Active<small th:text="${counts.active}">0</small></a>
+              <a th:href="@{/admin/customers(status='BLOCKED', q=${q})}" th:classappend="${status == 'BLOCKED'} ? 'is-active'">Blocked<small th:text="${counts.blocked}">0</small></a>
+            </nav>
+
+            <form class="filters" th:action="@{/admin/customers}" method="get" role="search">
+              <input type="hidden" name="status" th:value="${status}" th:if="${status != null}">
+              <input type="search" name="q" th:value="${q}" placeholder="Name, email or phone" aria-label="Search customers">
+              <button type="submit">Search</button>
+            </form>
+          </div>
+
+          <div class="empty" th:if="${customers.totalElements == 0}">
+            <h3>No customers found</h3>
+            <p th:if="${status != null or q != null}">Try a different search term or status.</p>
+            <p th:unless="${status != null or q != null}">Customers will appear here once they register.</p>
+          </div>
+
+          <div class="table-wrap" th:if="${customers.totalElements > 0}">
+            <table>
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Phone</th>
+                  <th>Orders</th>
+                  <th>Total spent</th>
+                  <th>Joined</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="c : ${customers.content}">
+                  <td>
+                    <div class="cust">
+                      <span class="avatar" th:text="${#strings.toUpperCase(#strings.substring(c.fullName, 0, 1))}">A</span>
+                      <div>
+                        <a th:href="@{/admin/customers/{id}(id=${c.id})}" th:text="${c.fullName}">Customer</a>
+                        <small th:text="${c.email}">email@example.com</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td th:text="${c.phone != null} ? ${c.phone} : '-'">Phone</td>
+                  <td th:text="${c.orderCount}">0</td>
+                  <td th:text="'₹' + ${#numbers.formatDecimal(c.totalSpent, 1, 'COMMA', 2, 'POINT')}">₹0.00</td>
+                  <td th:text="${#temporals.format(c.createdAt, 'dd MMM yyyy')}">01 Jan 2026</td>
+                  <td>
+                    <span class="pill" th:classappend="${c.blocked} ? 'pill-blocked' : 'pill-active'"
+                      th:text="${c.blocked} ? 'Blocked' : 'Active'">Active</span>
+                  </td>
+                  <td><a class="open" th:href="@{/admin/customers/{id}(id=${c.id})}">View</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pager" th:if="${customers.totalPages > 1}">
+            <span th:text="'Page ' + ${customers.number + 1} + ' of ' + ${customers.totalPages} + ' · ' + ${customers.totalElements} + ' customers'">Page 1 of 3</span>
+            <div>
+              <a th:if="${customers.hasPrevious()}" th:href="@{/admin/customers(page=${customers.number - 1}, status=${status}, q=${q})}">Previous</a>
+              <span class="off" th:unless="${customers.hasPrevious()}">Previous</span>
+              <a th:if="${customers.hasNext()}" th:href="@{/admin/customers(page=${customers.number + 1}, status=${status}, q=${q})}">Next</a>
+              <span class="off" th:unless="${customers.hasNext()}">Next</span>
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- base JS shared by the whole site; this page needs no extra JS -->
+  <script th:src="@{/js/script.js}"></script>
+</body>
+
+</html>

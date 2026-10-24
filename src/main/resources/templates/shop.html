@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Arrivals — Sutra Textiles India</title>
+  <meta name="description"
+    content="Shop traditional ethnic wear from every state — sarees, lehengas, salwar suits and regional wear, handcrafted in our own Bhilwara facility.">
+  <link rel="icon" type="image/x-icon" th:href="@{/favicon_io/favicon.ico}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+
+  <style>
+    [hidden] {
+      display: none !important;
+    }
+
+    .shop-hero {
+      background: var(--green);
+      color: var(--ivory);
+      padding-block: clamp(2.5rem, 6vw, 4.2rem);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shop-hero-mark {
+      position: absolute;
+      right: clamp(-60px, -2vw, 0px);
+      bottom: -80px;
+      width: 340px;
+      color: var(--gold-light);
+      opacity: .08;
+      pointer-events: none;
+    }
+
+    .shop-crumbs {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .8rem;
+      color: #b9c4b6;
+      margin-bottom: .9rem;
+    }
+
+    .shop-crumbs a:hover {
+      color: var(--gold-light);
+    }
+
+    .shop-hero .eyebrow {
+      color: var(--gold-light);
+    }
+
+    .shop-hero h1 {
+      color: var(--ivory);
+      margin-bottom: .8rem;
+    }
+
+    .shop-hero h1 em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .shop-hero p {
+      color: #d7ded6;
+      font-size: 1.05rem;
+      max-width: 80ch;
+      position: relative;
+    }
+
+    /* ---- Layout ---- */
+    .shop-main {
+      padding-block: clamp(2.5rem, 5vw, 3.5rem);
+    }
+
+    .shop-wrap {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: clamp(1.75rem, 3vw, 3rem);
+      align-items: start;
+    }
+
+    /* ---- Filters panel ---- */
+    .filters-panel {
+      position: sticky;
+      top: calc(var(--nav-h, 0px) + 1.5rem);
+    }
+
+    .filters-group {
+      padding-block: 1.3rem;
+      border-bottom: 1px solid var(--grey);
+    }
+
+    .filters-group:first-child {
+      padding-top: 0;
+    }
+
+    .filters-group h4 {
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      color: var(--green);
+      margin-bottom: 0.9rem;
+    }
+
+    .filter-option {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.9rem;
+      color: #3a3f37;
+      padding: 0.3rem 0;
+      cursor: pointer;
+    }
+
+    .filter-option input {
+      accent-color: var(--green);
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+    }
+
+    .filters-clear {
+      font-size: 0.82rem;
+      color: var(--terracotta);
+      border-bottom: 1px solid transparent;
+    }
+
+    .filters-clear:hover {
+      border-color: var(--terracotta);
+    }
+
+    .filters-toggle {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid var(--green);
+      color: var(--green);
+      padding: 0.6rem 1.1rem;
+      font-size: 0.85rem;
+      border-radius: var(--radius);
+    }
+
+    .filters-toggle svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .filters-scrim {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 38, 32, 0.4);
+      z-index: 199;
+    }
+
+    .filters-scrim.is-open {
+      display: block;
+    }
+
+    /* ---- Toolbar ---- */
+    .shop-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      padding-bottom: 1.3rem;
+      border-bottom: 1px solid var(--grey);
+      margin-bottom: 1.3rem;
+    }
+
+    .results-count {
+      font-size: 0.86rem;
+      color: var(--olive);
+    }
+
+    .sort-field {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.85rem;
+      color: var(--green);
+    }
+
+    .sort-select {
+      border: 1px solid var(--grey);
+      background: var(--ivory-soft);
+      color: var(--charcoal);
+      padding: 0.5rem 0.8rem;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+    }
+
+    /* ---- Active filter chips ---- */
+    .active-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .active-filters:empty {
+      display: none;
+      margin: 0;
+    }
+
+    .active-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--ivory-soft);
+      border: 1px solid var(--grey);
+      color: var(--green);
+      font-size: 0.8rem;
+      padding: 0.4rem 0.7rem;
+      border-radius: 999px;
+    }
+
+    .active-chip button {
+      font-size: 0.95rem;
+      line-height: 1;
+      color: var(--terracotta);
+    }
+
+    .active-chip.clear-all {
+      border-color: var(--terracotta);
+      color: var(--terracotta);
+      cursor: pointer;
+    }
+
+    /* ---- Empty state ---- */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 1rem;
+    }
+
+    .empty-state h3 {
+      margin-bottom: 0.6rem;
+    }
+
+    .empty-state p {
+      color: var(--olive);
+      margin: 0 auto 1.4rem;
+    }
+
+    /* ---- Load more ---- */
+    .load-more-wrap {
+      text-align: center;
+      margin-top: 2.5rem;
+    }
+
+    @media (max-width: 920px) {
+      .shop-wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .filters-toggle {
+        display: inline-flex;
+      }
+
+      .filters-panel {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100vh;
+        width: min(85vw, 320px);
+        background: var(--ivory-soft);
+        z-index: 200;
+        padding: 1.5rem clamp(1.25rem, 5vw, 2rem);
+        overflow-y: auto;
+        transform: translateX(100%);
+        transition: transform .35s var(--ease);
+        border-left: 1px solid var(--grey);
+      }
+
+      .filters-panel.is-open {
+        transform: translateX(0);
+      }
+
+      .filters-panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+      }
+
+      .filters-panel-close {
+        font-size: 1.4rem;
+        color: var(--green);
+      }
+    }
+
+    .filters-panel-head {
+      display: none;
+    }
+
+    @media (max-width: 920px) {
+      .filters-panel-head {
+        display: flex;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="navbar" th:replace="~{fragments/navbar :: navbar}"></div>
+  <div id="navSpacer"></div>
+
+  <section class="shop-hero">
+    <svg class="shop-hero-mark" viewBox="0 0 120 150" fill="none" stroke="currentColor" stroke-width="1"
+      aria-hidden="true">
+      <path d="M60 10c-16 10-26 26-26 46 0 24 12 42 26 52 14-10 26-28 26-52 0-20-10-36-26-46Z" />
+      <path d="M60 46v66" />
+      <path d="M60 64c-7 3-15 1-15 1s2.5-9 9-12.5c3.6-2 8-1 8-1" />
+      <path d="M60 80c7 3 15 1 15 1s-2.5-9-9-12.5c-3.6-2-8-1-8-1" />
+    </svg>
+    <div class="container">
+      <nav class="shop-crumbs" aria-label="Breadcrumb">
+        <a th:href="@{/}">Home</a>
+        <span>/</span>
+        <a th:href="@{/shop}">Shop</a>
+      </nav>
+      <span class="eyebrow">EXPLORE SUTRA TEXTILES INDIA</span>
+      <h1>Discover our <em>textile heritage.</em></h1>
+      <p>Discover timeless textiles inspired by India's rich heritage and craftsmanship.</p>
+    </div>
+  </section>
+
+  <section class="shop-main">
+    <div class="container shop-wrap">
+
+      <div class="filters-scrim" id="filtersScrim"></div>
+
+      <aside class="filters-panel" id="filtersPanel">
+        <div class="filters-panel-head">
+          <h3>Filters</h3>
+          <button class="filters-panel-close" id="filtersClose" aria-label="Close filters">&times;</button>
+        </div>
+
+        <div class="filters-group">
+          <h4>CATEGORY</h4>
+          <label class="filter-option"><input type="checkbox" value="sarees" data-filter="category"> Sarees</label>
+          <label class="filter-option"><input type="checkbox" value="lehengas" data-filter="category"> Lehengas</label>
+          <label class="filter-option"><input type="checkbox" value="salwar-suits" data-filter="category"> Salwar
+            Suits</label>
+          <label class="filter-option"><input type="checkbox" value="regional" data-filter="category"> Regional
+            Wear</label>
+        </div>
+
+        <div class="filters-group">
+          <h4>REGION</h4>
+          <label class="filter-option"><input type="checkbox" value="rajasthan" data-filter="region"> Rajasthani</label>
+          <label class="filter-option"><input type="checkbox" value="bengal" data-filter="region"> Bengali</label>
+          <label class="filter-option"><input type="checkbox" value="south-india" data-filter="region"> South
+            Indian</label>
+          <label class="filter-option"><input type="checkbox" value="punjab" data-filter="region"> Punjabi</label>
+          <label class="filter-option"><input type="checkbox" value="gujarat" data-filter="region"> Gujarati</label>
+          <label class="filter-option"><input type="checkbox" value="kashmir" data-filter="region"> Kashmiri</label>
+          <label class="filter-option"><input type="checkbox" value="maharashtra" data-filter="region">
+            Maharashtrian</label>
+        </div>
+
+        <div class="filters-group">
+          <h4>PRICE</h4>
+          <label class="filter-option">
+            <input type="radio" name="price" value="" data-filter="price" checked>
+            All Prices
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="price" value="0-2999.99" data-filter="price">
+            Under &#8377;3,000
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="price" value="3000-5999.99" data-filter="price">
+            &#8377;3,000 – &#8377;5,999.99
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="price" value="6000-9999.99" data-filter="price">
+            &#8377;6,000 – &#8377;9,999.99
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="price" value="10000-999999" data-filter="price">
+            &#8377;10,000 and above
+          </label>
+        </div>
+
+        <div class="filters-group" style="border-bottom:none;">
+          <button class="filters-clear" id="filtersClear">Clear all filters</button>
+        </div>
+      </aside>
+
+      <div class="shop-content">
+
+        <div class="shop-toolbar">
+          <button class="filters-toggle" id="filtersToggle" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M4 6h16M7 12h10M10 18h4" />
+            </svg>
+            Filters
+          </button>
+          <span class="results-count" id="resultsCount"></span>
+          <div class="sort-field">
+            <label for="sortSelect">Sort by</label>
+            <select class="sort-select" id="sortSelect">
+              <option value="newest">Newest</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="active-filters" id="activeFilters"></div>
+
+        <div class="product-grid" id="productGrid" th:attr="data-initial-category=${initialCategory},
+              data-initial-region=${initialRegion}">
+        </div>
+
+        <div class="empty-state" id="emptyState" hidden>
+          <h3>No products match these filters</h3>
+          <p>Try removing a filter or two — there's likely something close by.</p>
+          <button class="btn btn-ghost" id="emptyClearBtn">Clear All Filters</button>
+        </div>
+
+        <div class="load-more-wrap">
+          <button class="btn btn-ghost" id="loadMoreBtn">Load More</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div id="footer" th:replace="~{fragments/footer :: footer}"></div>
+
+  <script th:src="@{/js/script.js}"></script>
+  <script>
+
+    (function () {
+      'use strict';
+
+      const grid = document.getElementById('productGrid');
+      if (!grid) return;
+
+      const resultsCount = document.getElementById('resultsCount');
+      const activeFilters = document.getElementById('activeFilters');
+      const emptyState = document.getElementById('emptyState');
+      const loadMoreBtn = document.getElementById('loadMoreBtn');
+      const shopTitle = document.getElementById('shopTitle');
+      const shopSubtitle = document.getElementById('shopSubtitle');
+      const sortSelect = document.getElementById('sortSelect');
+
+      const filtersPanel = document.getElementById('filtersPanel');
+      const filtersToggle = document.getElementById('filtersToggle');
+      const filtersClose = document.getElementById('filtersClose');
+      const filtersScrim = document.getElementById('filtersScrim');
+
+      const CATEGORY_LABELS = {
+        sarees: 'Sarees',
+        lehengas: 'Lehengas',
+        'salwar-suits': 'Salwar Suits',
+        regional: 'Regional Wear'
+      };
+
+      const REGION_LABELS = {
+        rajasthan: 'Rajasthani',
+        bengal: 'Bengali',
+        'south-india': 'South Indian',
+        punjab: 'Punjabi',
+        gujarat: 'Gujarati',
+        kashmir: 'Kashmiri',
+        maharashtra: 'Maharashtrian'
+      };
+
+      const TINT_STROKE = {
+        1: '#1C3329',
+        2: '#E3CB8E',
+        3: '#1C3329',
+        4: '#F5F0E6'
+      };
+
+      const PAGE_SIZE = 8;
+
+      const state = {
+        categories: new Set(),
+        regions: new Set(),
+        price: '',
+        sort: 'newest',
+        page: 0,
+        products: [],
+        total: 0,
+        loading: false,
+        requestId: 0
+      };
+
+      const initialCategory = grid.dataset.initialCategory || '';
+      const initialRegion = grid.dataset.initialRegion || '';
+
+      const params = new URLSearchParams(window.location.search);
+
+      const categoryFromUrl = params.get('cat') || initialCategory;
+      const regionFromUrl = params.get('region') || initialRegion;
+
+      if (CATEGORY_LABELS[categoryFromUrl]) {
+        state.categories.add(categoryFromUrl);
+      }
+
+      if (REGION_LABELS[regionFromUrl]) {
+        state.regions.add(regionFromUrl);
+      }
+
+      document.querySelectorAll('[data-filter="category"]').forEach(input => {
+        input.checked = state.categories.has(input.value);
+      });
+
+      document.querySelectorAll('[data-filter="region"]').forEach(input => {
+        input.checked = state.regions.has(input.value);
+      });
+
+      function formatPrice(price) {
+        return Number(price).toLocaleString('en-IN', {
+          maximumFractionDigits: 2
+        });
+      }
+
+      function getPriceRange() {
+        if (!state.price) {
+          return { minPrice: '', maxPrice: '' };
+        }
+
+        const [minPrice, maxPrice] = state.price.split('-');
+
+        return { minPrice, maxPrice };
+      }
+
+      function updateHeader() {
+        const categories = [...state.categories];
+        const regions = [...state.regions];
+
+        if (categories.length === 1 && regions.length === 0) {
+          const label = CATEGORY_LABELS[categories[0]];
+
+          shopTitle.textContent = label;
+          shopSubtitle.textContent =
+            `Handpicked ${label.toLowerCase()}, made in our own Bhilwara facility.`;
+
+        } else if (regions.length === 1 && categories.length === 0) {
+          const label = REGION_LABELS[regions[0]];
+
+          shopTitle.textContent = `${label} Wear`;
+          shopSubtitle.textContent =
+            `Traditional pieces rooted in ${label} craft.`;
+
+        } else if (categories.length === 0 && regions.length === 0) {
+          shopTitle.textContent = 'New Arrivals';
+          shopSubtitle.textContent =
+            'Fresh off the loom — the latest additions to the Sutra wardrobe.';
+
+        } else {
+          shopTitle.textContent = 'Shop';
+          shopSubtitle.textContent =
+            'Traditional ethnic wear, handcrafted in our own Bhilwara facility.';
+        }
+      }
+
+      function createProductCard(product) {
+        const card = document.createElement('article');
+        card.className = 'product-card';
+
+        const tint = Math.min(4, Math.max(1, Number(product.tint) || 1));
+        const art = document.createElement('div');
+        art.className = `product-art tint-${tint}`;
+
+        if (product.tag) {
+          const tag = document.createElement('span');
+          tag.className = 'product-tag';
+          tag.textContent = product.tag;
+          art.appendChild(tag);
+        }
+
+        if (product.imageUrl) {
+          const image = document.createElement('img');
+          image.src = product.imageUrl;
+          image.alt = product.name || 'Sutra textile product';
+          image.loading = 'lazy';
+          image.className = 'product-image';
+
+          image.addEventListener('error', () => {
+            image.remove();
+          });
+
+          art.appendChild(image);
+        } else {
+          const svgNS = 'http://www.w3.org/2000/svg';
+          const svg = document.createElementNS(svgNS, 'svg');
+
+          svg.setAttribute('viewBox', '0 0 80 100');
+          svg.setAttribute('fill', 'none');
+          svg.setAttribute('stroke', TINT_STROKE[tint]);
+
+          const path = document.createElementNS(svgNS, 'path');
+          path.setAttribute(
+            'd',
+            'M40 10c-10 6-16 16-16 28 0 14 7 25 16 31 9-6 16-17 16-31 0-12-6-22-16-28Z'
+          );
+          path.setAttribute('stroke-width', '1');
+
+          svg.appendChild(path);
+          art.appendChild(svg);
+        }
+
+        const info = document.createElement('div');
+        info.className = 'product-info';
+
+        const details = document.createElement('div');
+        const name = document.createElement('h3');
+        name.textContent = product.name || 'Untitled product';
+
+        const region = document.createElement('span');
+        region.className = 'region';
+        region.textContent = REGION_LABELS[product.region] || product.region || '';
+
+        details.append(name, region);
+
+        const price = document.createElement('span');
+        price.className = 'product-price';
+        price.textContent = `₹${formatPrice(product.price)}`;
+
+        info.append(details, price);
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'add-cart';
+        button.dataset.product = String(product.id);
+        button.textContent = 'Add to Cart';
+
+        card.append(art, info, button);
+
+        return card;
+      }
+
+      function renderProducts() {
+        grid.replaceChildren();
+
+        state.products.forEach(product => {
+          grid.appendChild(createProductCard(product));
+        });
+
+        const shown = state.products.length;
+
+        resultsCount.textContent =
+          `Showing ${shown} of ${state.total} products`;
+
+        emptyState.hidden = state.total !== 0;
+        grid.style.display = state.total === 0 ? 'none' : '';
+
+        loadMoreBtn.style.display =
+          shown >= state.total ? 'none' : '';
+      }
+
+      function buildChip(label, onRemove) {
+        const chip = document.createElement('span');
+        chip.className = 'active-chip';
+
+        const text = document.createElement('span');
+        text.textContent = label;
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.setAttribute('aria-label', `Remove ${label} filter`);
+        button.textContent = '×';
+        button.addEventListener('click', onRemove);
+
+        chip.append(text, button);
+        return chip;
+      }
+
+      function renderActiveFilters() {
+        activeFilters.replaceChildren();
+
+        state.categories.forEach(category => {
+          activeFilters.appendChild(
+            buildChip(CATEGORY_LABELS[category], () => {
+              state.categories.delete(category);
+
+              const input = document.querySelector(
+                `[data-filter="category"][value="${category}"]`
+              );
+
+              if (input) input.checked = false;
+              refreshProducts();
+            })
+          );
+        });
+
+        state.regions.forEach(region => {
+          activeFilters.appendChild(
+            buildChip(REGION_LABELS[region], () => {
+              state.regions.delete(region);
+
+              const input = document.querySelector(
+                `[data-filter="region"][value="${region}"]`
+              );
+
+              if (input) input.checked = false;
+              refreshProducts();
+            })
+          );
+        });
+
+        if (state.price) {
+          const input = document.querySelector(
+            `[data-filter="price"][value="${state.price}"]`
+          );
+
+          const label = input
+            ? input.closest('.filter-option').textContent.trim()
+            : 'Price';
+
+          activeFilters.appendChild(
+            buildChip(label, () => {
+              state.price = '';
+
+              const allPrices = document.querySelector(
+                '[data-filter="price"][value=""]'
+              );
+
+              if (allPrices) allPrices.checked = true;
+              refreshProducts();
+            })
+          );
+        }
+
+        if (
+          state.categories.size ||
+          state.regions.size ||
+          state.price
+        ) {
+          const clear = document.createElement('button');
+          clear.type = 'button';
+          clear.className = 'active-chip clear-all';
+          clear.textContent = 'Clear All';
+          clear.addEventListener('click', clearAllFilters);
+
+          activeFilters.appendChild(clear);
+        }
+      }
+
+      async function loadProducts(append = false) {
+        if (state.loading) return;
+
+        state.loading = true;
+        const requestId = ++state.requestId;
+
+        loadMoreBtn.disabled = true;
+        loadMoreBtn.textContent = 'Loading...';
+
+        const query = new URLSearchParams();
+        const { minPrice, maxPrice } = getPriceRange();
+
+        if (state.categories.size === 1) {
+          query.set('cat', [...state.categories][0]);
+        }
+
+        if (state.regions.size === 1) {
+          query.set('region', [...state.regions][0]);
+        }
+
+        if (minPrice !== '') query.set('minPrice', minPrice);
+        if (maxPrice !== '') query.set('maxPrice', maxPrice);
+
+        query.set('sort', state.sort);
+        query.set('page', String(state.page));
+        query.set('size', String(PAGE_SIZE));
+
+        try {
+          const response = await fetch(`/api/products?${query.toString()}`, {
+            headers: { Accept: 'application/json' }
+          });
+
+          if (!response.ok) {
+            throw new Error(`Unable to load products (${response.status}).`);
+          }
+
+          const data = await response.json();
+
+          // Ignore an older response if a newer request has started.
+          if (requestId !== state.requestId) return;
+
+          state.products = append
+            ? state.products.concat(data.content || [])
+            : (data.content || []);
+
+          state.total = Number(data.totalElements) || 0;
+
+          renderProducts();
+
+        } catch (error) {
+          if (requestId === state.requestId) {
+            console.error('Shop products error:', error);
+
+            grid.replaceChildren();
+            grid.style.display = 'none';
+            emptyState.hidden = false;
+
+            const heading = emptyState.querySelector('h3');
+            const message = emptyState.querySelector('p');
+
+            if (heading) heading.textContent = 'Unable to load products';
+            if (message) {
+              message.textContent =
+                'Please try again in a moment.';
+            }
+
+            resultsCount.textContent = 'Products could not be loaded';
+            loadMoreBtn.style.display = 'none';
+          }
+        } finally {
+          if (requestId === state.requestId) {
+            state.loading = false;
+            loadMoreBtn.disabled = false;
+            loadMoreBtn.textContent = 'Load More';
+          }
+        }
+      }
+
+      function refreshProducts() {
+        state.page = 0;
+        state.products = [];
+        state.total = 0;
+
+        updateHeader();
+        renderActiveFilters();
+        loadProducts(false);
+      }
+
+      function clearAllFilters() {
+        state.categories.clear();
+        state.regions.clear();
+        state.price = '';
+
+        document.querySelectorAll('[data-filter]').forEach(input => {
+          if (input.type === 'checkbox') input.checked = false;
+
+          if (input.type === 'radio') {
+            input.checked = input.value === '';
+          }
+        });
+
+        refreshProducts();
+      }
+
+      document.querySelectorAll('[data-filter="category"]').forEach(input => {
+        input.addEventListener('change', () => {
+          if (input.checked) {
+            state.categories.add(input.value);
+          } else {
+            state.categories.delete(input.value);
+          }
+
+          refreshProducts();
+        });
+      });
+
+      document.querySelectorAll('[data-filter="region"]').forEach(input => {
+        input.addEventListener('change', () => {
+          if (input.checked) {
+            state.regions.add(input.value);
+          } else {
+            state.regions.delete(input.value);
+          }
+
+          refreshProducts();
+        });
+      });
+
+      document.querySelectorAll('[data-filter="price"]').forEach(input => {
+        input.addEventListener('change', () => {
+          if (input.checked) {
+            state.price = input.value;
+            refreshProducts();
+          }
+        });
+      });
+
+      document.getElementById('filtersClear')
+        ?.addEventListener('click', clearAllFilters);
+
+      document.getElementById('emptyClearBtn')
+        ?.addEventListener('click', clearAllFilters);
+
+      sortSelect.addEventListener('change', () => {
+        state.sort = sortSelect.value;
+        refreshProducts();
+      });
+
+      loadMoreBtn.addEventListener('click', () => {
+        if (state.loading || state.products.length >= state.total) return;
+
+        state.page += 1;
+        loadProducts(true);
+      });
+
+      grid.addEventListener('click', event => {
+        const button = event.target.closest('.add-cart');
+        if (!button) return;
+
+        if (window.Sutra?.cart) {
+          window.Sutra.cart.add(1);
+        }
+
+        const originalText = button.textContent;
+        button.textContent = 'Added ✓';
+        button.classList.add('is-added');
+
+        window.setTimeout(() => {
+          button.textContent = originalText;
+          button.classList.remove('is-added');
+        }, 1400);
+      });
+
+      function openFilters() {
+        filtersPanel?.classList.add('is-open');
+        filtersScrim?.classList.add('is-open');
+        filtersToggle?.setAttribute('aria-expanded', 'true');
+      }
+
+      function closeFilters() {
+        filtersPanel?.classList.remove('is-open');
+        filtersScrim?.classList.remove('is-open');
+        filtersToggle?.setAttribute('aria-expanded', 'false');
+      }
+
+      filtersToggle?.addEventListener('click', openFilters);
+      filtersClose?.addEventListener('click', closeFilters);
+      filtersScrim?.addEventListener('click', closeFilters);
+
+      updateHeader();
+      renderActiveFilters();
+      loadProducts(false);
+    })();
+  </script>
+
+</body>
+
+</html>

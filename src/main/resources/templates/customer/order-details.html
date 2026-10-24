@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Order #' + ${order.orderNumber}">Order details</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <style>
+        /* ===== Customer dashboard: Order details page only ===== */
+
+        .back-link {
+            display: inline-block;
+            font-size: 0.86rem;
+            color: var(--olive);
+            margin-bottom: 1rem;
+        }
+
+        .back-link:hover {
+            color: var(--green);
+        }
+
+        .od-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.8rem;
+        }
+
+        .od-head h1 {
+            font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+            margin-bottom: 0.4rem;
+        }
+
+        .od-head p {
+            font-size: 0.9rem;
+            color: var(--olive);
+            margin-top: 0.5rem;
+        }
+
+        .od-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
+
+        .od-actions .btn {
+            padding: 0.65rem 1.3rem;
+            font-size: 0.84rem;
+        }
+
+        .btn-danger {
+            border: 1px solid var(--terracotta);
+            color: var(--terracotta);
+        }
+
+        .btn-danger:hover {
+            background: var(--terracotta);
+            color: var(--ivory);
+        }
+
+        /* Flash messages */
+        .alert {
+            padding: 0.85rem 1.1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            border: 1px solid var(--grey);
+            background: var(--ivory-soft);
+        }
+
+        .alert-success {
+            border-left: 3px solid var(--olive);
+        }
+
+        .alert-error {
+            border-left: 3px solid var(--terracotta);
+        }
+
+        /* Status badge */
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            width: fit-content;
+            padding: 0.22rem 0.7rem;
+            font-size: 0.74rem;
+            letter-spacing: 0.03em;
+            border-radius: 999px;
+        }
+
+        .status::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .status-pending {
+            background: rgba(201, 162, 75, 0.2);
+            color: #7a5d1a;
+        }
+
+        .status-shipped {
+            background: rgba(92, 107, 78, 0.2);
+            color: var(--olive);
+        }
+
+        .status-delivered {
+            background: rgba(20, 50, 36, 0.12);
+            color: var(--green);
+        }
+
+        .status-cancelled {
+            background: rgba(181, 83, 60, 0.15);
+            color: var(--terracotta);
+        }
+
+        /* Tracking timeline */
+        .track {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            background: var(--ivory-soft);
+            border: 1px solid var(--grey);
+            padding: 1.6rem 1.4rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .track-step {
+            position: relative;
+            text-align: center;
+            font-size: 0.84rem;
+            color: var(--olive);
+        }
+
+        .track-step::before {
+            content: "";
+            position: absolute;
+            top: 6px;
+            right: 50%;
+            width: 100%;
+            height: 2px;
+            background: var(--grey);
+        }
+
+        .track-step:first-child::before {
+            display: none;
+        }
+
+        .track-dot {
+            position: relative;
+            z-index: 1;
+            display: block;
+            width: 14px;
+            height: 14px;
+            margin: 0 auto 0.7rem;
+            border-radius: 50%;
+            background: var(--ivory-soft);
+            border: 2px solid var(--grey);
+        }
+
+        .track-step strong {
+            display: block;
+            font-weight: 500;
+            color: var(--charcoal);
+        }
+
+        .track-step.is-done .track-dot {
+            background: var(--gold);
+            border-color: var(--gold);
+        }
+
+        .track-step.is-done::before {
+            background: var(--gold);
+        }
+
+        .track-note {
+            margin-top: 1.2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--grey);
+            grid-column: 1 / -1;
+            font-size: 0.86rem;
+            color: #3a3f37;
+            text-align: center;
+        }
+
+        .cancel-banner {
+            background: rgba(181, 83, 60, 0.08);
+            border: 1px solid rgba(181, 83, 60, 0.35);
+            padding: 1.1rem 1.4rem;
+            margin-bottom: 2.5rem;
+            font-size: 0.9rem;
+            color: var(--terracotta);
+        }
+
+        /* Items + summary */
+        .od-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 300px;
+            gap: clamp(1.5rem, 3vw, 3rem);
+            align-items: start;
+        }
+
+        .od-grid h2,
+        .od-info h2 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .od-item {
+            display: grid;
+            grid-template-columns: 72px minmax(0, 1fr) auto;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem 0;
+            border-top: 1px solid var(--grey);
+        }
+
+        .od-item:last-child {
+            border-bottom: 1px solid var(--grey);
+        }
+
+        .od-item img {
+            width: 72px;
+            aspect-ratio: 4 / 5;
+            object-fit: cover;
+            background: var(--ivory-soft);
+            border: 1px solid var(--grey);
+        }
+
+        .od-item h3 {
+            font-size: 1rem;
+            margin-bottom: 0.15rem;
+        }
+
+        .od-item .muted {
+            font-size: 0.82rem;
+            color: var(--olive);
+        }
+
+        .od-item .line-total {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            color: var(--green);
+            white-space: nowrap;
+        }
+
+        .od-summary {
+            background: var(--ivory-soft);
+            border: 1px solid var(--grey);
+            padding: 1.5rem;
+        }
+
+        .od-summary dl {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 0.6rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .od-summary dd {
+            text-align: right;
+        }
+
+        .od-summary .discount {
+            color: var(--olive);
+        }
+
+        .od-summary .grand {
+            margin-top: 0.5rem;
+            padding-top: 0.9rem;
+            border-top: 1px solid var(--grey);
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            color: var(--green);
+        }
+
+        /* Address / payment / shipment */
+        .od-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--gap);
+            margin-top: 3rem;
+        }
+
+        .od-info .card {
+            background: var(--ivory-soft);
+            border: 1px solid var(--grey);
+            padding: 1.4rem;
+            font-size: 0.9rem;
+            color: #3a3f37;
+        }
+
+        .od-info h2 {
+            font-size: 1.1rem;
+            margin-bottom: 0.7rem;
+        }
+
+        .od-info address {
+            font-style: normal;
+        }
+
+        .od-info .muted {
+            color: var(--olive);
+        }
+
+        /* Confirm dialogs */
+        dialog {
+            margin: auto;
+            width: min(92vw, 440px);
+            padding: 1.8rem;
+            background: var(--ivory-soft);
+            color: var(--charcoal);
+            border: 1px solid var(--grey);
+            border-radius: var(--radius);
+        }
+
+        dialog::backdrop {
+            background: rgba(20, 38, 32, 0.5);
+        }
+
+        dialog h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        dialog p {
+            font-size: 0.9rem;
+            color: #4b5048;
+            margin-bottom: 1.2rem;
+        }
+
+        dialog label {
+            display: block;
+            font-size: 0.84rem;
+            margin-bottom: 0.3rem;
+        }
+
+        dialog select,
+        dialog textarea {
+            width: 100%;
+            padding: 0.65rem 0.8rem;
+            margin-bottom: 1rem;
+            font: inherit;
+            font-size: 0.9rem;
+            background: var(--ivory);
+            border: 1px solid var(--grey);
+            border-radius: var(--radius);
+            color: var(--charcoal);
+        }
+
+        dialog textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .dialog-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.6rem;
+        }
+
+        .dialog-actions .btn {
+            padding: 0.65rem 1.3rem;
+            font-size: 0.84rem;
+        }
+
+        @media (max-width: 960px) {
+            .od-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .od-info {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .od-item {
+                grid-template-columns: 60px minmax(0, 1fr);
+            }
+
+            .od-item img {
+                width: 60px;
+            }
+
+            .od-item .line-total {
+                grid-column: 2;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- change to match your existing navbar fragment name -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <main class="dash-page">
+        <div class="container dash-layout">
+
+            <aside th:replace="~{customer/fragments/sidebar :: sidebar('orders')}"></aside>
+
+            <div class="dash-main">
+
+                <a class="back-link" th:href="@{/customer/orders}">&larr; Back to orders</a>
+
+                <div class="alert alert-success" th:if="${message}" th:text="${message}" role="status"></div>
+                <div class="alert alert-error" th:if="${error}" th:text="${error}" role="alert"></div>
+
+                <header class="od-head">
+                    <div>
+                        <h1 th:text="'Order #' + ${order.orderNumber}">Order #1001</h1>
+                        <span class="status" th:classappend="'status-' + ${#strings.toLowerCase(order.status)}"
+                            th:text="${#strings.capitalize(#strings.toLowerCase(order.status))}">Shipped</span>
+                        <p th:text="'Placed on ' + ${#temporals.format(order.createdAt, 'dd MMM yyyy')}">Placed on 01
+                            Jan 2026</p>
+                    </div>
+
+                    <div class="od-actions">
+                        <a class="btn btn-ghost" th:if="${order.status != 'CANCELLED'}"
+                            th:href="@{/customer/orders/{id}/invoice(id=${order.id})}">Download invoice</a>
+                        <form th:if="${order.status == 'DELIVERED' or order.status == 'CANCELLED'}"
+                            th:action="@{/customer/orders/{id}/reorder(id=${order.id})}" method="post">
+                            <button type="submit" class="btn btn-primary">Reorder</button>
+                        </form>
+                        <button type="button" class="btn btn-danger" th:if="${order.status == 'PENDING'}"
+                            data-open="cancel-dialog">Cancel order</button>
+                        <button type="button" class="btn btn-danger" th:if="${order.canReturn}"
+                            data-open="return-dialog">Return items</button>
+                    </div>
+                </header>
+
+                <!-- Tracking -->
+                <div class="cancel-banner" th:if="${order.status == 'CANCELLED'}"
+                    th:text="'This order was cancelled' + (${order.cancelledAt != null} ? ' on ' + ${#temporals.format(order.cancelledAt, 'dd MMM yyyy')} : '') + '.'">
+                    This order was cancelled.
+                </div>
+
+                <section class="track" th:if="${order.status != 'CANCELLED'}" aria-label="Order tracking">
+                    <div class="track-step is-done">
+                        <span class="track-dot"></span>
+                        <strong>Order placed</strong>
+                        <span th:text="${#temporals.format(order.createdAt, 'dd MMM yyyy')}">01 Jan 2026</span>
+                    </div>
+                    <div class="track-step" th:classappend="${order.shippedAt != null} ? 'is-done'">
+                        <span class="track-dot"></span>
+                        <strong>Shipped</strong>
+                        <span
+                            th:text="${order.shippedAt != null} ? ${#temporals.format(order.shippedAt, 'dd MMM yyyy')} : 'Not shipped yet'">Not
+                            shipped yet</span>
+                    </div>
+                    <div class="track-step" th:classappend="${order.deliveredAt != null} ? 'is-done'">
+                        <span class="track-dot"></span>
+                        <strong>Delivered</strong>
+                        <span
+                            th:text="${order.deliveredAt != null} ? ${#temporals.format(order.deliveredAt, 'dd MMM yyyy')}
+              : (${order.estimatedDelivery != null} ? 'Est. ' + ${#temporals.format(order.estimatedDelivery, 'dd MMM yyyy')} : '')">Est.
+                            05 Jan 2026</span>
+                    </div>
+                    <p class="track-note" th:if="${order.trackingNumber != null}"
+                        th:text="${order.courier} + ' tracking number: ' + ${order.trackingNumber}">Courier tracking
+                        number: 123</p>
+                </section>
+
+                <!-- Items + summary -->
+                <div class="od-grid">
+                    <section>
+                        <h2 th:text="'Items (' + ${#lists.size(order.items)} + ')'">Items</h2>
+                        <div class="od-item" th:each="item : ${order.items}">
+                            <a th:href="@{/product/{id}(id=${item.productId})}">
+                                <img th:src="@{${item.imageUrl}}" th:alt="${item.productName}" loading="lazy">
+                            </a>
+                            <div>
+                                <h3><a th:href="@{/product/{id}(id=${item.productId})}"
+                                        th:text="${item.productName}">Product</a></h3>
+                                <span class="muted" th:if="${item.variant != null}" th:text="${item.variant}">250
+                                    g</span><br th:if="${item.variant != null}">
+                                <span class="muted"
+                                    th:text="'Qty ' + ${item.quantity} + ' × ₹' + ${#numbers.formatDecimal(item.price, 1, 'COMMA', 2, 'POINT')}">Qty
+                                    1</span>
+                            </div>
+                            <span class="line-total"
+                                th:text="'₹' + ${#numbers.formatDecimal(item.price * item.quantity, 1, 'COMMA', 2, 'POINT')}">₹0.00</span>
+                        </div>
+                    </section>
+
+                    <aside class="od-summary">
+                        <dl>
+                            <dt>Subtotal</dt>
+                            <dd th:text="'₹' + ${#numbers.formatDecimal(order.subtotal, 1, 'COMMA', 2, 'POINT')}">₹0.00
+                            </dd>
+                            <dt>Shipping</dt>
+                            <dd
+                                th:text="${order.shippingFee > 0} ? '₹' + ${#numbers.formatDecimal(order.shippingFee, 1, 'COMMA', 2, 'POINT')} : 'Free'">
+                                Free</dd>
+                            <th:block th:if="${order.discount > 0}">
+                                <dt>Discount</dt>
+                                <dd class="discount"
+                                    th:text="'−₹' + ${#numbers.formatDecimal(order.discount, 1, 'COMMA', 2, 'POINT')}">
+                                    −₹0.00</dd>
+                            </th:block>
+                            <dt>Tax</dt>
+                            <dd th:text="'₹' + ${#numbers.formatDecimal(order.tax, 1, 'COMMA', 2, 'POINT')}">₹0.00</dd>
+                            <dt class="grand">Total</dt>
+                            <dd class="grand"
+                                th:text="'₹' + ${#numbers.formatDecimal(order.total, 1, 'COMMA', 2, 'POINT')}">₹0.00
+                            </dd>
+                        </dl>
+                    </aside>
+                </div>
+
+                <!-- Address / payment / help -->
+                <div class="od-info">
+                    <section class="card">
+                        <h2>Shipping address</h2>
+                        <address>
+                            <span th:text="${order.shippingAddress.fullName}">Name</span><br>
+                            <span th:text="${order.shippingAddress.line1}">Line 1</span><br>
+                            <span
+                                th:if="${order.shippingAddress.line2 != null and !#strings.isEmpty(order.shippingAddress.line2)}"
+                                th:text="${order.shippingAddress.line2}">Line 2</span>
+                            <br
+                                th:if="${order.shippingAddress.line2 != null and !#strings.isEmpty(order.shippingAddress.line2)}">
+                            <span
+                                th:text="${order.shippingAddress.city} + ', ' + ${order.shippingAddress.state} + ' ' + ${order.shippingAddress.pincode}">City,
+                                State 000000</span><br>
+                            <span class="muted" th:text="${order.shippingAddress.phone}">Phone</span>
+                        </address>
+                    </section>
+
+                    <section class="card">
+                        <h2>Payment</h2>
+                        <p th:text="${order.paymentMethod}">Card</p>
+                        <p class="muted" th:text="${#strings.capitalize(#strings.toLowerCase(order.paymentStatus))}">
+                            Paid</p>
+                    </section>
+
+                    <section class="card">
+                        <h2>Need help?</h2>
+                        <p>Questions about this order? Check our <a th:href="@{/returns-policy}"
+                                style="border-bottom:1px solid var(--gold)">return policy</a>
+                            or <a th:href="@{/contact}" style="border-bottom:1px solid var(--gold)">contact us</a> with
+                            your order number.</p>
+                    </section>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Cancel dialog -->
+    <dialog id="cancel-dialog" th:if="${order.status == 'PENDING'}">
+        <form th:action="@{/customer/orders/{id}/cancel(id=${order.id})}" method="post">
+            <h3>Cancel this order?</h3>
+            <p>This can't be undone. Any amount you paid will be refunded to your original payment method.</p>
+            <label for="cancel-reason">Reason</label>
+            <select id="cancel-reason" name="reason" required>
+                <option value="" disabled selected>Select a reason</option>
+                <option>Ordered by mistake</option>
+                <option>Found a better price</option>
+                <option>Delivery is taking too long</option>
+                <option>Want to change items or address</option>
+                <option>Other</option>
+            </select>
+            <div class="dialog-actions">
+                <button type="button" class="btn btn-ghost" data-close>Keep order</button>
+                <button type="submit" class="btn btn-danger">Cancel order</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Return dialog -->
+    <dialog id="return-dialog" th:if="${order.canReturn}">
+        <form th:action="@{/customer/orders/{id}/return(id=${order.id})}" method="post">
+            <h3>Return items</h3>
+            <p>Tell us why you're returning this order. We'll review it and email you the next steps.</p>
+            <label for="return-reason">Reason</label>
+            <select id="return-reason" name="reason" required>
+                <option value="" disabled selected>Select a reason</option>
+                <option>Damaged or defective</option>
+                <option>Wrong item received</option>
+                <option>Not as described</option>
+                <option>Changed my mind</option>
+                <option>Other</option>
+            </select>
+            <label for="return-note">Details (optional)</label>
+            <textarea id="return-note" name="note" maxlength="500"></textarea>
+            <div class="dialog-actions">
+                <button type="button" class="btn btn-ghost" data-close>Close</button>
+                <button type="submit" class="btn btn-danger">Request return</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- change to match your existing footer fragment name -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script th:src="@{/js/script.js}"></script>
+    <script>
+        // Open / close the cancel and return dialogs
+        document.querySelectorAll('[data-open]').forEach(function (b) {
+            b.addEventListener('click', function () { document.getElementById(b.dataset.open).showModal(); });
+        });
+        document.querySelectorAll('[data-close]').forEach(function (b) {
+            b.addEventListener('click', function () { b.closest('dialog').close(); });
+        });
+    </script>
+
+</body>
+
+</html>

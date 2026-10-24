@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+    <!-- Usage: <aside th:replace="~{customer/fragments/sidebar :: sidebar('overview')}"></aside> -->
+    <aside class="dash-side" th:fragment="sidebar(active)">
+
+        <style>
+            /* ===== Customer shell (used by every customer page) ===== */
+            .dash-page {
+                padding: calc(76px + 40px + clamp(1.5rem, 3vw, 2.5rem)) 0 clamp(3rem, 6vw, 5rem);
+                min-height: 100vh;
+            }
+
+            .dash-layout {
+                display: grid;
+                grid-template-columns: 240px minmax(0, 1fr);
+                gap: clamp(2rem, 4vw, 4rem);
+                align-items: start;
+            }
+
+            .dash-main {
+                min-width: 0;
+            }
+
+            .dash-side {
+                position: sticky;
+                top: 130px;
+            }
+
+            .dash-user {
+                display: flex;
+                align-items: center;
+                gap: 0.9rem;
+                padding-bottom: 1.4rem;
+                margin-bottom: 1.2rem;
+                border-bottom: 1px solid var(--grey);
+            }
+
+            .dash-avatar {
+                flex: 0 0 auto;
+                width: 46px;
+                height: 46px;
+                border-radius: 50%;
+                background: var(--green);
+                color: var(--gold-light);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: var(--font-display);
+                font-size: 1.2rem;
+            }
+
+            .dash-user strong {
+                display: block;
+                font-family: var(--font-display);
+                font-weight: 600;
+                color: var(--green);
+                line-height: 1.2;
+            }
+
+            .dash-user span {
+                display: block;
+                font-size: 0.78rem;
+                color: var(--olive);
+                overflow-wrap: anywhere;
+            }
+
+            .dash-nav {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .dash-nav a,
+            .dash-nav button {
+                display: block;
+                width: 100%;
+                text-align: left;
+                padding: 0.7rem 0 0.7rem 1rem;
+                font-size: 0.92rem;
+                color: var(--charcoal);
+                border-left: 2px solid transparent;
+                transition: color .2s var(--ease), border-color .2s var(--ease);
+            }
+
+            .dash-nav a:hover,
+            .dash-nav button:hover {
+                color: var(--green);
+                border-left-color: var(--grey);
+            }
+
+            .dash-nav a.is-active {
+                color: var(--green);
+                font-weight: 500;
+                border-left-color: var(--gold);
+            }
+
+            .dash-nav .dash-logout {
+                margin-top: 1rem;
+                color: var(--terracotta);
+            }
+
+            @media (max-width: 960px) {
+                .dash-layout {
+                    grid-template-columns: 1fr;
+                    gap: 1.5rem;
+                }
+
+                .dash-side {
+                    position: static;
+                }
+
+                .dash-user {
+                    border-bottom: none;
+                    padding-bottom: 0;
+                    margin-bottom: 0.8rem;
+                }
+
+                /* sidebar becomes a scrollable tab strip - no JS needed */
+                .dash-nav {
+                    flex-direction: row;
+                    overflow-x: auto;
+                    gap: 0.4rem;
+                    padding-bottom: 0.4rem;
+                    border-bottom: 1px solid var(--grey);
+                    scrollbar-width: none;
+                }
+
+                .dash-nav form {
+                    display: contents;
+                }
+
+                .dash-nav a,
+                .dash-nav button {
+                    width: auto;
+                    white-space: nowrap;
+                    padding: 0.5rem 0.9rem;
+                    border-left: none;
+                    border-bottom: 2px solid transparent;
+                }
+
+                .dash-nav a:hover,
+                .dash-nav button:hover {
+                    border-left-color: transparent;
+                }
+
+                .dash-nav a.is-active {
+                    border-bottom-color: var(--gold);
+                }
+
+                .dash-nav .dash-logout {
+                    margin-top: 0;
+                }
+            }
+        </style>
+
+        <div class="dash-user">
+            <div class="dash-avatar" th:text="${#strings.toUpperCase(#strings.substring(user.fullName, 0, 1))}">A</div>
+            <div>
+                <strong th:text="${user.fullName}">Customer Name</strong>
+                <span th:text="${user.email}">email@example.com</span>
+            </div>
+        </div>
+
+        <nav class="dash-nav" aria-label="Account">
+            <a th:href="@{/customer/dashboard}" th:classappend="${active == 'overview'} ? 'is-active'">Overview</a>
+            <a th:href="@{/customer/orders}" th:classappend="${active == 'orders'} ? 'is-active'">My orders</a>
+            <a th:href="@{/wishlist}" th:classappend="${active == 'wishlist'} ? 'is-active'">Wishlist</a>
+            <a th:href="@{/customer/addresses}" th:classappend="${active == 'addresses'} ? 'is-active'">Addresses</a>
+            <a th:href="@{/customer/profile}" th:classappend="${active == 'profile'} ? 'is-active'">Profile</a>
+            <a th:href="@{/customer/password}" th:classappend="${active == 'password'} ? 'is-active'">Change
+                password</a>
+
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="dash-logout">Sign out</button>
+            </form>
+        </nav>
+
+    </aside>
+
+</body>
+
+</html>

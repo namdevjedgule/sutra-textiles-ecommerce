@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout — Sutra Textiles India</title>
+    <meta name="description" content="Complete your Sutra Textiles India order.">
+    <meta name="robots" content="noindex">
+ <link rel="icon" type="image/x-icon" th:href="@{/favicon_io/favicon.ico}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Work+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css" th:href="@{/css/style.css}">
+
+    <style>
+        [hidden] {
+            display: none !important;
+        }
+
+        /* ---------- Header ---------- */
+        .ck-hero {
+            background: var(--green);
+            color: var(--ivory);
+            padding-block: clamp(2rem, 5vw, 3rem);
+        }
+
+        .ck-crumbs {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            font-size: .8rem;
+            color: #b9c4b6;
+            margin-bottom: .9rem;
+        }
+
+        .ck-crumbs a:hover {
+            color: var(--gold-light);
+        }
+
+        .ck-hero h1 {
+            color: var(--ivory);
+            margin-bottom: .35rem;
+        }
+
+        .ck-hero p {
+            color: #c9d1c6;
+            font-size: .98rem;
+        }
+
+        .ck-main {
+            padding-block: clamp(2rem, 4vw, 3rem) clamp(3rem, 6vw, 5rem);
+        }
+
+        /* ---------- Progress ---------- */
+        .ck-steps {
+            display: flex;
+            max-width: 640px;
+            margin: 0 auto 2.4rem;
+        }
+
+        .ck-steps li {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .6rem;
+            font-size: .76rem;
+            letter-spacing: .08em;
+            color: var(--olive);
+            text-transform: uppercase;
+        }
+
+        .ck-steps li::before {
+            content: "";
+            width: 12px;
+            height: 12px;
+            border: 1px solid #bfb597;
+            background: var(--ivory);
+            transform: rotate(45deg);
+            position: relative;
+            z-index: 1;
+        }
+
+        .ck-steps li:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            top: 5.5px;
+            left: calc(50% + 14px);
+            width: calc(100% - 28px);
+            height: 1px;
+            background: var(--grey);
+        }
+
+        .ck-steps li.is-done {
+            color: var(--green);
+        }
+
+        .ck-steps li.is-done::before {
+            background: var(--green);
+            border-color: var(--green);
+        }
+
+        .ck-steps li.is-done::after {
+            background: var(--green);
+        }
+
+        .ck-steps li[aria-current="step"] {
+            color: var(--green);
+            font-weight: 500;
+        }
+
+        .ck-steps li[aria-current="step"]::before {
+            background: var(--gold);
+            border-color: var(--gold);
+        }
+
+        .ck-steps a:hover {
+            text-decoration: underline;
+        }
+
+        /* ---------- Layout ---------- */
+        .ck-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 410px;
+            gap: clamp(1.5rem, 3.5vw, 3rem);
+            align-items: start;
+        }
+
+        .ck-stack {
+            display: grid;
+            gap: 1.4rem;
+        }
+
+        .ck-card {
+            background: var(--ivory-soft);
+            border: 1px solid var(--grey);
+            border-radius: var(--radius);
+            padding: clamp(1.3rem, 3vw, 2rem);
+        }
+
+        .ck-card-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.3rem;
+        }
+
+        .ck-card-title {
+            display: flex;
+            align-items: center;
+            gap: .9rem;
+        }
+
+        .ck-card-title h2 {
+            font-size: 1.35rem;
+        }
+
+        .ck-num {
+            position: relative;
+            width: 30px;
+            height: 30px;
+            display: grid;
+            place-items: center;
+            font-size: .82rem;
+            color: var(--green);
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        .ck-num::before {
+            content: "";
+            position: absolute;
+            inset: 4px;
+            border: 1px solid var(--gold);
+            transform: rotate(45deg);
+        }
+
+        .ck-num b {
+            position: relative;
+            font-weight: 500;
+        }
+
+        .ck-link-btn {
+            font-size: .84rem;
+            color: var(--olive);
+            border-bottom: 1px solid transparent;
+            padding-bottom: 1px;
+        }
+
+        .ck-link-btn:hover {
+            color: var(--green);
+            border-color: var(--gold);
+        }
+
+        .ck-hint {
+            font-size: .84rem;
+            color: var(--olive);
+            margin-bottom: 1rem;
+        }
+
+        .ck-hint a {
+            color: var(--green);
+            border-bottom: 1px solid var(--gold);
+        }
+
+        /* ---------- Form fields ---------- */
+        .ck-row2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem 1.2rem;
+        }
+
+        .ck-row3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem 1.2rem;
+        }
+
+        .ck-field {
+            display: flex;
+            flex-direction: column;
+            gap: .4rem;
+            margin-bottom: 1rem;
+            min-width: 0;
+        }
+
+        .ck-field>label,
+        .ck-label {
+            font-size: .84rem;
+            color: var(--olive);
+        }
+
+        .ck-field>label .opt {
+            opacity: .75;
+        }
+
+        .ck-input {
+            width: 100%;
+            padding: .8rem 1rem;
+            border: 1px solid var(--grey);
+            background: var(--ivory);
+            color: var(--charcoal);
+            border-radius: var(--radius);
+            font: inherit;
+            transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
+        }
+
+        .ck-input:focus {
+            outline: none;
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(201, 162, 75, .28);
+        }
+
+        .ck-input[aria-invalid="true"] {
+            border-color: var(--terracotta);
+        }
+
+        .ck-prefix {
+            display: flex;
+        }
+
+        .ck-prefix span {
+            display: flex;
+            align-items: center;
+            padding: 0 .9rem;
+            border: 1px solid var(--grey);
+            border-right: none;
+            background: var(--ivory-soft);
+            color: var(--olive);
+            border-radius: var(--radius) 0 0 var(--radius);
+            font-size: .92rem;
+        }
+
+        .ck-prefix .ck-input {
+            border-radius: 0 var(--radius) var(--radius) 0;
+        }
+
+        .ck-error {
+            font-size: .8rem;
+            color: var(--terracotta);
+            min-height: 1.1em;
+        }
+
+        textarea.ck-input {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .ck-chips {
+            display: flex;
+            gap: .6rem;
+            flex-wrap: wrap;
+        }
+
+        .ck-chip {
+            position: relative;
+        }
+
+        .ck-chip input {
+            position: absolute;
+            opacity: 0;
+            width: 1px;
+            height: 1px;
+        }
+
+        .ck-chip span {
+            display: inline-block;
+            padding: .55rem 1.2rem;
+            border: 1px solid var(--grey);
+            border-radius: 999px;
+            font-size: .86rem;
+            color: var(--green);
+            background: var(--ivory);
+            cursor: pointer;
+            transition: all .2s var(--ease);
+        }
+
+        .ck-chip input:checked+span {
+            background: var(--green);
+            border-color: var(--green);
+            color: var(--ivory);
+        }
+
+        .ck-chip input:focus-visible+span {
+            outline: 2px solid var(--gold);
+            outline-offset: 2px;
+        }
+
+        .ck-check {
+            display: flex;
+            align-items: flex-start;
+            gap: .7rem;
+            font-size: .88rem;
+            color: #3a3f37;
+            cursor: pointer;
+        }
+
+        .ck-check input {
+            accent-color: var(--green);
+            width: 16px;
+            height: 16px;
+            margin-top: .2rem;
+            flex-shrink: 0;
+        }
+
+        .ck-check a {
+            color: var(--green);
+            border-bottom: 1px solid var(--gold);
+        }
+
+        /* ---------- Saved addresses ---------- */
+        .ck-addr-list {
+            display: grid;
+            gap: .8rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .ck-opt {
+            display: flex;
+            gap: .9rem;
+            align-items: flex-start;
+            padding: 1rem 1.1rem;
+            border: 1px solid var(--grey);
+            background: var(--ivory);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: border-color .2s var(--ease), background .2s var(--ease);
+        }
+
+        .ck-opt input {
+            accent-color: var(--green);
+            margin-top: .3rem;
+            flex-shrink: 0;
+        }
+
+        .ck-opt.is-selected {
+            border-color: var(--gold);
+            background: rgba(201, 162, 75, .09);
+        }
+
+        .ck-opt strong {
+            font-weight: 500;
+            color: var(--green);
+        }
+
+        .ck-opt small {
+            display: block;
+            color: var(--olive);
+            font-size: .84rem;
+            line-height: 1.5;
+            margin-top: .15rem;
+        }
+
+        .ck-tag {
+            display: inline-block;
+            font-size: .68rem;
+            letter-spacing: .06em;
+            padding: .1rem .5rem;
+            border: 1px solid var(--olive);
+            color: var(--olive);
+            border-radius: 999px;
+            margin-left: .5rem;
+            text-transform: uppercase;
+        }
+
+        /* ---------- Buttons ---------- */
+        .ck-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: .6rem;
+        }
+
+        .ck-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 54px;
+            padding: 0 2.2rem;
+            border-radius: var(--radius);
+            background: var(--gold);
+            color: var(--green-deep);
+            font-weight: 500;
+            letter-spacing: .05em;
+            font-size: .95rem;
+            transition: background .25s var(--ease);
+        }
+
+        .ck-btn:hover:not(:disabled) {
+            background: var(--gold-light);
+        }
+
+        .ck-btn:disabled {
+            background: var(--grey);
+            color: #8f8b7e;
+            cursor: not-allowed;
+        }
+
+        .ck-btn.is-block {
+            width: 100%;
+        }
+
+        .ck-back {
+            font-size: .88rem;
+            color: var(--olive);
+        }
+
+        .ck-back:hover {
+            color: var(--green);
+        }
+
+        .ck-blocker {
+            padding: 1rem 1.2rem;
+            margin-bottom: 1.4rem;
+            background: rgba(181, 83, 60, .08);
+            border-left: 3px solid var(--terracotta);
+            font-size: .9rem;
+        }
+
+        .ck-blocker a {
+            color: var(--green);
+            border-bottom: 1px solid var(--gold);
+        }
+
+        /* ---------- Review blocks (stage 2) ---------- */
+        .ck-review {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .ck-review-row {
+            display: grid;
+            grid-template-columns: 110px 1fr auto;
+            gap: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px dashed #d4cbb4;
+            font-size: .92rem;
+        }
+
+        .ck-review-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .ck-review-row dt {
+            color: var(--olive);
+        }
+
+        .ck-review-row dd {
+            color: var(--charcoal);
+            line-height: 1.55;
+        }
+
+        .ck-eta {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            margin-top: 1.1rem;
+            padding: .8rem 1rem;
+            background: rgba(201, 162, 75, .12);
+            border-radius: var(--radius);
+            font-size: .9rem;
+        }
+
+        .ck-eta svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            fill: none;
+            stroke: var(--green);
+            stroke-width: 1.5;
+        }
+
+        /* ---------- Payment ---------- */
+        .ck-pay {
+            display: grid;
+            gap: .8rem;
+        }
+
+        .ck-pay-opt {
+            border: 1px solid var(--grey);
+            background: var(--ivory);
+            border-radius: var(--radius);
+            transition: border-color .2s var(--ease);
+        }
+
+        .ck-pay-opt.is-selected {
+            border-color: var(--gold);
+        }
+
+        .ck-pay-opt>label {
+            display: flex;
+            align-items: center;
+            gap: .9rem;
+            padding: 1rem 1.1rem;
+            cursor: pointer;
+        }
+
+        .ck-pay-opt>label input {
+            accent-color: var(--green);
+            flex-shrink: 0;
+        }
+
+        .ck-pay-ico {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border: 1px solid var(--grey);
+            border-radius: 50%;
+            color: var(--green);
+            flex-shrink: 0;
+        }
+
+        .ck-pay-ico svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.5;
+        }
+
+        .ck-pay-opt strong {
+            font-weight: 500;
+            color: var(--green);
+            display: block;
+        }
+
+        .ck-pay-opt small {
+            color: var(--olive);
+            font-size: .82rem;
+        }
+
+        .ck-pay-panel {
+            padding: 0 1.1rem 1.2rem 4.1rem;
+        }
+
+        .ck-pay-note {
+            font-size: .8rem;
+            color: var(--olive);
+            margin-top: .4rem;
+        }
+
+        .ck-terms {
+            margin: 1.4rem 0 1.2rem;
+        }
+
+        /* ---------- Summary ---------- */
+        .ck-summary-wrap {
+            position: sticky;
+            top: calc(var(--nav-h, 100px) + 1rem);
+        }
+
+        .ck-summary {
+            position: relative;
+            background: var(--ivory-soft);
+            border: 1px solid var(--grey);
+            border-radius: var(--radius);
+        }
+
+        .ck-summary::before {
+            content: "";
+            position: absolute;
+            inset: 6px;
+            border: 1px dashed #d2c8ab;
+            pointer-events: none;
+            border-radius: 1px;
+        }
+
+        .ck-summary>summary {
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.3rem 1.7rem;
+            cursor: pointer;
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+            color: var(--green);
+        }
+
+        .ck-summary>summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .ck-summary>summary .ck-sum-total {
+            display: none;
+            font-size: 1.15rem;
+        }
+
+        .ck-summary>summary::after {
+            content: "+";
+            font-family: var(--font-body);
+            color: var(--gold);
+            font-size: 1.4rem;
+            transition: transform .25s var(--ease);
+            display: none;
+        }
+
+        .ck-summary[open]>summary::after {
+            transform: rotate(45deg);
+        }
+
+        .ck-sum-body {
+            padding: 0 1.7rem 1.7rem;
+        }
+
+        .ck-items {
+            display: grid;
+            gap: 1rem;
+            padding-bottom: 1.1rem;
+            border-bottom: 1px solid var(--grey);
+            margin-bottom: 1rem;
+            max-height: 340px;
+            overflow-y: auto;
+        }
+
+        .ck-item {
+            display: grid;
+            grid-template-columns: 64px minmax(0, 1fr) auto;
+            gap: .9rem;
+            align-items: center;
+        }
+
+        .ck-item-thumb {
+            position: relative;
+            width: 64px;
+            aspect-ratio: 4 / 5;
+            padding: 3px;
+            border: 1px solid rgba(201, 162, 75, .65);
+            border-radius: 50% 50% 3px 3px / 26% 26% 3px 3px;
+        }
+
+        .ck-item-thumb>span:first-child {
+            display: block;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 50% 50% 2px 2px / 25% 25% 2px 2px;
+        }
+
+        .ck-item-thumb svg,
+        .ck-item-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .ck-qty-badge {
+            position: absolute;
+            top: -7px;
+            right: -7px;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 5px;
+            display: grid;
+            place-items: center;
+            background: var(--green);
+            color: var(--ivory);
+            font-size: .7rem;
+            border-radius: 999px;
+        }
+
+        .ck-item h3 {
+            font-family: var(--font-body);
+            font-size: .9rem;
+            font-weight: 500;
+            color: var(--charcoal);
+            line-height: 1.3;
+        }
+
+        .ck-item small {
+            display: block;
+            font-size: .78rem;
+            color: var(--olive);
+            margin-top: .15rem;
+        }
+
+        .ck-item-price {
+            font-size: .92rem;
+            white-space: nowrap;
+        }
+
+        .ck-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            font-size: .92rem;
+            padding: .35rem 0;
+        }
+
+        .ck-row .is-save {
+            color: var(--olive);
+        }
+
+        .ck-row.total {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            color: var(--green);
+            border-top: 1px solid var(--grey);
+            margin-top: .7rem;
+            padding-top: 1rem;
+        }
+
+        .ck-tax {
+            font-size: .76rem;
+            color: var(--olive);
+            margin-top: .3rem;
+        }
+
+        .ck-saved {
+            margin-top: .5rem;
+            font-size: .84rem;
+            color: var(--olive);
+        }
+
+        .ck-coupon {
+            margin-top: 1.2rem;
+            padding-top: 1.1rem;
+            border-top: 1px solid var(--grey);
+        }
+
+        .ck-coupon-form {
+            display: flex;
+            gap: .5rem;
+        }
+
+        .ck-coupon-form input {
+            flex: 1;
+            min-width: 0;
+            padding: .7rem .9rem;
+            border: 1px solid var(--grey);
+            background: var(--ivory);
+            border-radius: var(--radius);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: var(--charcoal);
+        }
+
+        .ck-coupon-form button {
+            padding: 0 1.1rem;
+            border: 1px solid var(--green);
+            color: var(--green);
+            border-radius: var(--radius);
+            font-size: .84rem;
+        }
+
+        .ck-coupon-form button:hover {
+            background: var(--green);
+            color: var(--ivory);
+        }
+
+        .ck-coupon-msg {
+            font-size: .82rem;
+            margin-top: .5rem;
+            min-height: 1.1em;
+        }
+
+        .ck-coupon-msg.is-err {
+            color: var(--terracotta);
+        }
+
+        .ck-applied {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: .8rem;
+            padding: .7rem .9rem;
+            border: 1px solid var(--gold);
+            background: rgba(201, 162, 75, .1);
+            border-radius: var(--radius);
+            font-size: .86rem;
+        }
+
+        .ck-applied strong {
+            letter-spacing: .06em;
+            font-weight: 500;
+        }
+
+        .ck-help {
+            margin-top: 1.2rem;
+            padding-top: 1.1rem;
+            border-top: 1px solid var(--grey);
+            font-size: .82rem;
+            color: var(--olive);
+        }
+
+        .ck-help a {
+            color: var(--green);
+            border-bottom: 1px solid var(--gold);
+        }
+
+        /* ---------- Empty ---------- */
+        .ck-empty {
+            text-align: center;
+            padding: clamp(2.5rem, 7vw, 5rem) 1rem;
+        }
+
+        .ck-empty h2 {
+            margin-bottom: .6rem;
+        }
+
+        .ck-empty p {
+            margin: 0 auto 1.6rem;
+            color: var(--olive);
+        }
+
+        /* ---------- Placing overlay ---------- */
+        .ck-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2300;
+            background: rgba(20, 38, 32, .78);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.1rem;
+            color: var(--ivory);
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .ck-spin {
+            width: 46px;
+            height: 46px;
+            border: 2px solid rgba(227, 203, 142, .3);
+            border-top-color: var(--gold-light);
+            border-radius: 50%;
+            animation: ck-spin 1s linear infinite;
+        }
+
+        @keyframes ck-spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 960px) {
+            .ck-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ck-summary-wrap {
+                position: static;
+                order: -1;
+            }
+
+            .ck-summary>summary {
+                font-size: 1.15rem;
+                padding: 1.1rem 1.3rem;
+            }
+
+            .ck-summary>summary .ck-sum-total {
+                display: inline;
+            }
+
+            .ck-summary>summary::after {
+                display: inline;
+            }
+
+            .ck-sum-body {
+                padding: 0 1.3rem 1.4rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+
+            .ck-row2,
+            .ck-row3 {
+                grid-template-columns: 1fr;
+            }
+
+            .ck-steps li {
+                font-size: .62rem;
+                letter-spacing: .04em;
+            }
+
+            .ck-review-row {
+                grid-template-columns: 1fr auto;
+            }
+
+            .ck-review-row dt {
+                grid-column: 1 / -1;
+            }
+
+            .ck-pay-panel {
+                padding-left: 1.1rem;
+            }
+
+            .ck-btn {
+                width: 100%;
+            }
+
+            .ck-actions {
+                flex-direction: column-reverse;
+                align-items: stretch;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="navbar" th:replace="~{fragments/navbar :: navbar}"></div>
+  <div id="navSpacer"></div>
+
+    <main>
+
+        <!-- ===================== PAGE HEADER ===================== -->
+        <section class="ck-hero">
+            <div class="container">
+                <nav class="ck-crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a><span
+                        aria-hidden="true">/</span><a href="cart.html">Cart</a><span aria-hidden="true">/</span><span
+                        aria-current="page">Checkout</span></nav>
+                <h1>Checkout</h1>
+                <p id="ckLead">Tell us where to send your order.</p>
+            </div>
+        </section>
+
+        <section class="ck-main">
+            <div class="container">
+
+                <ol class="ck-steps" id="ckSteps" aria-label="Checkout progress">
+                    <li class="is-done"><a href="cart.html">Cart</a></li>
+                    <li aria-current="step" id="ckStepDetails">Details</li>
+                    <li id="ckStepPayment">Payment</li>
+                    <li>Confirmation</li>
+                </ol>
+
+                <!-- ===== Empty ===== -->
+                <div class="ck-empty" id="ckEmpty" hidden>
+                    <h2>Your cart is empty</h2>
+                    <p>There&rsquo;s nothing to check out yet.</p>
+                    <a href="shop.html" class="ck-btn">Shop New Arrivals</a>
+                </div>
+
+                <!-- ===== Checkout ===== -->
+                <div class="ck-grid" id="ckGrid" hidden>
+
+                    <div>
+                        <div class="ck-blocker" id="ckBlocker" role="alert" hidden>
+                            Some items in your cart are unavailable or need a size. <a href="cart.html">Review your
+                                cart</a> to continue.
+                        </div>
+
+                        <!-- ============ STAGE 1: DETAILS ============ -->
+                        <form id="ckForm1" class="ck-stack" novalidate autocomplete="on">
+
+                            <div class="ck-card">
+                                <div class="ck-card-head">
+                                    <div class="ck-card-title"><span class="ck-num"><b>1</b></span>
+                                        <h2>Contact</h2>
+                                    </div>
+                                    <a class="ck-link-btn" href="account.html">Have an account? Log in</a>
+                                </div>
+                                <div class="ck-field" style="margin-bottom:0">
+                                    <label for="ckEmail">Email address</label>
+                                    <input class="ck-input" type="email" id="ckEmail" name="email" autocomplete="email"
+                                        inputmode="email" aria-describedby="errEmail">
+                                    <div class="ck-error" id="errEmail" role="alert"></div>
+                                </div>
+                                <p class="ck-hint" style="margin:.4rem 0 0">We&rsquo;ll send your order confirmation and
+                                    updates here. No account needed.</p>
+                            </div>
+
+                            <div class="ck-card">
+                                <div class="ck-card-head">
+                                    <div class="ck-card-title"><span class="ck-num"><b>2</b></span>
+                                        <h2>Shipping address</h2>
+                                    </div>
+                                </div>
+
+                                <div id="ckSavedWrap" hidden>
+                                    <div class="ck-addr-list" id="ckSavedList" role="radiogroup"
+                                        aria-label="Saved addresses"></div>
+                                </div>
+
+                                <div id="ckAddrForm">
+                                    <div class="ck-row2">
+                                        <div class="ck-field">
+                                            <label for="ckName">Full name</label>
+                                            <input class="ck-input" id="ckName" name="name" autocomplete="name"
+                                                aria-describedby="errName">
+                                            <div class="ck-error" id="errName" role="alert"></div>
+                                        </div>
+                                        <div class="ck-field">
+                                            <label for="ckPhone">Mobile number</label>
+                                            <div class="ck-prefix"><span>+91</span><input class="ck-input" id="ckPhone"
+                                                    name="tel" type="tel" inputmode="numeric" maxlength="10"
+                                                    autocomplete="tel-national" aria-describedby="errPhone"></div>
+                                            <div class="ck-error" id="errPhone" role="alert"></div>
+                                        </div>
+                                    </div>
+                                    <div class="ck-field">
+                                        <label for="ckLine1">Address line 1 <span class="opt">(house / flat,
+                                                street)</span></label>
+                                        <input class="ck-input" id="ckLine1" name="address-line1"
+                                            autocomplete="address-line1" aria-describedby="errLine1">
+                                        <div class="ck-error" id="errLine1" role="alert"></div>
+                                    </div>
+                                    <div class="ck-row2">
+                                        <div class="ck-field">
+                                            <label for="ckLine2">Address line 2 <span
+                                                    class="opt">(optional)</span></label>
+                                            <input class="ck-input" id="ckLine2" name="address-line2"
+                                                autocomplete="address-line2">
+                                        </div>
+                                        <div class="ck-field">
+                                            <label for="ckLandmark">Landmark <span class="opt">(optional)</span></label>
+                                            <input class="ck-input" id="ckLandmark" name="landmark">
+                                        </div>
+                                    </div>
+                                    <div class="ck-row3">
+                                        <div class="ck-field">
+                                            <label for="ckPin">Pincode</label>
+                                            <input class="ck-input" id="ckPin" name="postal-code" inputmode="numeric"
+                                                maxlength="6" autocomplete="postal-code" aria-describedby="errPin">
+                                            <div class="ck-error" id="errPin" role="alert"></div>
+                                        </div>
+                                        <div class="ck-field">
+                                            <label for="ckCity">City</label>
+                                            <input class="ck-input" id="ckCity" name="address-level2"
+                                                autocomplete="address-level2" aria-describedby="errCity">
+                                            <div class="ck-error" id="errCity" role="alert"></div>
+                                        </div>
+                                        <div class="ck-field">
+                                            <label for="ckState">State</label>
+                                            <select class="ck-input" id="ckState" name="address-level1"
+                                                autocomplete="address-level1" aria-describedby="errState"></select>
+                                            <div class="ck-error" id="errState" role="alert"></div>
+                                        </div>
+                                    </div>
+                                    <div class="ck-field">
+                                        <span class="ck-label" id="ckTypeLabel">Address type</span>
+                                        <div class="ck-chips" role="radiogroup" aria-labelledby="ckTypeLabel">
+                                            <label class="ck-chip"><input type="radio" name="addrType" value="Home"
+                                                    checked><span>Home</span></label>
+                                            <label class="ck-chip"><input type="radio" name="addrType"
+                                                    value="Work"><span>Work</span></label>
+                                        </div>
+                                    </div>
+                                    <label class="ck-check" id="ckSaveRow"><input type="checkbox" id="ckSave" checked>
+                                        Save this address for next time</label>
+                                </div>
+                            </div>
+
+                            <div class="ck-card">
+                                <div class="ck-card-head">
+                                    <div class="ck-card-title"><span class="ck-num"><b>3</b></span>
+                                        <h2>Order note</h2>
+                                    </div>
+                                </div>
+                                <div class="ck-field" style="margin-bottom:0">
+                                    <label for="ckNote">Anything we should know? <span
+                                            class="opt">(optional)</span></label>
+                                    <textarea class="ck-input" id="ckNote" maxlength="300"
+                                        placeholder="e.g. blouse stitching preference, gifting message"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="ck-actions">
+                                <a href="cart.html" class="ck-back">&larr; Return to cart</a>
+                                <button type="submit" class="ck-btn" id="ckContinue">Continue to Payment</button>
+                            </div>
+                        </form>
+
+                        <!-- ============ STAGE 2: PAYMENT ============ -->
+                        <form id="ckForm2" class="ck-stack" novalidate hidden>
+
+                            <div class="ck-card">
+                                <div class="ck-card-head">
+                                    <div class="ck-card-title"><span class="ck-num"><b>1</b></span>
+                                        <h2>Review details</h2>
+                                    </div>
+                                </div>
+                                <dl class="ck-review" id="ckReview"></dl>
+                                <div class="ck-eta" id="ckEta" hidden>
+                                    <svg viewBox="0 0 24 24">
+                                        <path
+                                            d="M2 7h12v9H2zM14 10h4l3 3v3h-7M6.5 18.5a1.5 1.5 0 1 0 0 .01M17.5 18.5a1.5 1.5 0 1 0 0 .01" />
+                                    </svg>
+                                    <span id="ckEtaText"></span>
+                                </div>
+                            </div>
+
+                            <div class="ck-card">
+                                <div class="ck-card-head">
+                                    <div class="ck-card-title"><span class="ck-num"><b>2</b></span>
+                                        <h2>Payment</h2>
+                                    </div>
+                                </div>
+                                <div class="ck-pay" id="ckPay" role="radiogroup" aria-label="Payment method"></div>
+
+                                <label class="ck-check ck-terms"><input type="checkbox" id="ckTerms"> <span>I agree to
+                                        the <a href="terms.html" target="_blank" rel="noopener">Terms &amp;
+                                            Conditions</a> and <a href="privacy-policy.html" target="_blank"
+                                            rel="noopener">Privacy Policy</a>.</span></label>
+                                <div class="ck-error" id="errTerms" role="alert" style="margin:-.6rem 0 1rem"></div>
+
+                                <div class="ck-actions">
+                                    <button type="button" class="ck-back ck-link-btn" id="ckBack">&larr; Back to
+                                        details</button>
+                                    <button type="submit" class="ck-btn" id="ckPlace">Place Order</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- ============ SUMMARY ============ -->
+                    <aside class="ck-summary-wrap" aria-label="Order summary">
+                        <details class="ck-summary" id="ckSummary" open>
+                            <summary><span>Order Summary</span><span class="ck-sum-total" id="ckSumTotal"></span>
+                            </summary>
+                            <div class="ck-sum-body" id="ckSumBody"></div>
+                        </details>
+                    </aside>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===================== PLACING OVERLAY ===================== -->
+    <div class="ck-overlay" id="ckOverlay" hidden role="alert" aria-live="assertive">
+        <div class="ck-spin" aria-hidden="true"></div>
+        <p>Placing your order&hellip;</p>
+    </div>
+
+    <div id="footer" th:replace="~{fragments/footer :: footer}"></div>
+
+    <!-- Shared catalogue + base script (href/src = static preview, th: = Spring Boot) -->
+    <script src="js/products.js" th:src="@{/js/products.js}"></script>
+    <script src="js/script.js" th:src="@{/js/script.js}"></script>
+
+    <!-- ===================== PAGE-SPECIFIC JS (Checkout) ===================== -->
+    <script th:inline="none">
+        (function () {
+            'use strict';
+
+            const cat = Sutra.catalog;
+            const money = cat.money;
+            const $ = (sel, root = document) => root.querySelector(sel);
+            const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+            const esc = (s) => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+            /* ---------- Config (replace with Spring Boot values later) ---------- */
+            const FREE_SHIP = 2999;       // matches the announcement bar
+            const SHIPPING_FEE = 99;      // PLACEHOLDER fee for orders below the free-shipping threshold — confirm
+            const COUPONS = {             // DEMO codes only — validate on the server in production
+                SUTRA10: { type: 'percent', value: 10, max: 1000, min: 1999 },
+                WELCOME250: { type: 'flat', value: 250, min: 2499 }
+            };
+            const PAYMENTS = [            // `enabled` lets you switch methods on/off; real payments go via a gateway (e.g. Razorpay)
+                { id: 'upi', label: 'UPI', sub: 'Pay with any UPI app', enabled: true, icon: 'M5 4h5l2 8-2 8H5l2-8zM14 4h5l-2 8 2 8h-5' },
+                { id: 'card', label: 'Credit / Debit Card', sub: 'Visa, Mastercard, RuPay', enabled: true, icon: 'M3 6h18v12H3zM3 10h18' },
+                { id: 'netbanking', label: 'Net Banking', sub: 'All major Indian banks', enabled: true, icon: 'M3 10l9-6 9 6M5 10v8M9 10v8M15 10v8M19 10v8M3 20h18' },
+                { id: 'cod', label: 'Cash on Delivery', sub: 'Pay when your order arrives', enabled: true, icon: 'M3 8h18v10H3zM12 11v4M7 11v4M17 11v4' }
+            ];
+            const BANKS = ['State Bank of India', 'HDFC Bank', 'ICICI Bank', 'Axis Bank', 'Kotak Mahindra Bank', 'Punjab National Bank', 'Bank of Baroda', 'Other bank'];
+            const STATES = ['Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal', 'Andaman and Nicobar Islands', 'Chandigarh', 'Dadra and Nagar Haveli and Daman and Diu', 'Delhi', 'Jammu and Kashmir', 'Ladakh', 'Lakshadweep', 'Puducherry'];
+            const TRANSIT = { '1': [2, 4], '2': [2, 4], '3': [1, 2], '4': [2, 4], '5': [3, 5], '6': [3, 5], '7': [3, 6], '8': [3, 5] };
+
+            const K = {
+                coupon: 'sutra_coupon_v1', note: 'sutra_order_note_v1', pin: 'sutra_pin_v1', draft: 'sutra_checkout_draft_v1',
+                addresses: 'sutra_addresses_v1', orders: 'sutra_orders_v1', last: 'sutra_last_order_v1'
+            };
+
+            const state = { stage: 1, addrId: 'new', address: null, email: '', payment: (PAYMENTS.find(p => p.enabled) || PAYMENTS[0]).id, placing: false };
+
+            /* ===========================================================
+               PLACEHOLDER THUMBNAIL ART (tinted by the chosen colour)
+               =========================================================== */
+            const hexToRgb = (h) => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
+            const toHex = (r, g, b) => '#' + [r, g, b].map(v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')).join('');
+            const mix = (a, b, t) => { const x = hexToRgb(a), y = hexToRgb(b); return toHex(x[0] + (y[0] - x[0]) * t, x[1] + (y[1] - x[1]) * t, x[2] + (y[2] - x[2]) * t); };
+            const luminance = (hex) => {
+                const c = hexToRgb(hex).map(v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); });
+                return .2126 * c[0] + .7152 * c[1] + .0722 * c[2];
+            };
+            let uid = 0;
+            function artSvg(hex, category) {
+                const id = 'ck' + (++uid);
+                const dark = luminance(hex) < .32;
+                const bgA = mix(hex, '#ffffff', dark ? .14 : .38), bgB = mix(hex, '#000000', dark ? .38 : .16);
+                const line = dark ? '#E3CB8E' : '#1C3329';
+                const g = `fill="${dark ? 'rgba(227,203,142,.13)' : 'rgba(28,51,41,.09)'}" stroke="${line}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"`;
+                let body;
+                if (category === 'sarees') body = `<g ${g}><path d="M130 90H270L292 450Q200 478 108 450Z"/><path d="M130 90C190 140 260 130 300 70L316 118C262 196 176 210 118 164Z" fill="${line}" fill-opacity=".2"/></g>`;
+                else if (category === 'lehengas') body = `<g ${g}><path d="M168 96H232L246 170Q200 196 154 170Z"/><path d="M148 232H252L336 452Q200 486 64 452Z"/></g>`;
+                else body = `<g ${g}><path d="M146 100H254L282 340H118Z"/><path d="M146 100 102 190 126 204 150 150M254 100 298 190 274 204 250 150"/><path d="M124 340H276L316 470H218L200 396 182 470H84Z"/></g>`;
+                return `<svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${bgA}"/><stop offset="1" stop-color="${bgB}"/></linearGradient></defs>
+      <rect width="400" height="500" fill="url(#${id})"/>${body}</svg>`;
+            }
+            function thumbHTML(p, color) {
+                const set = p.images && (p.images[color.name] || p.images.default);
+                return set && set.length ? `<img src="${esc(set[0])}" alt="" loading="lazy">` : artSvg(color.hex, p.category);
+            }
+
+            /* ===========================================================
+               CART + TOTALS
+               =========================================================== */
+            function describe(it) {
+                const p = cat.byId(it.id);
+                if (!p) return { it, p: null, bad: true };
+                const sizeObj = p.sizes.find(s => s.label === it.size) || null;
+                const tracked = p.stock === 'in-stock' && !!sizeObj;
+                return {
+                    it, p, sizeObj,
+                    color: p.colors.find(c => c.name === it.color) || p.colors[0],
+                    bad: (cat.needsSize(p) && !sizeObj) || (tracked && (sizeObj.qty === 0 || it.qty > sizeObj.qty))
+                };
+            }
+            function evalCoupon(code, subtotal) {
+                const c = COUPONS[code];
+                if (!c) return { ok: false, msg: 'That code isn\u2019t valid.' };
+                if (subtotal < c.min) return { ok: false, msg: `Add ${money(c.min - subtotal)} more to use ${code}.` };
+                const raw = c.type === 'percent' ? Math.min(c.max, Math.floor(subtotal * c.value / 100)) : c.value;
+                return { ok: true, amount: Math.min(raw, subtotal) };
+            }
+            function computeTotals(lines) {
+                const valid = lines.filter(l => !l.bad);
+                let mrp = 0, sub = 0, qty = 0;
+                valid.forEach(l => { mrp += l.p.mrp * l.it.qty; sub += l.p.price * l.it.qty; qty += l.it.qty; });
+                let coupon = null, couponNote = '';
+                const code = Sutra.store.read(K.coupon, '');
+                if (code) {
+                    const r = evalCoupon(code, sub);
+                    if (r.ok) coupon = { code, amount: r.amount };
+                    else { Sutra.store.write(K.coupon, ''); couponNote = `${code} was removed. ${r.msg}`; }
+                }
+                const freeShip = sub >= FREE_SHIP;
+                const shipping = freeShip ? 0 : SHIPPING_FEE;
+                return { valid, qty, mrp, sub, coupon, couponNote, freeShip, shipping, mrpDiscount: mrp - sub, total: sub - (coupon ? coupon.amount : 0) + shipping };
+            }
+            const getLines = () => Sutra.cart.items().map(describe);
+
+            const fmtDay = (d) => new Intl.DateTimeFormat('en-IN', { weekday: 'short', day: 'numeric', month: 'short' }).format(d);
+            function estimate(pin, valid) {
+                const transit = TRANSIT[String(pin)[0]];
+                if (!transit || !valid.length) return null;
+                const dMin = Math.max(...valid.map(l => l.p.dispatchDays[0]));
+                const dMax = Math.max(...valid.map(l => l.p.dispatchDays[1]));
+                const from = new Date(), to = new Date();
+                from.setDate(from.getDate() + dMin + transit[0]);
+                to.setDate(to.getDate() + dMax + transit[1]);
+                return { from, to };
+            }
+
+            /* ===========================================================
+               SUMMARY
+               =========================================================== */
+            function renderSummary(lines, t) {
+                const saved = t.mrpDiscount + (t.coupon ? t.coupon.amount : 0);
+                $('#ckSumTotal').textContent = money(t.total);
+                const couponBlock = t.coupon
+                    ? `<div class="ck-applied"><span><strong>${esc(t.coupon.code)}</strong> applied</span><button type="button" class="ck-link-btn" id="ckCouponRemove">Remove</button></div><p class="ck-coupon-msg" id="ckCouponMsg" role="status"></p>`
+                    : `<form class="ck-coupon-form" id="ckCouponForm" novalidate>
+           <input type="text" id="ckCouponInput" placeholder="Coupon code" autocomplete="off" maxlength="20" aria-label="Coupon code">
+           <button type="submit">Apply</button>
+         </form>
+         <p class="ck-coupon-msg${t.couponNote ? ' is-err' : ''}" id="ckCouponMsg" role="status">${esc(t.couponNote)}</p>`;
+
+                $('#ckSumBody').innerHTML = `
+      <div class="ck-items">${t.valid.map(l => `
+        <div class="ck-item">
+          <div class="ck-item-thumb"><span>${thumbHTML(l.p, l.color)}</span><span class="ck-qty-badge" aria-label="Quantity ${l.it.qty}">${l.it.qty}</span></div>
+          <div><h3>${esc(l.p.name)}</h3><small>${esc(l.color.name)}${cat.needsSize(l.p) ? ' \u00B7 ' + esc(l.it.size) : ''}</small></div>
+          <div class="ck-item-price">${money(l.p.price * l.it.qty)}</div>
+        </div>`).join('')}</div>
+      <div class="ck-row"><span>Price (${t.qty} item${t.qty === 1 ? '' : 's'})</span><span>${money(t.mrp)}</span></div>
+      ${t.mrpDiscount > 0 ? `<div class="ck-row"><span>Discount</span><span class="is-save">\u2212${money(t.mrpDiscount)}</span></div>` : ''}
+      ${t.coupon ? `<div class="ck-row"><span>Coupon (${esc(t.coupon.code)})</span><span class="is-save">\u2212${money(t.coupon.amount)}</span></div>` : ''}
+      <div class="ck-row"><span>Shipping</span><span>${t.freeShip ? 'Free' : money(t.shipping)}</span></div>
+      <div class="ck-row total"><span>Total</span><span id="ckTotal">${money(t.total)}</span></div>
+      <p class="ck-tax">Inclusive of all taxes</p>
+      ${saved > 0 ? `<p class="ck-saved">You&rsquo;re saving <strong>${money(saved)}</strong> on this order.</p>` : ''}
+      <div class="ck-coupon">${couponBlock}</div>
+      <p class="ck-help">Need help with your order? Call <a href="tel:+917987725348">+91 79877 25348</a> or <a href="contact.html">contact us</a>.</p>`;
+            }
+
+            $('#ckSumBody').addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (e.target.id !== 'ckCouponForm') return;
+                const code = $('#ckCouponInput').value.trim().toUpperCase();
+                const msg = $('#ckCouponMsg');
+                if (!code) { msg.className = 'ck-coupon-msg is-err'; msg.textContent = 'Please enter a coupon code.'; return; }
+                const t = computeTotals(getLines());
+                const r = evalCoupon(code, t.sub);
+                if (!r.ok) { msg.className = 'ck-coupon-msg is-err'; msg.textContent = r.msg; return; }
+                Sutra.store.write(K.coupon, code);
+                Sutra.toast(`${code} applied \u2014 you saved ${money(r.amount)}`);
+                render();
+            });
+            $('#ckSumBody').addEventListener('click', (e) => {
+                if (e.target.id === 'ckCouponRemove') { Sutra.store.write(K.coupon, ''); render(); }
+            });
+
+            // desktop: summary stays open; mobile: collapsible
+            const desktop = window.matchMedia('(min-width: 961px)');
+            const summaryEl = $('#ckSummary');
+            summaryEl.open = desktop.matches;
+            $('#ckSummary > summary').addEventListener('click', (e) => { if (desktop.matches) e.preventDefault(); });
+
+            /* ===========================================================
+               FIELD HELPERS + VALIDATION
+               =========================================================== */
+            $('#ckState').innerHTML = '<option value="">Select state</option>' + STATES.map(s => `<option>${esc(s)}</option>`).join('');
+
+            const digits = (s) => String(s).replace(/\D/g, '');
+            function setError(inputId, errId, msg) {
+                const inp = $('#' + inputId), err = $('#' + errId);
+                if (err) err.textContent = msg || '';
+                if (inp) { if (msg) inp.setAttribute('aria-invalid', 'true'); else inp.removeAttribute('aria-invalid'); }
+                return !msg;
+            }
+            function focusFirstInvalid(root) {
+                const el = $('[aria-invalid="true"]', root);
+                if (el) el.focus();
+                return !!el;
+            }
+            const validEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+
+            function readAddressForm() {
+                return {
+                    name: $('#ckName').value.trim(), phone: digits($('#ckPhone').value), line1: $('#ckLine1').value.trim(),
+                    line2: $('#ckLine2').value.trim(), landmark: $('#ckLandmark').value.trim(), pin: digits($('#ckPin').value),
+                    city: $('#ckCity').value.trim(), state: $('#ckState').value,
+                    type: ($('input[name="addrType"]:checked') || {}).value || 'Home'
+                };
+            }
+            function validateAddressForm() {
+                const a = readAddressForm();
+                const r = [
+                    setError('ckName', 'errName', a.name.length >= 2 ? '' : 'Please enter the recipient\u2019s full name.'),
+                    setError('ckPhone', 'errPhone', /^[6-9]\d{9}$/.test(a.phone) ? '' : 'Enter a valid 10-digit mobile number.'),
+                    setError('ckLine1', 'errLine1', a.line1.length >= 5 ? '' : 'Please enter your house / street address.'),
+                    setError('ckPin', 'errPin', /^[1-9]\d{5}$/.test(a.pin) ? '' : 'Enter a valid 6-digit pincode.'),
+                    setError('ckCity', 'errCity', a.city.length >= 2 ? '' : 'Please enter your city.'),
+                    setError('ckState', 'errState', a.state ? '' : 'Please select your state.')
+                ];
+                return r.every(Boolean);
+            }
+
+            /* ---------- Digits-only / formatting inputs ---------- */
+            $('#ckPhone').addEventListener('input', (e) => { e.target.value = digits(e.target.value).slice(0, 10); });
+            $('#ckPin').addEventListener('input', (e) => { e.target.value = digits(e.target.value).slice(0, 6); });
+
+            /* ---------- Saved addresses ---------- */
+            const savedAddresses = () => Sutra.store.read(K.addresses, []);
+            function addrText(a) {
+                return `${esc(a.name)} \u00B7 +91 ${esc(a.phone)}<br>${esc(a.line1)}${a.line2 ? ', ' + esc(a.line2) : ''}${a.landmark ? ' (' + esc(a.landmark) + ')' : ''}<br>${esc(a.city)}, ${esc(a.state)} \u2014 ${esc(a.pin)}`;
+            }
+            function renderSaved() {
+                const list = savedAddresses();
+                $('#ckSavedWrap').hidden = list.length === 0;
+                if (!list.length) { state.addrId = 'new'; toggleAddrForm(); return; }
+                if (state.addrId !== 'new' && !list.some(a => a.id === state.addrId)) state.addrId = list[0].id;
+                if (state.addrId === 'new' && !state.userChoseNew) state.addrId = list[0].id;
+                $('#ckSavedList').innerHTML = list.map(a => `
+      <label class="ck-opt${state.addrId === a.id ? ' is-selected' : ''}">
+        <input type="radio" name="addr" value="${esc(a.id)}"${state.addrId === a.id ? ' checked' : ''}>
+        <span><strong>${esc(a.type)}</strong>${a.isDefault ? '<span class="ck-tag">Default</span>' : ''}<small>${addrText(a)}</small></span>
+      </label>`).join('') + `
+      <label class="ck-opt${state.addrId === 'new' ? ' is-selected' : ''}">
+        <input type="radio" name="addr" value="new"${state.addrId === 'new' ? ' checked' : ''}>
+        <span><strong>Use a different address</strong></span>
+      </label>`;
+                toggleAddrForm();
+            }
+            function toggleAddrForm() { $('#ckAddrForm').hidden = state.addrId !== 'new' && savedAddresses().length > 0; }
+            $('#ckSavedList').addEventListener('change', (e) => {
+                if (e.target.name !== 'addr') return;
+                state.addrId = e.target.value;
+                state.userChoseNew = e.target.value === 'new';
+                $$('.ck-opt', $('#ckSavedList')).forEach(l => l.classList.toggle('is-selected', $('input', l).checked));
+                toggleAddrForm();
+            });
+
+            /* ---------- Draft (restore after refresh; never stores payment data) ---------- */
+            function saveDraft() {
+                Sutra.store.write('sutra_checkout_draft_v1', Object.assign({ email: $('#ckEmail').value.trim() }, readAddressForm()));
+            }
+            function restoreDraft() {
+                const d = Sutra.store.read(K.draft, null) || {};
+                $('#ckEmail').value = d.email || '';
+                $('#ckName').value = d.name || ''; $('#ckPhone').value = d.phone || ''; $('#ckLine1').value = d.line1 || '';
+                $('#ckLine2').value = d.line2 || ''; $('#ckLandmark').value = d.landmark || '';
+                $('#ckPin').value = d.pin || Sutra.store.read(K.pin, '') || ''; $('#ckCity').value = d.city || ''; $('#ckState').value = d.state || '';
+                const type = $('input[name="addrType"][value="' + (d.type === 'Work' ? 'Work' : 'Home') + '"]');
+                if (type) type.checked = true;
+                $('#ckNote').value = Sutra.store.read(K.note, '');
+            }
+            $('#ckForm1').addEventListener('input', (e) => {
+                if (e.target.id === 'ckNote') Sutra.store.write(K.note, e.target.value.slice(0, 300));
+                else saveDraft();
+                if (e.target.hasAttribute('aria-invalid')) e.target.removeAttribute('aria-invalid');
+            });
+
+            /* ===========================================================
+               STAGES
+               =========================================================== */
+            function setStage(n, push) {
+                state.stage = n;
+                $('#ckForm1').hidden = n !== 1;
+                $('#ckForm2').hidden = n !== 2;
+                const stepD = $('#ckStepDetails'), stepP = $('#ckStepPayment');
+                stepD.classList.toggle('is-done', n === 2);
+                stepD.removeAttribute('aria-current');
+                stepP.removeAttribute('aria-current');
+                (n === 1 ? stepD : stepP).setAttribute('aria-current', 'step');
+                $('#ckLead').textContent = n === 1 ? 'Tell us where to send your order.' : 'Review your order and choose how to pay.';
+                document.title = (n === 1 ? 'Checkout' : 'Payment') + ' \u2014 Sutra Textiles India';
+                if (push) history.pushState({ stage: n }, '', n === 2 ? '#payment' : window.location.pathname + window.location.search);
+                if (n === 2) renderReview();
+                const top = $('.ck-steps');
+                if (top && top.scrollIntoView) top.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+            }
+            window.addEventListener('popstate', (e) => {
+                const n = e.state && e.state.stage === 2 && state.address ? 2 : 1;
+                setStage(n, false);
+            });
+
+            /* ---------- Stage 1 -> 2 ---------- */
+            $('#ckForm1').addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (!canProceed()) return;
+                const email = $('#ckEmail').value.trim();
+                let ok = setError('ckEmail', 'errEmail', validEmail(email) ? '' : 'Please enter a valid email address.');
+                let address = null;
+                const usingSaved = state.addrId !== 'new' && savedAddresses().length > 0;
+                if (usingSaved) address = savedAddresses().find(a => a.id === state.addrId) || null;
+                else ok = validateAddressForm() && ok;
+                if (!ok || (usingSaved && !address)) { focusFirstInvalid($('#ckForm1')); Sutra.toast('Please check the highlighted fields.'); return; }
+
+                if (!usingSaved) {
+                    address = readAddressForm();
+                    if ($('#ckSave').checked) {
+                        const list = savedAddresses();
+                        const dupe = list.find(a => a.line1.toLowerCase() === address.line1.toLowerCase() && a.pin === address.pin);
+                        if (!dupe) {
+                            const saved = Object.assign({ id: 'a' + Date.now(), isDefault: list.length === 0 }, address);
+                            Sutra.store.write(K.addresses, [saved].concat(list));
+                            address = saved;
+                        } else address = dupe;
+                    }
+                }
+                state.email = email; state.address = address;
+                Sutra.store.write(K.pin, address.pin);
+                Sutra.store.write(K.note, $('#ckNote').value.slice(0, 300));
+                saveDraft();
+                setStage(2, true);
+            });
+
+            function renderReview() {
+                const a = state.address;
+                const note = Sutra.store.read(K.note, '');
+                $('#ckReview').innerHTML = `
+      <div class="ck-review-row"><dt>Contact</dt><dd>${esc(state.email)}</dd><dd><button type="button" class="ck-link-btn" data-edit>Change</button></dd></div>
+      <div class="ck-review-row"><dt>Ship to</dt><dd>${addrText(a)}</dd><dd><button type="button" class="ck-link-btn" data-edit>Change</button></dd></div>
+      ${note ? `<div class="ck-review-row"><dt>Order note</dt><dd>${esc(note)}</dd><dd></dd></div>` : ''}`;
+                const est = estimate(a.pin, computeTotals(getLines()).valid);
+                $('#ckEta').hidden = !est;
+                if (est) $('#ckEtaText').innerHTML = `Estimated delivery by <strong>${fmtDay(est.from)} \u2013 ${fmtDay(est.to)}</strong>`;
+            }
+            $('#ckReview').addEventListener('click', (e) => { if (e.target.closest('[data-edit]')) goBack(); });
+            function goBack() { if (history.state && history.state.stage === 2) history.back(); else setStage(1, false); }
+            $('#ckBack').addEventListener('click', goBack);
+
+            /* ===========================================================
+               PAYMENT
+               =========================================================== */
+            const PAY_PANELS = {
+                upi: () => `<div class="ck-field" style="margin-bottom:0"><label for="ckUpi">UPI ID</label>
+        <input class="ck-input" id="ckUpi" placeholder="yourname@bank" autocomplete="off" aria-describedby="errUpi"><div class="ck-error" id="errUpi" role="alert"></div></div>`,
+                card: () => `
+      <div class="ck-field"><label for="ckCardNum">Card number</label>
+        <input class="ck-input" id="ckCardNum" inputmode="numeric" autocomplete="cc-number" placeholder="1234 5678 9012 3456" maxlength="23" aria-describedby="errCardNum"><div class="ck-error" id="errCardNum" role="alert"></div></div>
+      <div class="ck-field"><label for="ckCardName">Name on card</label>
+        <input class="ck-input" id="ckCardName" autocomplete="cc-name" aria-describedby="errCardName"><div class="ck-error" id="errCardName" role="alert"></div></div>
+      <div class="ck-row2">
+        <div class="ck-field" style="margin-bottom:0"><label for="ckCardExp">Expiry (MM/YY)</label>
+          <input class="ck-input" id="ckCardExp" inputmode="numeric" autocomplete="cc-exp" placeholder="MM/YY" maxlength="5" aria-describedby="errCardExp"><div class="ck-error" id="errCardExp" role="alert"></div></div>
+        <div class="ck-field" style="margin-bottom:0"><label for="ckCardCvv">CVV</label>
+          <input class="ck-input" id="ckCardCvv" inputmode="numeric" autocomplete="cc-csc" type="password" maxlength="4" aria-describedby="errCardCvv"><div class="ck-error" id="errCardCvv" role="alert"></div></div>
+      </div>
+      <p class="ck-pay-note">Card details are never saved on this site. In production they are entered on your payment gateway&rsquo;s secure form.</p>`,
+                netbanking: () => `<div class="ck-field" style="margin-bottom:0"><label for="ckBank">Choose your bank</label>
+        <select class="ck-input" id="ckBank" aria-describedby="errBank"><option value="">Select bank</option>${BANKS.map(b => `<option>${esc(b)}</option>`).join('')}</select><div class="ck-error" id="errBank" role="alert"></div></div>`,
+                cod: () => `<p class="ck-pay-note" style="margin:0">Pay in cash or by UPI to our delivery partner when your order arrives. Please keep the exact amount ready.</p>`
+            };
+
+            function renderPayments() {
+                $('#ckPay').innerHTML = PAYMENTS.filter(p => p.enabled).map(p => `
+      <div class="ck-pay-opt${state.payment === p.id ? ' is-selected' : ''}" data-pay="${p.id}">
+        <label><input type="radio" name="pay" value="${p.id}"${state.payment === p.id ? ' checked' : ''}>
+          <span class="ck-pay-ico"><svg viewBox="0 0 24 24"><path d="${p.icon}"/></svg></span>
+          <span><strong>${esc(p.label)}</strong><small>${esc(p.sub)}</small></span></label>
+        ${state.payment === p.id ? `<div class="ck-pay-panel">${PAY_PANELS[p.id]()}</div>` : ''}
+      </div>`).join('');
+                bindPaymentInputs();
+            }
+            $('#ckPay').addEventListener('change', (e) => {
+                if (e.target.name !== 'pay') return;
+                state.payment = e.target.value;
+                renderPayments();
+                const first = $('.ck-pay-panel input, .ck-pay-panel select');
+                if (first) first.focus({ preventScroll: true });
+            });
+
+            function bindPaymentInputs() {
+                const num = $('#ckCardNum'), exp = $('#ckCardExp'), cvv = $('#ckCardCvv');
+                if (num) num.addEventListener('input', () => { num.value = digits(num.value).slice(0, 19).replace(/(.{4})/g, '$1 ').trim(); });
+                if (exp) exp.addEventListener('input', () => {
+                    let v = digits(exp.value).slice(0, 4);
+                    if (v.length > 2) v = v.slice(0, 2) + '/' + v.slice(2);
+                    exp.value = v;
+                });
+                if (cvv) cvv.addEventListener('input', () => { cvv.value = digits(cvv.value).slice(0, 4); });
+                $$('#ckPay .ck-input').forEach(i => i.addEventListener('input', () => i.removeAttribute('aria-invalid')));
+            }
+
+            function luhn(num) {
+                let sum = 0, alt = false;
+                for (let i = num.length - 1; i >= 0; i--) {
+                    let n = Number(num.charAt(i));
+                    if (alt) { n *= 2; if (n > 9) n -= 9; }
+                    sum += n; alt = !alt;
+                }
+                return num.length >= 13 && sum % 10 === 0;
+            }
+            function validExpiry(v) {
+                const m = /^(\d{2})\/(\d{2})$/.exec(v);
+                if (!m) return false;
+                const month = Number(m[1]), year = 2000 + Number(m[2]), now = new Date();
+                if (month < 1 || month > 12) return false;
+                return year > now.getFullYear() || (year === now.getFullYear() && month >= now.getMonth() + 1);
+            }
+
+            /** Validates the selected method; returns a safe display label (never full card data) or null. */
+            function validatePayment() {
+                const m = state.payment;
+                if (m === 'upi') {
+                    const v = $('#ckUpi').value.trim();
+                    return setError('ckUpi', 'errUpi', /^[\w.\-]{2,}@[a-zA-Z]{2,}$/.test(v) ? '' : 'Enter a valid UPI ID, e.g. name@bank.') ? 'UPI \u00B7 ' + v : null;
+                }
+                if (m === 'card') {
+                    const n = digits($('#ckCardNum').value);
+                    const r = [
+                        setError('ckCardNum', 'errCardNum', luhn(n) ? '' : 'Enter a valid card number.'),
+                        setError('ckCardName', 'errCardName', $('#ckCardName').value.trim().length >= 2 ? '' : 'Enter the name on your card.'),
+                        setError('ckCardExp', 'errCardExp', validExpiry($('#ckCardExp').value) ? '' : 'Enter a valid, future expiry date.'),
+                        setError('ckCardCvv', 'errCardCvv', /^\d{3,4}$/.test($('#ckCardCvv').value) ? '' : 'Enter the 3 or 4 digit CVV.')
+                    ];
+                    return r.every(Boolean) ? 'Card ending ' + n.slice(-4) : null;
+                }
+                if (m === 'netbanking') {
+                    const b = $('#ckBank').value;
+                    return setError('ckBank', 'errBank', b ? '' : 'Please choose your bank.') ? 'Net Banking \u00B7 ' + b : null;
+                }
+                return 'Cash on Delivery';
+            }
+
+            /* ===========================================================
+               PLACE ORDER
+               =========================================================== */
+            function orderId() {
+                const d = new Date();
+                const pad = (n) => String(n).padStart(2, '0');
+                return 'STI-' + String(d.getFullYear()).slice(2) + pad(d.getMonth() + 1) + pad(d.getDate()) + '-' + String(Math.floor(1000 + Math.random() * 9000));
+            }
+
+            $('#ckForm2').addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (state.placing || !canProceed()) return;
+                const label = validatePayment();
+                const termsOk = $('#ckTerms').checked;
+                $('#errTerms').textContent = termsOk ? '' : 'Please accept the terms to place your order.';
+                if (!label || !termsOk) {
+                    if (!focusFirstInvalid($('#ckForm2')) && !termsOk) $('#ckTerms').focus();
+                    Sutra.toast('Please check the highlighted fields.');
+                    return;
+                }
+
+                const lines = getLines();
+                const t = computeTotals(lines);
+                const est = estimate(state.address.pin, t.valid);
+                const order = {
+                    id: orderId(), placedAt: Date.now(), status: 'Placed',
+                    email: state.email,
+                    address: state.address,
+                    note: Sutra.store.read(K.note, ''),
+                    payment: { method: state.payment, label: label, status: state.payment === 'cod' ? 'Pay on delivery' : 'Paid' },
+                    items: t.valid.map(l => ({
+                        id: l.p.id, name: l.p.name, sku: l.p.sku, size: l.it.size, color: l.color.name, qty: l.it.qty,
+                        price: l.p.price, mrp: l.p.mrp, category: l.p.category, region: l.p.region
+                    })),
+                    totals: {
+                        qty: t.qty, mrp: t.mrp, subtotal: t.sub, mrpDiscount: t.mrpDiscount,
+                        couponCode: t.coupon ? t.coupon.code : null, couponAmount: t.coupon ? t.coupon.amount : 0,
+                        shipping: t.shipping, total: t.total
+                    },
+                    eta: est ? { from: est.from.getTime(), to: est.to.getTime() } : null
+                };
+
+                state.placing = true;
+                $('#ckOverlay').hidden = false;
+                $('#ckPlace').disabled = true;
+                // Simulated gateway round-trip — replace with the real payment + order API call.
+                setTimeout(() => {
+                    Sutra.store.write(K.orders, [order].concat(Sutra.store.read(K.orders, [])));
+                    Sutra.store.write(K.last, order.id);
+                    Sutra.cart.clear();
+                    Sutra.store.write(K.coupon, '');
+                    Sutra.store.write(K.note, '');
+                    Sutra.store.write(K.draft, null);
+                    window.location.href = 'order-confirmation.html?order=' + encodeURIComponent(order.id);
+                }, 1400);
+            });
+
+            /* ===========================================================
+               RENDER / GUARDS
+               =========================================================== */
+            let blocked = false;
+            function canProceed() {
+                if (blocked) { Sutra.toast('Please review your cart before continuing.', { actionText: 'View Cart', href: 'cart.html' }); return false; }
+                return true;
+            }
+
+            function render() {
+                if (state.placing) return;
+                const lines = getLines();
+                const empty = lines.length === 0;
+                $('#ckEmpty').hidden = !empty;
+                $('#ckGrid').hidden = empty;
+                $('#ckSteps').hidden = empty;
+                if (empty) { document.title = 'Checkout \u2014 Sutra Textiles India'; return; }
+
+                blocked = lines.some(l => l.bad);
+                $('#ckBlocker').hidden = !blocked;
+                $('#ckContinue').disabled = blocked;
+                $('#ckPlace').disabled = blocked;
+                renderSummary(lines, computeTotals(lines));
+            }
+
+            /* ---------- Init ---------- */
+            restoreDraft();
+            renderSaved();
+            renderPayments();
+            render();
+            history.replaceState({ stage: 1 }, '', window.location.pathname + window.location.search);
+            window.addEventListener('sutra:cart', render);
+            window.addEventListener('storage', render);
+        })();
+    </script>
+
+</body>
+
+</html>

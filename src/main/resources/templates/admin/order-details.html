@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="'Order #' + ${order.orderNumber} + ' | Admin'">Order | Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+
+  <style>
+    /* ===== Admin: Order details page only ===== */
+
+    .back-link {
+      display: inline-block;
+      font-size: 0.86rem;
+      color: var(--olive);
+      margin-bottom: 0.8rem;
+    }
+
+    .back-link:hover {
+      color: var(--green);
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      flex-wrap: wrap;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 1.2rem;
+      align-items: start;
+    }
+
+    .stack {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .card {
+      background: var(--ivory-soft);
+      border: 1px solid var(--grey);
+      padding: 1.4rem;
+    }
+
+    .card h2 {
+      font-size: 1.15rem;
+      margin-bottom: 1rem;
+    }
+
+    .card p,
+    .card address {
+      font-style: normal;
+      font-size: 0.9rem;
+      color: #3a3f37;
+    }
+
+    .card .muted {
+      color: var(--olive);
+    }
+
+    .banner {
+      padding: 0.9rem 1.1rem;
+      margin-bottom: 1.2rem;
+      font-size: 0.9rem;
+      background: rgba(201, 162, 75, 0.15);
+      border: 1px solid rgba(201, 162, 75, 0.5);
+    }
+
+    .banner a {
+      border-bottom: 1px solid var(--gold);
+      color: var(--green);
+    }
+
+    /* Pills */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.22rem 0.7rem;
+      font-size: 0.76rem;
+      border-radius: 999px;
+    }
+
+    .pill::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .pill-pending {
+      background: rgba(201, 162, 75, 0.2);
+      color: #7a5d1a;
+    }
+
+    .pill-shipped {
+      background: rgba(92, 107, 78, 0.2);
+      color: var(--olive);
+    }
+
+    .pill-delivered {
+      background: rgba(20, 50, 36, 0.12);
+      color: var(--green);
+    }
+
+    .pill-cancelled {
+      background: rgba(181, 83, 60, 0.15);
+      color: var(--terracotta);
+    }
+
+    /* Items */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 500;
+      font-size: 0.8rem;
+      color: var(--olive);
+      padding: 0 0.8rem 0.7rem 0;
+      border-bottom: 1px solid var(--grey);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.8rem 0.8rem 0.8rem 0;
+      border-bottom: 1px solid rgba(217, 210, 196, 0.6);
+      vertical-align: middle;
+    }
+
+    .prod {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      min-width: 200px;
+    }
+
+    .prod img {
+      width: 44px;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      border: 1px solid var(--grey);
+      background: var(--ivory);
+    }
+
+    .prod a {
+      font-weight: 500;
+      color: var(--green);
+    }
+
+    .prod small {
+      display: block;
+      color: var(--olive);
+      font-size: 0.78rem;
+    }
+
+    td.num,
+    th.num {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .totals {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.5rem 1.5rem;
+      margin: 1.1rem 0 0 auto;
+      max-width: 300px;
+      font-size: 0.9rem;
+    }
+
+    .totals dd {
+      text-align: right;
+    }
+
+    .totals .grand {
+      margin-top: 0.3rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid var(--grey);
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      color: var(--green);
+    }
+
+    /* Activity */
+    .log li {
+      position: relative;
+      padding: 0 0 1rem 1.4rem;
+      font-size: 0.88rem;
+      border-left: 1px solid var(--grey);
+      margin-left: 5px;
+    }
+
+    .log li:last-child {
+      padding-bottom: 0;
+      border-left-color: transparent;
+    }
+
+    .log li::before {
+      content: "";
+      position: absolute;
+      left: -5px;
+      top: 4px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+
+    .log small {
+      display: block;
+      color: var(--olive);
+      font-size: 0.78rem;
+    }
+
+    /* Forms */
+    .field+.field {
+      margin-top: 0.9rem;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.82rem;
+      margin-bottom: 0.3rem;
+      color: var(--green);
+    }
+
+    .field input[type="text"],
+    .field input[type="date"],
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      font: inherit;
+      font-size: 0.9rem;
+      background: var(--ivory);
+      border: 1px solid var(--grey);
+      border-radius: var(--radius);
+      color: var(--charcoal);
+    }
+
+    .field textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--gold);
+      outline: none;
+    }
+
+    .ship-fields {
+      margin-top: 0.9rem;
+    }
+
+    .ship-fields[hidden] {
+      display: none;
+    }
+
+    .check {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-top: 0.9rem;
+      font-size: 0.86rem;
+    }
+
+    .check input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--green);
+    }
+
+    .card form .btn {
+      margin-top: 1.1rem;
+      width: 100%;
+      justify-content: center;
+      padding: 0.7rem 1rem;
+      font-size: 0.86rem;
+      cursor: pointer;
+    }
+
+    .cust-name {
+      font-weight: 500;
+      color: var(--green);
+    }
+
+    @media (max-width: 1100px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body class="adm-body">
+  <div class="adm-shell">
+
+    <div th:replace="~{admin/fragments/layout :: sidebar('orders')}"></div>
+
+    <div class="adm-main">
+      <header th:replace="~{admin/fragments/layout :: topbar}"></header>
+
+      <main class="adm-content">
+
+        <a class="back-link" th:href="@{/admin/orders}">&larr; Back to orders</a>
+
+        <div class="adm-head">
+          <div>
+            <div class="title-row">
+              <h1 th:text="'Order #' + ${order.orderNumber}">Order #1001</h1>
+              <span class="pill" th:classappend="'pill-' + ${#strings.toLowerCase(order.status)}"
+                th:text="${#strings.capitalize(#strings.toLowerCase(order.status))}">Pending</span>
+            </div>
+            <p th:text="'Placed on ' + ${#temporals.format(order.createdAt, 'dd MMM yyyy, hh:mm a')}">Placed on 01 Jan 2026</p>
+          </div>
+          <div class="adm-head-actions">
+            <a class="btn btn-ghost" th:href="@{/admin/orders/{id}/invoice(id=${order.id})}">Invoice</a>
+            <a class="btn btn-ghost" th:href="@{/admin/orders/{id}/packing-slip(id=${order.id})}" target="_blank" rel="noopener">Packing slip</a>
+          </div>
+        </div>
+
+        <div class="adm-alert ok" th:if="${message}" th:text="${message}" role="status"></div>
+        <div class="adm-alert err" th:if="${error}" th:text="${error}" role="alert"></div>
+
+        <div class="banner" th:if="${order.returnRequest != null}">
+          The customer requested a return (<span th:text="${order.returnRequest.reason}">reason</span>).
+          <a th:href="@{/admin/returns/{id}(id=${order.returnRequest.id})}">Review return</a>
+        </div>
+
+        <div class="layout">
+
+          <!-- Left: items + activity -->
+          <div class="stack">
+
+            <div class="card">
+              <h2 th:text="'Items (' + ${#lists.size(order.items)} + ')'">Items</h2>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr><th>Product</th><th>SKU</th><th class="num">Price</th><th class="num">Qty</th><th class="num">Total</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr th:each="item : ${order.items}">
+                      <td>
+                        <div class="prod">
+                          <img th:src="@{${item.imageUrl}}" th:alt="${item.productName}" loading="lazy">
+                          <div>
+                            <a th:href="@{/admin/products/{id}/edit(id=${item.productId})}" th:text="${item.productName}">Product</a>
+                            <small th:if="${item.variant != null}" th:text="${item.variant}">250 g</small>
+                          </div>
+                        </div>
+                      </td>
+                      <td th:text="${item.sku}">SKU-001</td>
+                      <td class="num" th:text="'₹' + ${#numbers.formatDecimal(item.price, 1, 'COMMA', 2, 'POINT')}">₹0.00</td>
+                      <td class="num" th:text="${item.quantity}">1</td>
+                      <td class="num" th:text="'₹' + ${#numbers.formatDecimal(item.price * item.quantity, 1, 'COMMA', 2, 'POINT')}">₹0.00</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <dl class="totals">
+                <dt>Subtotal</dt>
+                <dd th:text="'₹' + ${#numbers.formatDecimal(order.subtotal, 1, 'COMMA', 2, 'POINT')}">₹0.00</dd>
+                <dt>Shipping</dt>
+                <dd th:text="${order.shippingFee > 0} ? '₹' + ${#numbers.formatDecimal(order.shippingFee, 1, 'COMMA', 2, 'POINT')} : 'Free'">Free</dd>
+                <th:block th:if="${order.discount > 0}">
+                  <dt>Discount</dt>
+                  <dd th:text="'−₹' + ${#numbers.formatDecimal(order.discount, 1, 'COMMA', 2, 'POINT')}">−₹0.00</dd>
+                </th:block>
+                <dt>Tax</dt>
+                <dd th:text="'₹' + ${#numbers.formatDecimal(order.tax, 1, 'COMMA', 2, 'POINT')}">₹0.00</dd>
+                <dt class="grand">Total</dt>
+                <dd class="grand" th:text="'₹' + ${#numbers.formatDecimal(order.total, 1, 'COMMA', 2, 'POINT')}">₹0.00</dd>
+              </dl>
+            </div>
+
+            <div class="card" th:if="${!#lists.isEmpty(order.history)}">
+              <h2>Activity</h2>
+              <ul class="log">
+                <li th:each="h : ${order.history}">
+                  <span th:text="${h.label}">Status changed to Shipped</span>
+                  <small th:text="${#temporals.format(h.at, 'dd MMM yyyy, hh:mm a')} + (${h.by != null} ? ' · ' + ${h.by} : '')">01 Jan 2026</small>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+
+          <!-- Right: actions + info -->
+          <div class="stack">
+
+            <!-- Update status -->
+            <div class="card">
+              <h2>Update order</h2>
+
+              <p class="muted" th:if="${#lists.isEmpty(allowedStatuses)}">
+                This order is <span th:text="${#strings.toLowerCase(order.status)}">delivered</span>, so its status can't be changed.
+              </p>
+
+              <form id="status-form" th:unless="${#lists.isEmpty(allowedStatuses)}" method="post"
+                th:action="@{/admin/orders/{id}/status(id=${order.id})}">
+                <div class="field">
+                  <label for="status">Status</label>
+                  <select id="status" name="status">
+                    <option th:value="${order.status}" th:text="${#strings.capitalize(#strings.toLowerCase(order.status))} + ' (current)'" selected>Pending (current)</option>
+                    <option th:each="s : ${allowedStatuses}" th:value="${s}" th:text="${#strings.capitalize(#strings.toLowerCase(s))}">Shipped</option>
+                  </select>
+                </div>
+
+                <div class="ship-fields" id="ship-fields" th:hidden="${order.status != 'SHIPPED'}">
+                  <div class="field">
+                    <label for="courier">Courier</label>
+                    <input id="courier" name="courier" type="text" th:value="${order.courier}" maxlength="80">
+                  </div>
+                  <div class="field">
+                    <label for="trackingNumber">Tracking number</label>
+                    <input id="trackingNumber" name="trackingNumber" type="text" th:value="${order.trackingNumber}" maxlength="80">
+                  </div>
+                  <div class="field">
+                    <label for="estimatedDelivery">Estimated delivery</label>
+                    <input id="estimatedDelivery" name="estimatedDelivery" type="date" th:value="${order.estimatedDelivery}">
+                  </div>
+                </div>
+
+                <label class="check"><input type="checkbox" name="notify" value="true" checked> Email the customer about this change</label>
+                <button type="submit" class="btn btn-primary">Save status</button>
+              </form>
+            </div>
+
+            <div class="card">
+              <h2>Customer</h2>
+              <p><a class="cust-name" th:href="@{/admin/customers/{id}(id=${order.customerId})}" th:text="${order.customerName}">Customer</a></p>
+              <p class="muted" th:text="${order.customerEmail}">email@example.com</p>
+              <p class="muted" th:text="${order.shippingAddress.phone}">Phone</p>
+            </div>
+
+            <div class="card">
+              <h2>Shipping address</h2>
+              <address>
+                <span th:text="${order.shippingAddress.fullName}">Name</span><br>
+                <span th:text="${order.shippingAddress.line1}">Line 1</span><br>
+                <th:block th:if="${order.shippingAddress.line2 != null and !#strings.isEmpty(order.shippingAddress.line2)}">
+                  <span th:text="${order.shippingAddress.line2}">Line 2</span><br>
+                </th:block>
+                <span th:text="${order.shippingAddress.city} + ', ' + ${order.shippingAddress.state} + ' ' + ${order.shippingAddress.pincode}">City, State 000000</span>
+              </address>
+            </div>
+
+            <div class="card">
+              <h2>Payment</h2>
+              <p th:text="${order.paymentMethod}">Card</p>
+              <p class="muted" th:text="${#strings.capitalize(#strings.toLowerCase(order.paymentStatus))}">Paid</p>
+
+              <form th:if="${order.paymentStatus == 'PENDING' and order.status != 'CANCELLED'}" method="post"
+                th:action="@{/admin/orders/{id}/payment(id=${order.id})}">
+                <input type="hidden" name="paymentStatus" value="PAID">
+                <button type="submit" class="btn btn-ghost">Mark as paid</button>
+              </form>
+            </div>
+
+            <div class="card">
+              <h2>Internal note</h2>
+              <form method="post" th:action="@{/admin/orders/{id}/note(id=${order.id})}">
+                <div class="field">
+                  <label for="note">Only staff can see this</label>
+                  <textarea id="note" name="note" maxlength="1000" th:text="${order.note}"></textarea>
+                </div>
+                <button type="submit" class="btn btn-ghost">Save note</button>
+              </form>
+            </div>
+
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script th:src="@{/js/script.js}"></script>
+  <script>
+    // Show shipment fields only for "Shipped"; confirm before cancelling
+    var form = document.getElementById('status-form');
+    if (form) {
+      var select = document.getElementById('status');
+      var ship = document.getElementById('ship-fields');
+      select.addEventListener('change', function () { ship.hidden = select.value !== 'SHIPPED'; });
+      form.addEventListener('submit', function (e) {
+        if (select.value === 'CANCELLED' && !confirm('Cancel this order? The customer will be notified and stock will be restored.')) {
+          e.preventDefault();
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>

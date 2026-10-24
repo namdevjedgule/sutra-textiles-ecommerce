@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title
+        th:text="${q != null and !q.isEmpty() ? 'Search: ' + q + ' — Sutra Textiles India' : 'Search — Sutra Textiles India'}">
+        Search — Sutra Textiles India</title>
+    <meta name="description"
+        content="Search Sutra Textiles India for sarees, lehengas, salwar suits and regional ethnic wear.">
+    <meta name="robots" content="noindex, follow">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon_io/favicon.ico}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Work+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css" th:href="@{/css/style.css}">
+
+    <style>
+        [hidden] {
+            display: none !important;
+        }
+
+        /* ---------- Hero + search ---------- */
+        .sr-hero {
+            background: var(--green);
+            color: var(--ivory);
+            padding-block: clamp(2.2rem, 5vw, 3.4rem);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sr-hero-mark {
+            position: absolute;
+            right: clamp(-60px, -2vw, 0px);
+            bottom: -80px;
+            width: 320px;
+            color: var(--gold-light);
+            opacity: .08;
+            pointer-events: none;
+        }
+
+        .sr-crumbs {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            font-size: .8rem;
+            color: #b9c4b6;
+            margin-bottom: .9rem;
+        }
+
+        .sr-crumbs a:hover {
+            color: var(--gold-light);
+        }
+
+        .sr-hero h1 {
+            color: var(--ivory);
+            margin-bottom: 1.4rem;
+            font-size: clamp(2rem, 4vw, 3rem);
+        }
+
+        .sr-hero h1 em {
+            font-style: italic;
+            color: var(--gold-light);
+        }
+
+        .sr-search {
+            position: relative;
+            max-width: 680px;
+        }
+
+        .sr-bar {
+            position: relative;
+            display: flex;
+        }
+
+        .sr-bar>svg {
+            position: absolute;
+            left: 1.1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: var(--olive);
+            stroke-width: 1.7;
+            pointer-events: none;
+        }
+
+        .sr-input {
+            flex: 1;
+            min-width: 0;
+            height: 58px;
+            padding: 0 3rem 0 3.2rem;
+            border: 1px solid transparent;
+            border-radius: var(--radius) 0 0 var(--radius);
+            background: var(--ivory-soft);
+            color: var(--charcoal);
+            font: inherit;
+            font-size: 1rem;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, .18);
+        }
+
+        .sr-input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201, 162, 75, .4), 0 10px 28px rgba(0, 0, 0, .18);
+        }
+
+        .sr-input::placeholder {
+            color: #8a8f84;
+        }
+
+        .sr-input::-webkit-search-cancel-button {
+            display: none;
+        }
+
+        .sr-submit {
+            height: 58px;
+            padding: 0 1.8rem;
+            background: var(--gold);
+            color: var(--green-deep);
+            font-weight: 500;
+            letter-spacing: .05em;
+            font-size: .9rem;
+            border-radius: 0 var(--radius) var(--radius) 0;
+            transition: background .25s var(--ease);
+        }
+
+        .sr-submit:hover {
+            background: var(--gold-light);
+        }
+
+        .sr-clear {
+            position: absolute;
+            right: calc(.6rem + 112px);
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            color: var(--olive);
+            font-size: 1.4rem;
+            line-height: 1;
+        }
+
+        .sr-clear:hover {
+            background: rgba(20, 38, 32, .08);
+            color: var(--green);
+        }
+
+        /* suggestions dropdown */
+        .sr-suggest {
+            position: absolute;
+            z-index: 60;
+            left: 0;
+            right: 0;
+            top: calc(100% + 6px);
+            background: var(--ivory-soft);
+            border: 1px solid var(--grey);
+            border-radius: var(--radius);
+            box-shadow: 0 18px 40px rgba(20, 38, 32, .2);
+            max-height: 70vh;
+            overflow-y: auto;
+            padding: .4rem 0;
+            color: var(--charcoal);
+        }
+
+        .sr-sg-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: .7rem 1.1rem .3rem;
+            font-size: .7rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--olive);
+        }
+
+        .sr-sg-head button {
+            font-size: .76rem;
+            letter-spacing: 0;
+            text-transform: none;
+            color: var(--olive);
+            border-bottom: 1px solid transparent;
+        }
+
+        .sr-sg-head button:hover {
+            color: var(--green);
+            border-color: var(--gold);
+        }
+
+        .sr-opt {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            width: 100%;
+            padding: .65rem 1.1rem;
+            text-align: left;
+            font-size: .92rem;
+            color: var(--charcoal);
+            cursor: pointer;
+        }
+
+        .sr-opt small {
+            display: block;
+            font-size: .76rem;
+            color: var(--olive);
+        }
+
+        .sr-opt .p {
+            font-family: var(--font-display);
+            color: var(--green);
+            white-space: nowrap;
+        }
+
+        .sr-opt:hover,
+        .sr-opt.is-active {
+            background: rgba(201, 162, 75, .14);
+        }
+
+        .sr-opt.is-all {
+            border-top: 1px solid var(--grey);
+            margin-top: .3rem;
+            color: var(--green);
+            font-weight: 500;
+        }
+
+        .sr-opt mark {
+            background: rgba(201, 162, 75, .35);
+            color: inherit;
+            padding: 0;
+        }
+
+        .sr-hint {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: .5rem .6rem;
+            margin-top: 1rem;
+            font-size: .82rem;
+            color: #b9c4b6;
+        }
+
+        .sr-hint a,
+        .sr-hint button {
+            padding: .3rem .85rem;
+            border: 1px solid rgba(227, 203, 142, .45);
+            border-radius: 999px;
+            color: var(--gold-light);
+            font-size: .8rem;
+            transition: background .2s var(--ease);
+        }
+
+        .sr-hint a:hover,
+        .sr-hint button:hover {
+            background: rgba(227, 203, 142, .12);
+        }
+
+        /* ---------- Layout ---------- */
+        .sr-main {
+            padding-block: clamp(2rem, 4vw, 3rem) clamp(3rem, 6vw, 5rem);
+        }
+
+        .sr-grid {
+            display: grid;
+            grid-template-columns: 250px minmax(0, 1fr);
+            gap: clamp(1.5rem, 3vw, 3rem);
+            align-items: start;
+        }
+
+        .sr-grid.is-single {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        /* filters */
+        .sr-filters {
+            position: sticky;
+            top: calc(var(--nav-h, 100px) + 1rem);
+        }
+
+        .sr-fgroup {
+            padding-block: 1.2rem;
+            border-bottom: 1px solid var(--grey);
+        }
+
+        .sr-fgroup:first-of-type {
+            padding-top: 0;
+        }
+
+        .sr-fgroup h2 {
+            font-family: var(--font-body);
+            font-size: .76rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--green);
+            font-weight: 500;
+            margin-bottom: .8rem;
+        }
+
+        .sr-opt-row {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            font-size: .9rem;
+            color: #3a3f37;
+            padding: .3rem 0;
+            cursor: pointer;
+        }
+
+        .sr-opt-row input {
+            accent-color: var(--green);
+            width: 15px;
+            height: 15px;
+            cursor: pointer;
+        }
+
+        .sr-opt-row em {
+            margin-left: auto;
+            font-style: normal;
+            font-size: .76rem;
+            color: var(--olive);
+        }
+
+        .sr-apply {
+            width: 100%;
+            min-height: 46px;
+            margin-top: 1.2rem;
+            background: var(--green);
+            color: var(--ivory);
+            font-size: .86rem;
+            letter-spacing: .05em;
+            border-radius: var(--radius);
+            transition: background .25s var(--ease);
+        }
+
+        .sr-apply:hover {
+            background: var(--green-deep);
+        }
+
+        .js .sr-apply.is-desktop-hide {
+            display: none;
+        }
+
+        .sr-fhead {
+            display: none;
+        }
+
+        .sr-filter-btn {
+            display: none;
+            align-items: center;
+            gap: .5rem;
+            border: 1px solid var(--green);
+            color: var(--green);
+            padding: .6rem 1.1rem;
+            font-size: .85rem;
+            border-radius: var(--radius);
+        }
+
+        .sr-filter-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.6;
+        }
+
+        .sr-scrim {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(20, 38, 32, .4);
+            z-index: 199;
+        }
+
+        .sr-scrim.is-open {
+            display: block;
+        }
+
+        /* results header */
+        .sr-bar-top {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: .8rem 1.2rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid var(--grey);
+            margin-bottom: 1.2rem;
+        }
+
+        .sr-count {
+            font-size: .9rem;
+            color: var(--olive);
+        }
+
+        .sr-count strong {
+            color: var(--green);
+            font-weight: 500;
+        }
+
+        .sr-sort {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            font-size: .85rem;
+            color: var(--green);
+        }
+
+        .sr-select {
+            border: 1px solid var(--grey);
+            background: var(--ivory-soft);
+            color: var(--charcoal);
+            padding: .5rem .8rem;
+            border-radius: var(--radius);
+            font: inherit;
+            font-size: .85rem;
+        }
+
+        .sr-active {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .6rem;
+            margin-bottom: 1.4rem;
+        }
+
+        .sr-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .4rem .75rem;
+            background: var(--ivory-soft);
+            border: 1px solid var(--grey);
+            border-radius: 999px;
+            font-size: .8rem;
+            color: var(--green);
+        }
+
+        .sr-chip b {
+            color: var(--terracotta);
+            font-weight: 400;
+            font-size: .95rem;
+            line-height: 1;
+        }
+
+        .sr-chip.is-clear {
+            border-color: var(--terracotta);
+            color: var(--terracotta);
+        }
+
+        .sr-didyou {
+            margin-bottom: 1.2rem;
+            font-size: .92rem;
+            color: var(--olive);
+        }
+
+        .sr-didyou a {
+            color: var(--green);
+            border-bottom: 1px solid var(--gold);
+            font-weight: 500;
+        }
+
+        .sr-card-link {
+            display: block;
+        }
+
+        .sr-card-link:hover .product-art {
+            transform: translateY(-3px);
+        }
+
+        .product-art {
+            transition: transform .35s var(--ease);
+        }
+
+        .product-art img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: var(--radius);
+        }
+
+        .product-art img:not([src]) {
+            display: none;
+        }
+
+        /* pagination */
+        .sr-pages {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: .5rem;
+            margin-top: 2.8rem;
+        }
+
+        .sr-pages a,
+        .sr-pages span {
+            min-width: 42px;
+            height: 42px;
+            padding: 0 .9rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--grey);
+            border-radius: var(--radius);
+            font-size: .88rem;
+            color: var(--green);
+            background: var(--ivory-soft);
+            transition: all .2s var(--ease);
+        }
+
+        .sr-pages a:hover {
+            border-color: var(--gold);
+        }
+
+        .sr-pages [aria-current="page"] {
+            background: var(--green);
+            border-color: var(--green);
+            color: var(--ivory);
+        }
+
+        .sr-pages .is-off {
+            opacity: .4;
+            pointer-events: none;
+        }
+
+        /* empty / none states */
+        .sr-state {
+            text-align: center;
+            padding: clamp(2.5rem, 6vw, 4rem) 1rem;
+            border: 1px dashed var(--grey);
+            border-radius: var(--radius);
+            background: var(--ivory-soft);
+        }
+
+        .sr-state h2 {
+            margin-bottom: .6rem;
+            font-size: clamp(1.5rem, 3vw, 2rem);
+        }
+
+        .sr-state p {
+            margin: 0 auto 1.4rem;
+            color: var(--olive);
+        }
+
+        .sr-state-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: .6rem;
+            margin-top: 1.2rem;
+        }
+
+        .sr-pill {
+            padding: .5rem 1.1rem;
+            border: 1px solid var(--grey);
+            border-radius: 999px;
+            font-size: .84rem;
+            color: var(--green);
+            background: var(--ivory);
+            transition: border-color .2s var(--ease);
+        }
+
+        .sr-pill:hover {
+            border-color: var(--gold);
+        }
+
+        .sr-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 48px;
+            padding: 0 1.8rem;
+            border-radius: var(--radius);
+            background: var(--gold);
+            color: var(--green-deep);
+            font-weight: 500;
+            letter-spacing: .05em;
+            font-size: .88rem;
+            transition: background .25s var(--ease);
+        }
+
+        .sr-btn:hover {
+            background: var(--gold-light);
+        }
+
+        .sr-sub {
+            font-size: .78rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--olive);
+            margin: 1.6rem 0 .7rem;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 960px) {
+            .sr-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sr-filter-btn {
+                display: inline-flex;
+            }
+
+            .sr-filters {
+                position: fixed;
+                top: 0;
+                right: 0;
+                height: 100vh;
+                width: min(86vw, 330px);
+                background: var(--ivory-soft);
+                z-index: 200;
+                padding: 1.4rem 1.4rem 2rem;
+                overflow-y: auto;
+                transform: translateX(100%);
+                transition: transform .35s var(--ease);
+                border-left: 1px solid var(--grey);
+            }
+
+            .sr-filters.is-open {
+                transform: translateX(0);
+            }
+
+            .sr-fhead {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 1rem;
+            }
+
+            .sr-fhead h2 {
+                font-size: 1.3rem;
+            }
+
+            .sr-fclose {
+                font-size: 1.6rem;
+                color: var(--green);
+                line-height: 1;
+            }
+
+            .js .sr-apply.is-desktop-hide {
+                display: block;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .sr-submit {
+                padding: 0 1.1rem;
+            }
+
+            .sr-clear {
+                right: calc(.4rem + 86px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="navbar" th:replace="~{fragments/navbar :: navbar}"></div>
+  <div id="navSpacer"></div>
+
+    <main>
+        <!-- One GET form wraps the search box, filters and sort so every state is a shareable URL -->
+        <form id="srForm" action="search.html" th:action="@{/search}" method="get" role="search">
+
+            <!-- ===================== HERO + SEARCH ===================== -->
+            <section class="sr-hero">
+                <svg class="sr-hero-mark" viewBox="0 0 120 150" fill="none" stroke="currentColor" stroke-width="1"
+                    aria-hidden="true">
+                    <path d="M60 10c-16 10-26 26-26 46 0 24 12 42 26 52 14-10 26-28 26-52 0-20-10-36-26-46Z" />
+                    <path d="M60 46v66" />
+                    <path d="M60 64c-7 3-15 1-15 1s2.5-9 9-12.5c3.6-2 8-1 8-1" />
+                    <path d="M60 80c7 3 15 1 15 1s-2.5-9-9-12.5c-3.6-2-8-1-8-1" />
+                </svg>
+                <div class="container">
+                    <nav class="sr-crumbs" aria-label="Breadcrumb"><a href="index.html" th:href="@{/}">Home</a><span
+                            aria-hidden="true">/</span><span aria-current="page">Search</span></nav>
+                    <h1 th:hidden="${emptyQuery}">Results for <em>&ldquo;<span th:text="${q}">saree</span>&rdquo;</em>
+                    </h1>
+                    <h1 th:hidden="${!emptyQuery}" hidden>What are you <em>looking for?</em></h1>
+
+                    <div class="sr-search">
+                        <div class="sr-bar">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="11" cy="11" r="7" />
+                                <path d="m21 21-4.3-4.3" />
+                            </svg>
+                            <input class="sr-input" id="srInput" name="q" type="search" th:value="${q}" value="saree"
+                                placeholder="Search sarees, lehengas, suits, regional wear&hellip;" role="combobox"
+                                aria-autocomplete="list" aria-expanded="false" aria-controls="srSuggest"
+                                aria-label="Search the store" autocomplete="off" spellcheck="false" maxlength="80">
+                            <button type="button" class="sr-clear" id="srClear" aria-label="Clear search"
+                                hidden>&times;</button>
+                            <button type="submit" class="sr-submit">Search</button>
+                        </div>
+                        <div class="sr-suggest" id="srSuggest" role="listbox" aria-label="Search suggestions"
+                            data-url="/api/search/suggest" th:attr="data-url=@{/api/search/suggest}" hidden></div>
+                    </div>
+
+                    <div class="sr-hint">
+                        <span>Popular:</span>
+                        <a th:each="t : ${popularTerms}" th:href="@{/search(q=${t})}" th:text="${t}"
+                            href="search.html?q=sarees">Sarees</a>
+                        <a th:remove="all" href="search.html?q=lehenga">Lehenga</a>
+                        <a th:remove="all" href="search.html?q=bandhani">Bandhani</a>
+                        <a th:remove="all" href="search.html?q=phulkari">Phulkari</a>
+                        <a th:remove="all" href="search.html?q=kanjeevaram">Kanjeevaram</a>
+                    </div>
+                    <div class="sr-hint" id="srRecentRow" hidden><span>Recent:</span><span id="srRecentChips"
+                            style="display:contents"></span><button type="button" id="srRecentClear">Clear</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================== RESULTS ===================== -->
+            <section class="sr-main">
+                <div class="container sr-grid" th:classappend="${emptyQuery} ? 'is-single'">
+
+                    <!-- ----- Filters (desktop sidebar / mobile drawer) ----- -->
+                    <div class="sr-scrim" id="srScrim"></div>
+                    <aside class="sr-filters" id="srFilters" aria-label="Filters" th:hidden="${emptyQuery}">
+                        <div class="sr-fhead">
+                            <h2>Filters</h2><button type="button" class="sr-fclose" id="srFilterClose"
+                                aria-label="Close filters">&times;</button>
+                        </div>
+
+                        <fieldset class="sr-fgroup" style="border:0;padding:0;margin:0">
+                            <h2>Category</h2>
+                            <label class="sr-opt-row" th:each="c : ${categories}"><input type="checkbox" name="cat"
+                                    th:value="${c.key}" th:checked="${c.selected}" value="sarees"> <span
+                                    th:text="${c.label}">Sarees</span><em th:text="${c.count}">24</em></label>
+                            <label class="sr-opt-row" th:remove="all"><input type="checkbox" name="cat"
+                                    value="lehengas"> <span>Lehengas</span><em>18</em></label>
+                            <label class="sr-opt-row" th:remove="all"><input type="checkbox" name="cat"
+                                    value="salwar-suits"> <span>Salwar Suits</span><em>21</em></label>
+                            <label class="sr-opt-row" th:remove="all"><input type="checkbox" name="cat"
+                                    value="regional"> <span>Regional Wear</span><em>9</em></label>
+                        </fieldset>
+
+                        <fieldset class="sr-fgroup" style="border:0;padding:0;margin:0">
+                            <h2>Region</h2>
+                            <label class="sr-opt-row" th:each="r : ${regions}"><input type="checkbox" name="region"
+                                    th:value="${r.key}" th:checked="${r.selected}" value="rajasthan"> <span
+                                    th:text="${r.label}">Rajasthani</span><em th:text="${r.count}">9</em></label>
+                            <label class="sr-opt-row" th:remove="all"><input type="checkbox" name="region"
+                                    value="bengal"> <span>Bengali</span><em>6</em></label>
+                            <label class="sr-opt-row" th:remove="all"><input type="checkbox" name="region"
+                                    value="south-india"> <span>South Indian</span><em>11</em></label>
+                            <label class="sr-opt-row" th:remove="all"><input type="checkbox" name="region"
+                                    value="punjab"> <span>Punjabi</span><em>8</em></label>
+                            <label class="sr-opt-row" th:remove="all"><input type="checkbox" name="region"
+                                    value="gujarat"> <span>Gujarati</span><em>7</em></label>
+                            <label class="sr-opt-row" th:remove="all"><input type="checkbox" name="region"
+                                    value="kashmir"> <span>Kashmiri</span><em>5</em></label>
+                            <label class="sr-opt-row" th:remove="all"><input type="checkbox" name="region"
+                                    value="maharashtra"> <span>Maharashtrian</span><em>6</em></label>
+                        </fieldset>
+
+                        <fieldset class="sr-fgroup" style="border:0;padding:0;margin:0">
+                            <h2>Price</h2>
+                            <label class="sr-opt-row" th:each="pr : ${priceRanges}"><input type="radio" name="price"
+                                    th:value="${pr.value}" th:checked="${pr.selected}" value="" checked> <span
+                                    th:text="${pr.label}">Any price</span></label>
+                            <label class="sr-opt-row" th:remove="all"><input type="radio" name="price" value="0-3000">
+                                <span>Under &#8377;3,000</span></label>
+                            <label class="sr-opt-row" th:remove="all"><input type="radio" name="price"
+                                    value="3000-6000"> <span>&#8377;3,000 &ndash; &#8377;6,000</span></label>
+                            <label class="sr-opt-row" th:remove="all"><input type="radio" name="price"
+                                    value="6000-10000"> <span>&#8377;6,000 &ndash; &#8377;10,000</span></label>
+                            <label class="sr-opt-row" th:remove="all"><input type="radio" name="price" value="10000-">
+                                <span>Above &#8377;10,000</span></label>
+                        </fieldset>
+
+                        <div class="sr-fgroup">
+                            <h2>Availability</h2>
+                            <label class="sr-opt-row"><input type="checkbox" name="inStock" value="true"
+                                    th:checked="${inStock}"> <span>In stock only</span></label>
+                        </div>
+
+                        <button type="submit" class="sr-apply is-desktop-hide">Apply Filters</button>
+                    </aside>
+
+                    <!-- ----- Results column ----- -->
+                    <div>
+
+                        <!-- State: results -->
+                        <div id="srResults" th:hidden="${noResults or emptyQuery}">
+                            <div class="sr-bar-top">
+                                <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+                                    <button type="button" class="sr-filter-btn" id="srFilterBtn" aria-expanded="false"
+                                        aria-controls="srFilters">
+                                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                                            <path d="M4 6h16M7 12h10M10 18h4" />
+                                        </svg>Filters
+                                    </button>
+                                    <p class="sr-count" role="status"><strong th:text="${total}">24</strong> <span
+                                            th:text="${total == 1 ? 'product' : 'products'}">products</span><span
+                                            th:if="${!#strings.isEmpty(q)}"> for &ldquo;<span
+                                                th:text="${q}">saree</span>&rdquo;</span></p>
+                                </div>
+                                <label class="sr-sort" for="srSort">Sort by
+                                    <select class="sr-select" id="srSort" name="sort">
+                                        <option value="relevance" th:selected="${sort == 'relevance'}">Most relevant
+                                        </option>
+                                        <option value="newest" th:selected="${sort == 'newest'}">Newest</option>
+                                        <option value="price-asc" th:selected="${sort == 'price-asc'}">Price: Low to
+                                            High</option>
+                                        <option value="price-desc" th:selected="${sort == 'price-desc'}">Price: High to
+                                            Low</option>
+                                    </select>
+                                </label>
+                            </div>
+
+                            <p class="sr-didyou" th:if="${didYouMean != null}">Did you mean <a
+                                    th:href="${didYouMeanUrl}" th:text="${didYouMean}"
+                                    href="search.html?q=saree">saree</a>?</p>
+
+                            <div class="sr-active" th:if="${!#lists.isEmpty(activeFilters)}">
+                                <a class="sr-chip" th:each="f : ${activeFilters}" th:href="${f.removeUrl}"
+                                    href="#"><span th:text="${f.label}">Sarees</span><b
+                                        aria-hidden="true">&times;</b></a>
+                                <a class="sr-chip is-clear" th:href="${clearUrl}" href="#">Clear all</a>
+                            </div>
+
+                            <!-- Product cards: same markup as the shop. One real card + sample duplicates for the static preview. -->
+                            <div class="product-grid" id="srGrid">
+                                <div class="product-card" th:each="p : ${products}">
+                                    <a class="sr-card-link" th:href="${p.url}" href="product.html?id=1">
+                                        <div class="product-art tint-1" th:classappend="'tint-' + ${p.tint}">
+                                            <span class="product-tag" th:if="${p.tag != null}"
+                                                th:text="${p.tag}">Bestseller</span>
+                                            <img th:if="${p.imageUrl != null}" th:src="${p.imageUrl}" th:alt="${p.name}"
+                                                alt="">
+                                            <svg th:unless="${p.imageUrl != null}" viewBox="0 0 80 100" fill="none"
+                                                stroke="currentColor" aria-hidden="true">
+                                                <path
+                                                    d="M40 10c-10 6-16 16-16 28 0 14 7 25 16 31 9-6 16-17 16-31 0-12-6-22-16-28Z"
+                                                    stroke-width="1" />
+                                            </svg>
+                                        </div>
+                                        <div class="product-info">
+                                            <div>
+                                                <h3 th:text="${p.name}">Bandhani Silk Saree</h3><span class="region"
+                                                    th:text="${p.regionLabel}">Rajasthan</span>
+                                            </div>
+                                            <span class="product-price"
+                                                th:text="'₹' + ${#numbers.formatInteger(p.price, 1, 'COMMA')}">₹3,450</span>
+                                        </div>
+                                    </a>
+                                    <button type="button" class="add-cart" th:data-id="${p.id}" data-id="1"
+                                        th:text="${p.needsSize ? 'Select Size' : 'Add to Cart'}">Add to Cart</button>
+                                </div>
+
+                                <!-- static-preview samples (removed by Thymeleaf) -->
+                                <div class="product-card" th:remove="all">
+                                    <a class="sr-card-link" href="product.html?id=11">
+                                        <div class="product-art tint-3"><svg viewBox="0 0 80 100" fill="none"
+                                                stroke="currentColor" aria-hidden="true">
+                                                <path
+                                                    d="M40 10c-10 6-16 16-16 28 0 14 7 25 16 31 9-6 16-17 16-31 0-12-6-22-16-28Z"
+                                                    stroke-width="1" />
+                                            </svg></div>
+                                        <div class="product-info">
+                                            <div>
+                                                <h3>Ajrakh Print Suit</h3><span class="region">Gujarat</span>
+                                            </div><span class="product-price">₹2,950</span>
+                                        </div>
+                                    </a>
+                                    <button type="button" class="add-cart" data-id="11">Select Size</button>
+                                </div>
+                                <div class="product-card" th:remove="all">
+                                    <a class="sr-card-link" href="product.html?id=2">
+                                        <div class="product-art tint-2"><span class="product-tag">New</span><svg
+                                                viewBox="0 0 80 100" fill="none" stroke="currentColor"
+                                                aria-hidden="true">
+                                                <path
+                                                    d="M40 10c-10 6-16 16-16 28 0 14 7 25 16 31 9-6 16-17 16-31 0-12-6-22-16-28Z"
+                                                    stroke-width="1" />
+                                            </svg></div>
+                                        <div class="product-info">
+                                            <div>
+                                                <h3>Kanjeevaram Silk Saree</h3><span class="region">South India</span>
+                                            </div><span class="product-price">₹8,990</span>
+                                        </div>
+                                    </a>
+                                    <button type="button" class="add-cart" data-id="2">Add to Cart</button>
+                                </div>
+                                <div class="product-card" th:remove="all">
+                                    <a class="sr-card-link" href="product.html?id=13">
+                                        <div class="product-art tint-4"><svg viewBox="0 0 80 100" fill="none"
+                                                stroke="currentColor" aria-hidden="true">
+                                                <path
+                                                    d="M40 10c-10 6-16 16-16 28 0 14 7 25 16 31 9-6 16-17 16-31 0-12-6-22-16-28Z"
+                                                    stroke-width="1" />
+                                            </svg></div>
+                                        <div class="product-info">
+                                            <div>
+                                                <h3>Phulkari Cotton Kurti</h3><span class="region">Punjab</span>
+                                            </div><span class="product-price">₹1,650</span>
+                                        </div>
+                                    </a>
+                                    <button type="button" class="add-cart" data-id="13">Select Size</button>
+                                </div>
+                            </div>
+
+                            <nav class="sr-pages" aria-label="Pagination" th:if="${pages != null and pages.size() > 1}">
+                                <a th:if="${prevUrl != null}" th:href="${prevUrl}" rel="prev" href="#">&larr;
+                                    Previous</a>
+                                <span th:unless="${prevUrl != null}" class="is-off">&larr; Previous</span>
+                                <a th:each="pg : ${pages}" th:href="${pg.url}" th:text="${pg.number}"
+                                    th:attr="aria-current=${pg.current ? 'page' : null}" href="#"
+                                    aria-current="page">1</a>
+                                <a th:remove="all" href="#">2</a>
+                                <a th:remove="all" href="#">3</a>
+                                <a th:if="${nextUrl != null}" th:href="${nextUrl}" rel="next" href="#">Next &rarr;</a>
+                                <span th:unless="${nextUrl != null}" class="is-off">Next &rarr;</span>
+                            </nav>
+                        </div>
+
+                        <!-- State: query given, nothing found -->
+                        <div class="sr-state" id="srNone" th:hidden="${!noResults}" hidden>
+                            <h2>No results for &ldquo;<span th:text="${q}">saree</span>&rdquo;</h2>
+                            <p>Check the spelling, try a more general word, or remove a filter.</p>
+                            <p th:if="${didYouMean != null}">Did you mean <a th:href="${didYouMeanUrl}"
+                                    th:text="${didYouMean}" href="#">saree</a>?</p>
+                            <div class="sr-state-actions">
+                                <a class="sr-btn" th:href="${clearUrl}" href="search.html?q=">Clear filters</a>
+                                <a class="sr-pill" th:href="@{/contact(topic='product')}"
+                                    href="contact.html?topic=product">Ask our team</a>
+                            </div>
+                            <p class="sr-sub">Browse instead</p>
+                            <div class="sr-state-actions">
+                                <a class="sr-pill" th:href="@{/shop(cat='sarees')}"
+                                    href="shop.html?cat=sarees">Sarees</a>
+                                <a class="sr-pill" th:href="@{/shop(cat='lehengas')}"
+                                    href="shop.html?cat=lehengas">Lehengas</a>
+                                <a class="sr-pill" th:href="@{/shop(cat='salwar-suits')}"
+                                    href="shop.html?cat=salwar-suits">Salwar Suits</a>
+                                <a class="sr-pill" th:href="@{/shop(cat='regional')}"
+                                    href="shop.html?cat=regional">Regional Wear</a>
+                            </div>
+                        </div>
+
+                        <!-- State: no query yet -->
+                        <div class="sr-state" id="srEmpty" th:hidden="${!emptyQuery}" hidden>
+                            <h2>Start typing to search</h2>
+                            <p>Find sarees, lehengas, salwar suits and regional wear from every state.</p>
+                            <p class="sr-sub">Popular searches</p>
+                            <div class="sr-state-actions">
+                                <a class="sr-pill" th:each="t : ${popularTerms}" th:href="@{/search(q=${t})}"
+                                    th:text="${t}" href="search.html?q=sarees">Sarees</a>
+                                <a class="sr-pill" th:remove="all" href="search.html?q=lehenga">Lehenga</a>
+                                <a class="sr-pill" th:remove="all" href="search.html?q=bandhani">Bandhani</a>
+                                <a class="sr-pill" th:remove="all" href="search.html?q=phulkari">Phulkari</a>
+                            </div>
+                            <p class="sr-sub">Or browse</p>
+                            <div class="sr-state-actions">
+                                <a class="sr-btn" th:href="@{/shop}" href="shop.html">New Arrivals</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+        </form>
+    </main>
+
+    <div id="footer" th:replace="~{fragments/footer :: footer}"></div>
+
+    <!-- Base script (href/src = static preview, th: = Spring Boot) -->
+    <script src="js/products.js" th:src="@{/js/products.js}" th:remove="all"></script>
+    <script src="js/script.js" th:src="@{/js/script.js}"></script>
+
+    <!-- ===================== PAGE SCRIPT (small: suggestions, recent searches, filter drawer) ===================== -->
+    <script th:inline="none">
+        (function () {
+            'use strict';
+            document.documentElement.classList.add('js');
+
+            const $ = (s, r = document) => r.querySelector(s);
+            const form = $('#srForm'), input = $('#srInput'), box = $('#srSuggest'), clearBtn = $('#srClear');
+            const RECENT_KEY = 'sutra_recent_searches_v1';
+            const SUGGEST_URL = box.dataset.url;          // GET {url}?q=…  -> { products: [...], terms: [...] }
+            const MIN_CHARS = 2;
+
+            /* ---------- Recent searches (stored only in this browser) ---------- */
+            const readRecent = () => { try { return JSON.parse(localStorage.getItem(RECENT_KEY)) || []; } catch (e) { return []; } };
+            const writeRecent = (list) => { try { localStorage.setItem(RECENT_KEY, JSON.stringify(list.slice(0, 6))); } catch (e) { /* ignore */ } };
+            function remember(q) {
+                q = q.trim();
+                if (q.length < MIN_CHARS) return;
+                writeRecent([q].concat(readRecent().filter(x => x.toLowerCase() !== q.toLowerCase())));
+            }
+            function renderRecentChips() {
+                const list = readRecent(), row = $('#srRecentRow'), holder = $('#srRecentChips');
+                holder.textContent = '';
+                list.forEach(t => {
+                    const a = document.createElement('a');
+                    a.href = (form.getAttribute('action') || 'search').split('?')[0] + '?q=' + encodeURIComponent(t);
+                    a.textContent = t;
+                    holder.appendChild(a);
+                });
+                row.hidden = list.length === 0;
+            }
+            $('#srRecentClear').addEventListener('click', () => { writeRecent([]); renderRecentChips(); });
+            form.addEventListener('submit', () => remember(input.value));
+            renderRecentChips();
+
+            /* ---------- Suggestions dropdown (combobox) ---------- */
+            let items = [], active = -1, reqId = 0, timer = null, ctrl = null;
+
+            function el(tag, cls, text) { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+            function mark(node, text, q) {                       // highlight the typed text without innerHTML
+                const i = text.toLowerCase().indexOf(q.toLowerCase());
+                if (!q || i < 0) { node.textContent = text; return; }
+                node.append(text.slice(0, i));
+                node.appendChild(el('mark', '', text.slice(i, i + q.length)));
+                node.append(text.slice(i + q.length));
+            }
+            function head(label, actionLabel, onAction) {
+                const h = el('div', 'sr-sg-head'); h.appendChild(el('span', '', label));
+                if (actionLabel) { const b = el('button', '', actionLabel); b.type = 'button'; b.addEventListener('mousedown', e => e.preventDefault()); b.addEventListener('click', onAction); h.appendChild(b); }
+                return h;
+            }
+            function option(node) { node.setAttribute('role', 'option'); node.id = 'sr-opt-' + items.length; items.push(node); return node; }
+
+            function openBox() { box.hidden = items.length === 0; input.setAttribute('aria-expanded', String(!box.hidden)); }
+            function closeBox() { box.hidden = true; input.setAttribute('aria-expanded', 'false'); input.removeAttribute('aria-activedescendant'); active = -1; }
+            function setActive(i) {
+                items.forEach(n => n.classList.remove('is-active'));
+                active = i;
+                if (i >= 0 && items[i]) { items[i].classList.add('is-active'); input.setAttribute('aria-activedescendant', items[i].id); items[i].scrollIntoView({ block: 'nearest' }); }
+                else input.removeAttribute('aria-activedescendant');
+            }
+
+            function renderRecentOptions() {
+                box.textContent = ''; items = []; active = -1;
+                const list = readRecent();
+                if (!list.length) { openBox(); return; }
+                box.appendChild(head('Recent searches', 'Clear', () => { writeRecent([]); renderRecentChips(); closeBox(); }));
+                list.forEach(t => {
+                    const b = option(el('button', 'sr-opt')); b.type = 'button'; b.dataset.term = t;
+                    b.appendChild(el('span', '', t)); box.appendChild(b);
+                });
+                openBox();
+            }
+
+            function renderSuggestions(q, data) {
+                box.textContent = ''; items = []; active = -1;
+                const products = (data && data.products) || [], terms = (data && data.terms) || [];
+                if (terms.length) {
+                    box.appendChild(head('Suggestions'));
+                    terms.slice(0, 4).forEach(t => { const b = option(el('button', 'sr-opt')); b.type = 'button'; b.dataset.term = t; const s = el('span'); mark(s, t, q); b.appendChild(s); box.appendChild(b); });
+                }
+                if (products.length) {
+                    box.appendChild(head('Products'));
+                    products.slice(0, 5).forEach(p => {
+                        const a = option(el('a', 'sr-opt')); a.href = p.url;
+                        const left = el('span'); const nm = el('span'); mark(nm, p.name, q); left.appendChild(nm);
+                        if (p.meta) left.appendChild(el('small', '', p.meta));
+                        a.appendChild(left); if (p.price) a.appendChild(el('span', 'p', p.price));
+                        box.appendChild(a);
+                    });
+                }
+                const all = option(el('button', 'sr-opt is-all', 'See all results for \u201C' + q + '\u201D')); all.type = 'button'; all.dataset.submit = '1'; box.appendChild(all);
+                openBox();
+            }
+
+            function fetchSuggestions(q) {
+                const id = ++reqId;
+                if (ctrl) ctrl.abort();
+                ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+                fetch(SUGGEST_URL + (SUGGEST_URL.indexOf('?') > -1 ? '&' : '?') + 'q=' + encodeURIComponent(q), { headers: { 'Accept': 'application/json' }, signal: ctrl ? ctrl.signal : undefined })
+                    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+                    .then(data => { if (id === reqId && input.value.trim() === q) renderSuggestions(q, data); })
+                    .catch(() => { if (id === reqId) closeBox(); });          // no backend / network error: simply no dropdown
+            }
+
+            function onInput() {
+                clearBtn.hidden = input.value === '';
+                clearTimeout(timer);
+                const q = input.value.trim();
+                if (q.length < MIN_CHARS) { ++reqId; if (q.length === 0 && document.activeElement === input) renderRecentOptions(); else closeBox(); return; }
+                timer = setTimeout(() => fetchSuggestions(q), 200);
+            }
+            input.addEventListener('input', onInput);
+            input.addEventListener('focus', () => { if (input.value.trim().length < MIN_CHARS) renderRecentOptions(); });
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                    if (box.hidden) { if (input.value.trim().length < MIN_CHARS) renderRecentOptions(); else return; }
+                    e.preventDefault();
+                    setActive(e.key === 'ArrowDown' ? (active + 1) % items.length : (active <= 0 ? items.length - 1 : active - 1));
+                } else if (e.key === 'Enter' && active >= 0 && !box.hidden) {
+                    e.preventDefault(); items[active].click();
+                } else if (e.key === 'Escape') {
+                    if (!box.hidden) { e.preventDefault(); closeBox(); }
+                } else if (e.key === 'Tab') closeBox();
+            });
+            box.addEventListener('mousedown', (e) => e.preventDefault());       // keep focus in the input while clicking
+            box.addEventListener('click', (e) => {
+                const b = e.target.closest('button.sr-opt'); if (!b) return;
+                if (b.dataset.term) input.value = b.dataset.term;
+                closeBox();
+                if (form.requestSubmit) form.requestSubmit(); else form.submit();
+            });
+            document.addEventListener('click', (e) => { if (!box.hidden && !e.target.closest('.sr-search')) closeBox(); });
+            clearBtn.addEventListener('click', () => { input.value = ''; clearBtn.hidden = true; input.focus(); renderRecentOptions(); });
+            clearBtn.hidden = input.value === '';
+
+            // arriving without a query: put the cursor in the search box
+            if (input.value === '' && !$('#srEmpty').hidden) input.focus();
+
+            /* ---------- Filters: auto-apply on desktop, drawer on mobile ---------- */
+            const filters = $('#srFilters'), scrim = $('#srScrim'), openBtn = $('#srFilterBtn'), closeBtn = $('#srFilterClose');
+            const desktop = () => window.matchMedia('(min-width: 961px)').matches;
+            let submitTimer;
+            function autoApply() {
+                if (!desktop()) return;
+                clearTimeout(submitTimer);
+                submitTimer = setTimeout(() => { if (form.requestSubmit) form.requestSubmit(); else form.submit(); }, 250);
+            }
+            filters.addEventListener('change', autoApply);
+            $('#srSort').addEventListener('change', () => { if (form.requestSubmit) form.requestSubmit(); else form.submit(); });
+
+            function setDrawer(open) {
+                filters.classList.toggle('is-open', open); scrim.classList.toggle('is-open', open);
+                openBtn.setAttribute('aria-expanded', String(open));
+                if (open) closeBtn.focus(); else openBtn.focus();
+            }
+            openBtn.addEventListener('click', () => setDrawer(true));
+            closeBtn.addEventListener('click', () => setDrawer(false));
+            scrim.addEventListener('click', () => setDrawer(false));
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && filters.classList.contains('is-open')) setDrawer(false); });
+        })();
+    </script>
+
+    <script th:remove="all">
+        (function () {
+            var q = new URLSearchParams(location.search).get('preview');
+            if (q === 'none' || q === 'empty') {
+                document.getElementById('srResults').hidden = true;
+                document.getElementById(q === 'none' ? 'srNone' : 'srEmpty').hidden = false;
+                document.getElementById('srFilters').hidden = (q === 'empty');
+                if (q === 'empty') document.querySelector('.sr-grid').classList.add('is-single');
+                if (q === 'empty') document.querySelector('.sr-hero h1:not([hidden])').hidden = true;
+                if (q === 'empty') document.querySelectorAll('.sr-hero h1')[1].hidden = false;
+                if (q === 'empty') { document.getElementById('srInput').value = ''; document.getElementById('srInput').focus(); }
+            }
+            var SAMPLE = [
+                { id: 1, name: 'Bandhani Silk Saree', meta: 'Sarees \u00B7 Rajasthan', price: '\u20B93,450', url: 'product.html?id=1' },
+                { id: 2, name: 'Kanjeevaram Silk Saree', meta: 'Sarees \u00B7 South India', price: '\u20B98,990', url: 'product.html?id=2' },
+                { id: 3, name: 'Tant Cotton Saree', meta: 'Sarees \u00B7 Bengal', price: '\u20B92,100', url: 'product.html?id=3' },
+                { id: 4, name: 'Paithani Silk Saree', meta: 'Sarees \u00B7 Maharashtra', price: '\u20B96,750', url: 'product.html?id=4' }
+            ];
+            var realFetch = window.fetch;
+            window.fetch = function (url, opts) {
+                if (String(url).indexOf('/api/search/suggest') === -1) return realFetch.apply(this, arguments);
+                var term = decodeURIComponent((String(url).split('q=')[1] || '')).toLowerCase();
+                var hits = SAMPLE.filter(function (p) { return p.name.toLowerCase().indexOf(term) > -1 || p.meta.toLowerCase().indexOf(term) > -1; });
+                var body = { products: hits, terms: hits.length ? [term, term + ' blouse', term + ' silk'] : [] };
+                return Promise.resolve({ ok: true, json: function () { return Promise.resolve(body); } });
+            };
+        })();
+    </script>
+
+</body>
+
+</html>

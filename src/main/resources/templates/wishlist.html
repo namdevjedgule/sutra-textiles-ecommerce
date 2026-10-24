@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Wishlist — Sutra Textiles India</title>
+    <meta name="description"
+        content="Your saved pieces from Sutra Textiles India — traditional ethnic wear made in-house in Bhilwara, Rajasthan.">
+    <meta name="robots" content="noindex">
+ <link rel="icon" type="image/x-icon" th:href="@{/favicon_io/favicon.ico}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Work+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css" th:href="@{/css/style.css}">
+
+    <style>
+        [hidden] {
+            display: none !important;
+        }
+
+        .wl-hero {
+            background: var(--green);
+            color: var(--ivory);
+            padding-block: clamp(2rem, 5vw, 3rem);
+        }
+
+        .wl-crumbs {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            font-size: .8rem;
+            color: #b9c4b6;
+            margin-bottom: .9rem;
+        }
+
+        .wl-crumbs a:hover {
+            color: var(--gold-light);
+        }
+
+        .wl-hero h1 {
+            color: var(--ivory);
+            margin-bottom: .35rem;
+        }
+
+        .wl-hero p {
+            color: #c9d1c6;
+            font-size: .98rem;
+        }
+
+        .wl-main {
+            padding-block: clamp(2rem, 4vw, 3rem) clamp(3rem, 6vw, 5rem);
+        }
+
+        .wl-shared {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: .8rem 1.5rem;
+            padding: 1rem 1.3rem;
+            margin-bottom: 1.8rem;
+            border: 1px solid var(--gold);
+            background: rgba(201, 162, 75, .1);
+            border-radius: var(--radius);
+            font-size: .92rem;
+        }
+
+        .wl-shared a {
+            color: var(--green);
+            border-bottom: 1px solid var(--gold);
+        }
+
+        .wl-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem 1.5rem;
+            padding-bottom: 1.3rem;
+            border-bottom: 1px solid var(--grey);
+            margin-bottom: 1.8rem;
+        }
+
+        .wl-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .6rem;
+        }
+
+        .wl-chip {
+            padding: .5rem 1.1rem;
+            border: 1px solid var(--grey);
+            border-radius: 999px;
+            font-size: .84rem;
+            color: var(--green);
+            background: var(--ivory-soft);
+            transition: all .2s var(--ease);
+        }
+
+        .wl-chip:hover {
+            border-color: var(--gold);
+        }
+
+        .wl-chip[aria-pressed="true"] {
+            background: var(--green);
+            border-color: var(--green);
+            color: var(--ivory);
+        }
+
+        .wl-tools {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: .8rem 1.4rem;
+        }
+
+        .wl-sort {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            font-size: .84rem;
+            color: var(--green);
+        }
+
+        .wl-select {
+            border: 1px solid var(--grey);
+            background: var(--ivory-soft);
+            color: var(--charcoal);
+            padding: .5rem .8rem;
+            border-radius: var(--radius);
+            font: inherit;
+            font-size: .85rem;
+        }
+
+        .wl-link-btn {
+            font-size: .84rem;
+            color: var(--olive);
+            border-bottom: 1px solid transparent;
+            padding-bottom: 1px;
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+        }
+
+        .wl-link-btn:hover {
+            color: var(--green);
+            border-color: var(--gold);
+        }
+
+        .wl-link-btn.is-danger:hover {
+            color: var(--terracotta);
+            border-color: var(--terracotta);
+        }
+
+        .wl-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            padding: 0 1.4rem;
+            border-radius: var(--radius);
+            background: var(--gold);
+            color: var(--green-deep);
+            font-weight: 500;
+            letter-spacing: .04em;
+            font-size: .86rem;
+            transition: background .25s var(--ease);
+        }
+
+        .wl-btn:hover {
+            background: var(--gold-light);
+        }
+
+        /* ---------- Grid + cards ---------- */
+        .wl-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: clamp(1.2rem, 2.4vw, 2rem);
+        }
+
+        .wl-card {
+            display: flex;
+            flex-direction: column;
+            background: var(--ivory-soft);
+            border: 1px solid var(--grey);
+            border-radius: var(--radius);
+            padding: 1rem;
+            transition: border-color .25s var(--ease);
+        }
+
+        .wl-card:hover {
+            border-color: #c9bd9c;
+        }
+
+        .wl-card.is-shake {
+            animation: wl-shake .4s var(--ease);
+        }
+
+        @keyframes wl-shake {
+
+            20%,
+            60% {
+                transform: translateX(-5px);
+            }
+
+            40%,
+            80% {
+                transform: translateX(5px);
+            }
+        }
+
+        .wl-art {
+            position: relative;
+        }
+
+        .wl-frame {
+            display: block;
+            aspect-ratio: 4 / 5;
+            padding: 6px;
+            border: 1px solid rgba(201, 162, 75, .65);
+            border-radius: 50% 50% 4px 4px / 27% 27% 4px 4px;
+        }
+
+        .wl-frame>span {
+            display: block;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 50% 50% 2px 2px / 26% 26% 2px 2px;
+            background: var(--ivory);
+        }
+
+        .wl-frame svg,
+        .wl-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .5s var(--ease);
+        }
+
+        .wl-card:hover .wl-frame svg,
+        .wl-card:hover .wl-frame img {
+            transform: scale(1.03);
+        }
+
+        .wl-tag {
+            position: absolute;
+            top: 1.1rem;
+            left: .3rem;
+            z-index: 2;
+            background: var(--terracotta);
+            color: var(--ivory);
+            font-size: .68rem;
+            letter-spacing: .08em;
+            padding: .25rem .6rem;
+            border-radius: var(--radius);
+        }
+
+        .wl-corner {
+            position: absolute;
+            top: .4rem;
+            right: -.2rem;
+            z-index: 2;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(251, 248, 242, .95);
+            border: 1px solid rgba(20, 38, 32, .14);
+            color: var(--green);
+            display: grid;
+            place-items: center;
+            transition: color .2s var(--ease), border-color .2s var(--ease);
+        }
+
+        .wl-corner:hover {
+            color: var(--terracotta);
+            border-color: var(--terracotta);
+        }
+
+        .wl-corner svg {
+            width: 17px;
+            height: 17px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+        }
+
+        .wl-corner.is-heart svg {
+            stroke-width: 1.6;
+        }
+
+        .wl-corner.is-heart[aria-pressed="true"] {
+            color: var(--terracotta);
+            border-color: var(--terracotta);
+        }
+
+        .wl-corner.is-heart[aria-pressed="true"] svg {
+            fill: var(--terracotta);
+        }
+
+        .wl-body {
+            display: flex;
+            flex-direction: column;
+            gap: .55rem;
+            padding-top: 1rem;
+            flex: 1;
+        }
+
+        .wl-eyebrow {
+            font-size: .7rem;
+            letter-spacing: .12em;
+            color: var(--olive);
+            text-transform: uppercase;
+        }
+
+        .wl-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            color: var(--green);
+            line-height: 1.25;
+        }
+
+        .wl-card h3 a:hover {
+            text-decoration: underline;
+            text-decoration-color: var(--gold);
+            text-underline-offset: 3px;
+        }
+
+        .wl-price {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: .2rem .6rem;
+        }
+
+        .wl-price strong {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        .wl-price s {
+            font-size: .82rem;
+            color: var(--olive);
+        }
+
+        .wl-price span {
+            font-size: .72rem;
+            letter-spacing: .05em;
+            color: var(--ivory);
+            background: var(--olive);
+            padding: .12rem .45rem;
+            border-radius: var(--radius);
+        }
+
+        .wl-swatches {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: .55rem;
+            font-size: .78rem;
+            color: var(--olive);
+        }
+
+        .wl-swatch {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--sw);
+            border: 1px solid rgba(0, 0, 0, .16);
+        }
+
+        .wl-swatch[aria-checked="true"] {
+            outline: 2px solid var(--gold);
+            outline-offset: 2px;
+        }
+
+        .wl-color-name {
+            margin-left: .2rem;
+        }
+
+        .wl-size {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            font-size: .8rem;
+            color: var(--olive);
+        }
+
+        .wl-size .wl-select {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .wl-size.is-invalid .wl-select {
+            border-color: var(--terracotta);
+        }
+
+        .wl-status {
+            font-size: .8rem;
+            color: var(--olive);
+            min-height: 1.2em;
+        }
+
+        .wl-status.is-warn {
+            color: var(--terracotta);
+        }
+
+        .wl-status.is-info {
+            color: #8a6a1f;
+        }
+
+        .wl-status.is-cart {
+            color: var(--green);
+        }
+
+        .wl-add {
+            margin-top: auto;
+            width: 100%;
+            min-height: 46px;
+            border: 1px solid var(--green);
+            color: var(--green);
+            font-size: .86rem;
+            letter-spacing: .05em;
+            border-radius: var(--radius);
+            transition: background .25s var(--ease), color .25s var(--ease);
+        }
+
+        .wl-add:hover:not(:disabled) {
+            background: var(--green);
+            color: var(--ivory);
+        }
+
+        .wl-add.is-added {
+            background: var(--olive);
+            border-color: var(--olive);
+            color: var(--ivory);
+        }
+
+        .wl-add:disabled {
+            border-color: var(--grey);
+            color: #9a978c;
+            cursor: not-allowed;
+        }
+
+        .wl-note {
+            margin-top: 2.2rem;
+            font-size: .86rem;
+            color: var(--olive);
+            text-align: center;
+            max-width: none;
+        }
+
+        .wl-note a {
+            color: var(--green);
+            border-bottom: 1px solid var(--gold);
+        }
+
+        /* ---------- Empty ---------- */
+        .wl-empty {
+            text-align: center;
+            padding: clamp(2rem, 6vw, 4rem) 1rem clamp(1rem, 3vw, 2rem);
+        }
+
+        .wl-empty-arch {
+            width: 150px;
+            aspect-ratio: 3 / 4;
+            margin: 0 auto 1.8rem;
+            padding: 10px;
+            border: 1px solid rgba(201, 162, 75, .65);
+            border-radius: 50% 50% 6px 6px / 34% 34% 6px 6px;
+        }
+
+        .wl-empty-arch span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            border-radius: 50% 50% 3px 3px / 33% 33% 3px 3px;
+            background: linear-gradient(160deg, #24402f, #142620);
+            color: var(--gold-light);
+        }
+
+        .wl-empty-arch svg {
+            width: 38%;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.5;
+        }
+
+        .wl-empty h2 {
+            margin-bottom: .6rem;
+        }
+
+        .wl-empty p {
+            margin: 0 auto 1.6rem;
+            color: var(--olive);
+        }
+
+        .wl-empty-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: .8rem;
+        }
+
+        .wl-cats {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: .6rem;
+            margin-top: 1.6rem;
+        }
+
+        .wl-cats a {
+            padding: .5rem 1.1rem;
+            border: 1px solid var(--grey);
+            border-radius: 999px;
+            font-size: .84rem;
+            color: var(--green);
+            background: var(--ivory-soft);
+            transition: border-color .2s var(--ease);
+        }
+
+        .wl-cats a:hover {
+            border-color: var(--gold);
+        }
+
+        /* ---------- Recs ---------- */
+        .wl-recs {
+            background: var(--ivory-soft);
+            border-top: 1px solid var(--grey);
+        }
+
+        .wl-card-link {
+            display: block;
+        }
+
+        .wl-card-link:hover .product-art {
+            transform: translateY(-3px);
+        }
+
+        .product-art {
+            transition: transform .35s var(--ease);
+        }
+
+        /* ---------- Undo bar ---------- */
+        .wl-undo {
+            position: fixed;
+            left: 50%;
+            bottom: 1.5rem;
+            transform: translate(-50%, 20px);
+            z-index: 2200;
+            opacity: 0;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            padding: .85rem 1.2rem;
+            background: var(--green-deep);
+            color: var(--ivory);
+            border-left: 3px solid var(--gold);
+            border-radius: 2px;
+            box-shadow: 0 12px 32px rgba(20, 38, 32, .25);
+            font-size: .88rem;
+            max-width: calc(100vw - 1.5rem);
+            transition: opacity .25s var(--ease), transform .25s var(--ease);
+        }
+
+        .wl-undo.is-in {
+            opacity: 1;
+            transform: translate(-50%, 0);
+            pointer-events: auto;
+        }
+
+        .wl-undo button {
+            color: var(--gold-light);
+            border-bottom: 1px solid currentColor;
+            font-size: .84rem;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 520px) {
+            .wl-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .wl-card {
+                display: grid;
+                grid-template-columns: 116px minmax(0, 1fr);
+                gap: 1rem;
+            }
+
+            .wl-body {
+                padding-top: 0;
+            }
+
+            .wl-corner {
+                right: -.4rem;
+                width: 32px;
+                height: 32px;
+            }
+
+            .wl-tag {
+                top: .6rem;
+            }
+
+            .wl-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .wl-tools {
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="navbar" th:replace="~{fragments/navbar :: navbar}"></div>
+  <div id="navSpacer"></div>
+
+    <main>
+
+        <section class="wl-hero">
+            <div class="container">
+                <nav class="wl-crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a><span
+                        aria-hidden="true">/</span><span aria-current="page">Wishlist</span></nav>
+                <h1 id="wlTitle">Your Wishlist</h1>
+                <p id="wlCount">&nbsp;</p>
+            </div>
+        </section>
+
+        <section class="wl-main">
+            <div class="container">
+
+                <div class="wl-shared" id="wlShared" hidden>
+                    <span>You&rsquo;re viewing a shared wishlist. Save any piece to your own wishlist with the
+                        heart.</span>
+                    <span><button type="button" class="wl-link-btn" id="wlSaveAll">Save all to my wishlist</button>
+                        &nbsp;&middot;&nbsp; <a href="wishlist.html">Go to my wishlist</a></span>
+                </div>
+
+                <div class="wl-empty" id="wlEmpty" hidden>
+                    <div class="wl-empty-arch" aria-hidden="true">
+                        <span><svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 20s-7-4.3-9.5-8.8C.8 7.8 2.6 4 6.3 4 8.6 4 10.6 5.3 12 7.2 13.4 5.3 15.4 4 17.7 4c3.7 0 5.5 3.8 3.8 7.2C19 15.7 12 20 12 20Z" />
+                            </svg></span>
+                    </div>
+                    <h2>Your wishlist is empty</h2>
+                    <p>Tap the heart on a piece you love and it will wait for you here.</p>
+                    <div class="wl-empty-actions">
+                        <a href="shop.html" class="wl-btn">Shop New Arrivals</a>
+                    </div>
+                    <div class="wl-cats">
+                        <a href="shop.html?cat=sarees">Sarees</a>
+                        <a href="shop.html?cat=lehengas">Lehengas</a>
+                        <a href="shop.html?cat=salwar-suits">Salwar Suits</a>
+                        <a href="shop.html?cat=regional">Regional Wear</a>
+                    </div>
+                </div>
+
+                <div id="wlFilled" hidden>
+                    <div class="wl-toolbar">
+                        <div class="wl-chips" id="wlChips" role="group" aria-label="Filter by category"></div>
+                        <div class="wl-tools">
+                            <label class="wl-sort" for="wlSort">Sort by
+                                <select class="wl-select" id="wlSort">
+                                    <option value="recent">Recently added</option>
+                                    <option value="price-asc">Price: Low to High</option>
+                                    <option value="price-desc">Price: High to Low</option>
+                                    <option value="name">Name: A to Z</option>
+                                </select>
+                            </label>
+                            <button type="button" class="wl-btn" id="wlAddAll">Add All to Cart</button>
+                            <button type="button" class="wl-link-btn" id="wlShare">Share</button>
+                            <button type="button" class="wl-link-btn is-danger" id="wlClear">Clear all</button>
+                        </div>
+                    </div>
+
+                    <div class="wl-grid" id="wlGrid"></div>
+                    <p class="wl-note" id="wlNote">Your wishlist is saved on this device. <a href="account.html">Log
+                            in</a> to keep it with you everywhere.</p>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="wl-recs">
+            <div class="container">
+                <div class="section-head">
+                    <span class="eyebrow">HANDPICKED FOR YOU</span>
+                    <h2 id="wlRecsTitle">You May Also Love</h2>
+                </div>
+                <div class="product-grid" id="wlRecs"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <div class="wl-undo" id="wlUndo" role="status" aria-live="polite">
+        <span id="wlUndoMsg"></span>
+        <button type="button" id="wlUndoBtn">Undo</button>
+    </div>
+
+    <div id="footer" th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="js/products.js" th:src="@{/js/products.js}"></script>
+    <script src="js/script.js" th:src="@{/js/script.js}"></script>
+
+    <script th:inline="none">
+        (function () {
+            'use strict';
+
+            const cat = Sutra.catalog;
+            const money = cat.money;
+            const $ = (sel, root = document) => root.querySelector(sel);
+            const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+            const esc = (s) => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+            const WISH_KEY = 'sutra_wishlist_v1';
+
+            const params = new URLSearchParams(window.location.search);
+            const shared = params.has('items');
+            const sharedIds = shared
+                ? Array.from(new Set(params.get('items').split(',').map(Number).filter(n => Number.isInteger(n) && cat.byId(n)))).slice(0, 40)
+                : [];
+
+            const view = { sort: 'recent', cat: 'all' };
+            const picks = new Map();          
+            let suspend = false;
+            let undoTimer = null;
+
+            const grid = $('#wlGrid');
+
+            function ids() {
+                if (shared) return sharedIds.slice();
+                const stored = Sutra.wishlist.ids();
+                const valid = stored.filter(id => cat.byId(id));
+                if (valid.length !== stored.length) Sutra.store.write(WISH_KEY, valid);   // drop products that no longer exist
+                return valid;
+            }
+            function pickFor(p) {
+                if (!picks.has(p.id)) picks.set(p.id, { color: cat.defaultColor(p), size: cat.needsSize(p) ? null : p.sizes[0].label });
+                return picks.get(p.id);
+            }
+            const inCart = (p) => Sutra.cart.items().some(i => i.id === p.id);
+            const tracked = (p) => p.stock === 'in-stock';
+            const unavailable = (p) => tracked(p) && p.sizes.every(s => s.qty === 0);
+
+            const hexToRgb = (h) => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
+            const toHex = (r, g, b) => '#' + [r, g, b].map(v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')).join('');
+            const mix = (x, y, k) => { const p = hexToRgb(x), q = hexToRgb(y); return toHex(p[0] + (q[0] - p[0]) * k, p[1] + (q[1] - p[1]) * k, p[2] + (q[2] - p[2]) * k); };
+            const lum = (hex) => { const c = hexToRgb(hex).map(v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); }); return .2126 * c[0] + .7152 * c[1] + .0722 * c[2]; };
+            let uid = 0;
+            function artSvg(hex, category) {
+                const id = 'wl' + (++uid), dark = lum(hex) < .32;
+                const bgA = mix(hex, '#ffffff', dark ? .14 : .38), bgB = mix(hex, '#000000', dark ? .38 : .16);
+                const line = dark ? '#E3CB8E' : '#1C3329';
+                const g = `fill="${dark ? 'rgba(227,203,142,.13)' : 'rgba(28,51,41,.09)'}" stroke="${line}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"`;
+                let body;
+                if (category === 'sarees') {
+                    let pleats = '';
+                    for (let i = 0; i < 8; i++) pleats += `M${152 + i * 13} 214L${140 + i * 17} 458`;
+                    body = `<g ${g}><path d="M130 90H270L292 450Q200 478 108 450Z"/><path d="${pleats}" fill="none" stroke-opacity=".7"/>
+        <path d="M130 90C190 140 260 130 300 70L316 118C262 196 176 210 118 164Z" fill="${line}" fill-opacity=".2"/><path d="M108 450Q200 478 292 450M112 430Q200 456 288 430" fill="none"/></g>`;
+                } else if (category === 'lehengas') {
+                    body = `<g ${g}><path d="M168 96H232L246 170Q200 196 154 170Z"/><path d="M150 214H250L252 232H148Z"/><path d="M148 232H252L336 452Q200 486 64 452Z"/>
+        <path d="M120 330Q200 350 280 330M96 392Q200 414 304 392M70 440Q200 474 330 440" fill="none"/><path d="M232 100C300 140 330 260 300 330" fill="none"/></g>`;
+                } else {
+                    const long = category === 'regional', hem = long ? 380 : 340;
+                    body = `<g ${g}><path d="M146 100H254L${long ? 274 : 282} ${hem}H${long ? 126 : 118}Z"/><path d="M178 100Q200 132 222 100" fill="none"/>
+        <path d="M146 100 102 190 126 204 150 150M254 100 298 190 274 204 250 150"/>
+        ${long ? `<path d="M150 ${hem}L146 470M250 ${hem}L254 470" fill="none"/>` : `<path d="M124 ${hem}H276L316 470H218L200 396 182 470H84Z"/>`}
+        <path d="M232 104C320 150 340 280 296 400" fill="none"/></g>`;
+                }
+                return `<svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${bgA}"/><stop offset="1" stop-color="${bgB}"/></linearGradient></defs>
+      <rect width="400" height="500" fill="url(#${id})"/>${body}</svg>`;
+            }
+            function artHTML(p, color) {
+                const set = p.images && (p.images[color.name] || p.images.default);
+                return set && set.length ? `<img src="${esc(set[0])}" alt="" loading="lazy">` : artSvg(color.hex, p.category);
+            }
+
+            const ICON_X = '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+            const ICON_HEART = '<svg viewBox="0 0 24 24"><path d="M12 20s-7-4.3-9.5-8.8C.8 7.8 2.6 4 6.3 4 8.6 4 10.6 5.3 12 7.2 13.4 5.3 15.4 4 17.7 4c3.7 0 5.5 3.8 3.8 7.2C19 15.7 12 20 12 20Z"/></svg>';
+
+            function statusOf(p, pick) {
+                if (unavailable(p)) return { cls: 'is-warn', text: 'Currently unavailable' };
+                const sizeObj = p.sizes.find(s => s.label === pick.size);
+                if (tracked(p) && sizeObj && sizeObj.qty > 0 && sizeObj.qty <= 3) return { cls: 'is-warn', text: `Only ${sizeObj.qty} left in size ${pick.size}` };
+                if (inCart(p)) return { cls: 'is-cart', text: 'Already in your cart' };
+                if (p.stock === 'made-to-order') return { cls: 'is-info', text: `Made to order \u00B7 ships in ${p.dispatchDays[0]}\u2013${p.dispatchDays[1]} days` };
+                return { cls: '', text: 'In stock' };
+            }
+
+            function cardHTML(p) {
+                const pick = pickFor(p);
+                const color = p.colors.find(c => c.name === pick.color) || p.colors[0];
+                const st = statusOf(p, pick);
+                const off = cat.discount(p);
+                const corner = shared
+                    ? `<button type="button" class="wl-corner is-heart" data-act="save" aria-pressed="${Sutra.wishlist.has(p.id)}" aria-label="${Sutra.wishlist.has(p.id) ? 'Remove from my wishlist' : 'Save to my wishlist'}">${ICON_HEART}</button>`
+                    : `<button type="button" class="wl-corner" data-act="remove" aria-label="Remove ${esc(p.name)} from wishlist">${ICON_X}</button>`;
+                return `<article class="wl-card" data-id="${p.id}">
+      <div class="wl-art">
+        <a class="wl-frame" href="product.html?id=${p.id}" aria-label="View ${esc(p.name)}"><span>${artHTML(p, color)}</span></a>
+        ${p.tag ? `<span class="wl-tag">${esc(p.tag)}</span>` : ''}
+        ${corner}
+      </div>
+      <div class="wl-body">
+        <div class="wl-eyebrow">${esc(cat.regionLabel(p.region))} \u00B7 ${esc(cat.categoryLabel(p.category))}</div>
+        <h3><a href="product.html?id=${p.id}">${esc(p.name)}</a></h3>
+        <div class="wl-price"><strong>${money(p.price)}</strong>${p.mrp > p.price ? `<s>${money(p.mrp)}</s><span>${off}% OFF</span>` : ''}</div>
+        <div class="wl-swatches" role="radiogroup" aria-label="Colour">
+          ${p.colors.map(c => `<button type="button" class="wl-swatch" role="radio" data-act="color" data-color="${esc(c.name)}" aria-checked="${c.name === color.name}" aria-label="${esc(c.name)}" title="${esc(c.name)}" style="--sw:${c.hex}"></button>`).join('')}
+          <span class="wl-color-name">${esc(color.name)}</span>
+        </div>
+        ${cat.needsSize(p) ? `<label class="wl-size"><span>Size</span>
+          <select class="wl-select" data-act="size" aria-label="Size for ${esc(p.name)}">
+            <option value=""${pick.size ? '' : ' selected'} disabled>Select size</option>
+            ${p.sizes.map(s => { const out = tracked(p) && s.qty === 0; return `<option value="${esc(s.label)}"${s.label === pick.size ? ' selected' : ''}${out ? ' disabled' : ''}>${esc(s.label)}${out ? ' (out of stock)' : ''}</option>`; }).join('')}
+          </select></label>` : ''}
+        <div class="wl-status ${st.cls}" role="status">${esc(st.text)}</div>
+        <button type="button" class="wl-add" data-act="add"${unavailable(p) ? ' disabled' : ''}>${unavailable(p) ? 'Unavailable' : 'Add to Cart'}</button>
+      </div>
+    </article>`;
+            }
+
+            function updateCard(id, focusSel) {
+                const old = $(`.wl-card[data-id="${id}"]`, grid);
+                const p = cat.byId(id);
+                if (!old || !p) return;
+                const tmp = document.createElement('div');
+                tmp.innerHTML = cardHTML(p);
+                old.replaceWith(tmp.firstElementChild);
+                if (focusSel) { const el = $(`.wl-card[data-id="${id}"] ${focusSel}`, grid); if (el) el.focus({ preventScroll: true }); }
+            }
+
+            function render() {
+                const all = ids();
+                const empty = all.length === 0;
+                $('#wlEmpty').hidden = !empty;
+                $('#wlFilled').hidden = empty;
+                $('#wlShared').hidden = !shared;
+                $('#wlTitle').textContent = shared ? 'Shared Wishlist' : 'Your Wishlist';
+                document.title = `${shared ? 'Shared Wishlist' : 'Wishlist'}${all.length ? ` (${all.length})` : ''} \u2014 Sutra Textiles India`;
+                $('#wlCount').textContent = empty ? 'Nothing saved yet.' : `${all.length} saved piece${all.length === 1 ? '' : 's'}`;
+                renderRecs(all);
+                if (empty) return;
+
+                const counts = { all: all.length };
+                all.forEach(id => { const c = cat.byId(id).category; counts[c] = (counts[c] || 0) + 1; });
+                if (view.cat !== 'all' && !counts[view.cat]) view.cat = 'all';
+                $('#wlChips').innerHTML = [['all', 'All']].concat(Object.keys(cat.categoryLabels).filter(k => counts[k]).map(k => [k, cat.categoryLabel(k)]))
+                    .map(([k, label]) => `<button type="button" class="wl-chip" data-cat="${k}" aria-pressed="${view.cat === k}">${esc(label)} (${counts[k]})</button>`).join('');
+
+                let list = all.map(id => cat.byId(id)).filter(p => view.cat === 'all' || p.category === view.cat);
+                if (view.sort === 'price-asc') list.sort((a, b) => a.price - b.price);
+                if (view.sort === 'price-desc') list.sort((a, b) => b.price - a.price);
+                if (view.sort === 'name') list.sort((a, b) => a.name.localeCompare(b.name));
+                grid.innerHTML = list.map(cardHTML).join('');
+
+                $('#wlShare').hidden = shared;
+                $('#wlClear').hidden = shared;
+                $('#wlNote').hidden = shared;
+            }
+
+            const TINT_STROKE = { 1: '#1C3329', 2: '#E3CB8E', 3: '#1C3329', 4: '#F5F0E6' };
+            function recCard(o) {
+                return `<div class="product-card">
+      <a class="wl-card-link" href="product.html?id=${o.id}" aria-label="${esc(o.name)}">
+        <div class="product-art tint-${o.tint}">
+          ${o.tag ? `<span class="product-tag">${esc(o.tag)}</span>` : ''}
+          <svg viewBox="0 0 80 100" fill="none" stroke="${TINT_STROKE[o.tint]}"><path d="M40 10c-10 6-16 16-16 28 0 14 7 25 16 31 9-6 16-17 16-31 0-12-6-22-16-28Z" stroke-width="1"/></svg>
+        </div>
+        <div class="product-info">
+          <div><h3>${esc(o.name)}</h3><span class="region">${esc(cat.regionLabel(o.region))}</span></div>
+          <span class="product-price">${money(o.price)}</span>
+        </div>
+      </a>
+      <button type="button" class="add-cart" data-id="${o.id}">${cat.needsSize(o) ? 'Select Size' : 'Add to Cart'}</button>
+    </div>`;
+            }
+            function renderRecs(all) {
+                const saved = new Set(all);
+                let list;
+                if (all.length) {
+                    const prods = all.map(id => cat.byId(id));
+                    const cats = new Set(prods.map(p => p.category)), regs = new Set(prods.map(p => p.region));
+                    const score = (o) => (cats.has(o.category) ? 2 : 0) + (regs.has(o.region) ? 1 : 0) + (o.tag === 'Bestseller' ? .5 : 0);
+                    list = cat.all.filter(o => !saved.has(o.id)).sort((a, b) => score(b) - score(a) || a.id - b.id);
+                    $('#wlRecsTitle').textContent = 'You May Also Love';
+                } else {
+                    list = cat.all.slice().sort((a, b) => (b.tag === 'Bestseller') - (a.tag === 'Bestseller') || a.id - b.id);
+                    $('#wlRecsTitle').textContent = 'Start With Our Bestsellers';
+                }
+                $('#wlRecs').innerHTML = list.slice(0, 4).map(recCard).join('');
+            }
+
+            function addToCart(p, quiet) {
+                const pick = pickFor(p);
+                if (unavailable(p)) return 'unavailable';
+                if (cat.needsSize(p) && !pick.size) return 'needs-size';
+                Sutra.cart.addItem({ id: p.id, size: pick.size, color: pick.color, qty: 1 });
+                if (!quiet) Sutra.toast(`${p.name} (${pick.color}${cat.needsSize(p) ? ', ' + pick.size : ''}) added to your cart`, { actionText: 'View Cart', href: 'cart.html' });
+                return 'added';
+            }
+            function shake(id) {
+                const card = $(`.wl-card[data-id="${id}"]`, grid);
+                if (!card) return;
+                const size = $('.wl-size', card);
+                if (size) size.classList.add('is-invalid');
+                card.classList.remove('is-shake'); void card.offsetWidth; card.classList.add('is-shake');
+            }
+
+            grid.addEventListener('click', (e) => {
+                const btn = e.target.closest('[data-act]');
+                if (!btn || btn.tagName === 'SELECT') return;
+                const card = btn.closest('.wl-card');
+                const id = Number(card.dataset.id), p = cat.byId(id);
+                const act = btn.dataset.act;
+
+                if (act === 'color') {
+                    pickFor(p).color = btn.dataset.color;
+                    updateCard(id, `.wl-swatch[data-color="${btn.dataset.color.replace(/"/g, '\\"')}"]`);
+                } else if (act === 'add') {
+                    const result = addToCart(p);
+                    if (result === 'needs-size') {
+                        shake(id);
+                        const sel = $('select', card); if (sel) sel.focus({ preventScroll: true });
+                        Sutra.toast('Please choose a size first.');
+                    } else if (result === 'added') {
+                        const fresh = $(`.wl-card[data-id="${id}"] [data-act="add"]`, grid);
+                        if (fresh) {
+                            const original = fresh.textContent;
+                            fresh.textContent = 'Added \u2713'; fresh.classList.add('is-added');
+                            setTimeout(() => { if (fresh.isConnected) { fresh.textContent = original; fresh.classList.remove('is-added'); } }, 1400);
+                        }
+                    }
+                } else if (act === 'remove') {
+                    const snapshot = Sutra.wishlist.ids();
+                    Sutra.wishlist.toggle(id);
+                    showUndo(`${p.name} removed from your wishlist`, () => restore(snapshot));
+                } else if (act === 'save') {
+                    const added = Sutra.wishlist.toggle(id);
+                    Sutra.toast(added ? `${p.name} saved to your wishlist` : 'Removed from your wishlist', added ? { actionText: 'My Wishlist', href: 'wishlist.html' } : {});
+                    updateCard(id, '[data-act="save"]');
+                }
+            });
+
+            grid.addEventListener('change', (e) => {
+                const sel = e.target.closest('select[data-act="size"]');
+                if (!sel) return;
+                const id = Number(sel.closest('.wl-card').dataset.id);
+                pickFor(cat.byId(id)).size = sel.value || null;
+                updateCard(id, 'select[data-act="size"]');
+            });
+
+            $('#wlChips').addEventListener('click', (e) => {
+                const b = e.target.closest('.wl-chip'); if (!b) return;
+                view.cat = b.dataset.cat; render();
+            });
+            $('#wlSort').addEventListener('change', (e) => { view.sort = e.target.value; render(); });
+
+            $('#wlAddAll').addEventListener('click', () => {
+                const visible = $$('.wl-card', grid).map(c => cat.byId(Number(c.dataset.id)));
+                let added = 0, needSize = [], gone = 0;
+                suspend = true;
+                visible.forEach(p => {
+                    const r = addToCart(p, true);
+                    if (r === 'added') added++; else if (r === 'needs-size') needSize.push(p.id); else gone++;
+                });
+                suspend = false;
+                render();
+                needSize.forEach(shake);
+                if (needSize.length) { const c = $(`.wl-card[data-id="${needSize[0]}"]`, grid); if (c) c.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+                const parts = [];
+                if (added) parts.push(`${added} piece${added === 1 ? '' : 's'} added to your cart`);
+                if (needSize.length) parts.push(`${needSize.length} need${needSize.length === 1 ? 's' : ''} a size`);
+                if (gone) parts.push(`${gone} unavailable`);
+                Sutra.toast(parts.join(' \u00B7 ') || 'Nothing to add', added ? { actionText: 'View Cart', href: 'cart.html' } : {});
+            });
+
+            $('#wlShare').addEventListener('click', async () => {
+                const list = ids();
+                if (!list.length) return;
+                const url = window.location.origin + window.location.pathname + '?items=' + list.join(',');
+                try {
+                    if (navigator.share) { await navigator.share({ title: 'My Sutra wishlist', text: 'A few pieces I love from Sutra Textiles India', url }); return; }
+                    await navigator.clipboard.writeText(url);
+                    Sutra.toast('Wishlist link copied to clipboard');
+                } catch (err) {
+                    if (err && err.name !== 'AbortError') Sutra.toast(url, { duration: 8000 });
+                }
+            });
+
+            $('#wlClear').addEventListener('click', () => {
+                if (!window.confirm('Remove everything from your wishlist?')) return;
+                const snapshot = Sutra.wishlist.ids();
+                Sutra.store.write(WISH_KEY, []);
+                Sutra.wishlist.refresh();
+                showUndo('Your wishlist was cleared', () => restore(snapshot));
+            });
+
+            $('#wlSaveAll').addEventListener('click', () => {
+                const mine = new Set(Sutra.wishlist.ids());
+                const fresh = sharedIds.filter(id => !mine.has(id));
+                Sutra.store.write(WISH_KEY, fresh.concat(Sutra.wishlist.ids()));
+                Sutra.wishlist.refresh();
+                Sutra.toast(fresh.length ? `${fresh.length} piece${fresh.length === 1 ? '' : 's'} saved to your wishlist` : 'Everything here is already in your wishlist', { actionText: 'My Wishlist', href: 'wishlist.html' });
+            });
+
+            function restore(snapshot) {
+                Sutra.store.write(WISH_KEY, snapshot);
+                Sutra.wishlist.refresh();
+            }
+            function showUndo(message, fn) {
+                $('#wlUndoMsg').textContent = message;
+                $('#wlUndo').classList.add('is-in');
+                clearTimeout(undoTimer);
+                undoTimer = setTimeout(hideUndo, 7000);
+                $('#wlUndoBtn').onclick = () => { hideUndo(); fn(); };
+            }
+            function hideUndo() { $('#wlUndo').classList.remove('is-in'); }
+
+            window.addEventListener('sutra:wishlist', () => { if (!suspend && !shared) render(); });
+            window.addEventListener('sutra:cart', () => { if (!suspend) $$('.wl-card', grid).forEach(c => updateCard(Number(c.dataset.id))); });
+            window.addEventListener('storage', () => render());
+
+            render();
+        })();
+    </script>
+
+</body>
+
+</html>

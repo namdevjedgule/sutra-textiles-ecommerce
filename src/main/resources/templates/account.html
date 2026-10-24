@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Account — Sutra Textiles India</title>
+<meta name="description" content="Sign in to your Sutra Textiles India account to track orders, manage addresses and view your wishlist.">
+<meta name="robots" content="noindex">
+ <link rel="icon" type="image/x-icon" th:href="@{/favicon_io/favicon.ico}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css" th:href="@{/css/style.css}">
+
+<style>
+  [hidden] { display: none !important; }
+
+  /* ---------- Shared form bits ---------- */
+  .ac-field { display: flex; flex-direction: column; gap: .4rem; margin-bottom: 1.1rem; min-width: 0; }
+  .ac-field > label, .ac-label { font-size: .84rem; color: var(--olive); }
+  .ac-field > label .opt { opacity: .75; }
+  .ac-input {
+    width: 100%; padding: .8rem 1rem; border: 1px solid var(--grey); background: var(--ivory); color: var(--charcoal);
+    border-radius: var(--radius); font: inherit; transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
+  }
+  .ac-input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(201, 162, 75, .28); }
+  .ac-input[aria-invalid="true"] { border-color: var(--terracotta); }
+  .ac-input[readonly] { background: var(--ivory-soft); color: var(--olive); }
+  .ac-error { font-size: .8rem; color: var(--terracotta); min-height: 1.1em; }
+  .ac-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.2rem; }
+  .ac-row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0 1.2rem; }
+  .ac-prefix { display: flex; }
+  .ac-prefix span { display: flex; align-items: center; padding: 0 .9rem; border: 1px solid var(--grey); border-right: none; background: var(--ivory-soft); color: var(--olive); border-radius: var(--radius) 0 0 var(--radius); font-size: .92rem; }
+  .ac-prefix .ac-input { border-radius: 0 var(--radius) var(--radius) 0; }
+  .ac-pw { position: relative; }
+  .ac-pw .ac-input { padding-right: 4.4rem; }
+  .ac-pw button { position: absolute; right: .6rem; top: 50%; transform: translateY(-50%); font-size: .78rem; color: var(--olive); padding: .3rem .5rem; }
+  .ac-pw button:hover { color: var(--green); }
+  .ac-meter { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-top: .5rem; }
+  .ac-meter i { height: 4px; border-radius: 2px; background: var(--grey); transition: background .25s var(--ease); }
+  .ac-meter[data-level="1"] i:nth-child(-n+1) { background: var(--terracotta); }
+  .ac-meter[data-level="2"] i:nth-child(-n+2) { background: #d1892f; }
+  .ac-meter[data-level="3"] i:nth-child(-n+3) { background: var(--gold); }
+  .ac-meter[data-level="4"] i:nth-child(-n+4) { background: var(--olive); }
+  .ac-meter-label { font-size: .76rem; color: var(--olive); margin-top: .3rem; min-height: 1.1em; }
+  .ac-check { display: flex; align-items: flex-start; gap: .7rem; font-size: .88rem; color: #3a3f37; cursor: pointer; margin-bottom: 1rem; }
+  .ac-check input { accent-color: var(--green); width: 16px; height: 16px; margin-top: .2rem; flex-shrink: 0; }
+  .ac-check a { color: var(--green); border-bottom: 1px solid var(--gold); }
+  .ac-chips { display: flex; gap: .6rem; flex-wrap: wrap; }
+  .ac-chip { position: relative; }
+  .ac-chip input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .ac-chip span { display: inline-block; padding: .5rem 1.2rem; border: 1px solid var(--grey); border-radius: 999px; font-size: .86rem; color: var(--green); background: var(--ivory); cursor: pointer; transition: all .2s var(--ease); }
+  .ac-chip input:checked + span { background: var(--green); border-color: var(--green); color: var(--ivory); }
+  .ac-chip input:focus-visible + span { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  .ac-btn {
+    display: inline-flex; align-items: center; justify-content: center; min-height: 50px; padding: 0 1.8rem; border-radius: var(--radius);
+    background: var(--gold); color: var(--green-deep); font-weight: 500; letter-spacing: .05em; font-size: .9rem; transition: background .25s var(--ease), color .25s var(--ease);
+  }
+  .ac-btn:hover:not(:disabled) { background: var(--gold-light); }
+  .ac-btn:disabled { background: var(--grey); color: #8f8b7e; cursor: not-allowed; }
+  .ac-btn.is-block { width: 100%; }
+  .ac-btn.is-ghost { background: transparent; border: 1px solid var(--green); color: var(--green); }
+  .ac-btn.is-ghost:hover { background: var(--green); color: var(--ivory); }
+  .ac-btn.is-small { min-height: 40px; padding: 0 1.2rem; font-size: .82rem; }
+  .ac-link-btn { font-size: .84rem; color: var(--olive); border-bottom: 1px solid transparent; padding-bottom: 1px; }
+  .ac-link-btn:hover { color: var(--green); border-color: var(--gold); }
+  .ac-link-btn.is-danger:hover { color: var(--terracotta); border-color: var(--terracotta); }
+
+  /* ===========================================================
+     SIGNED-OUT: sign in / create account
+     =========================================================== */
+  .ac-auth { padding-block: clamp(2rem, 5vw, 4rem); }
+  .ac-auth-grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 0; border: 1px solid var(--grey); border-radius: var(--radius); overflow: hidden; background: var(--ivory-soft); }
+
+  .ac-brand { position: relative; background: linear-gradient(165deg, #1c3329 0%, #142620 100%); color: var(--ivory); padding: clamp(2rem, 4vw, 3.2rem); overflow: hidden; display: flex; flex-direction: column; justify-content: center; }
+  .ac-brand-mark { position: absolute; right: -60px; bottom: -70px; width: 340px; color: var(--gold-light); opacity: .09; pointer-events: none; }
+  .ac-brand .eyebrow { color: var(--gold-light); }
+  .ac-brand h1 { color: var(--ivory); font-size: clamp(2rem, 3.4vw, 2.8rem); margin-bottom: 1rem; }
+  .ac-brand h1 em { font-style: italic; color: var(--gold-light); }
+  .ac-brand p { color: #d7ded6; max-width: 36ch; }
+  .ac-perks { display: grid; gap: .9rem; margin-top: 1.8rem; position: relative; }
+  .ac-perks li { display: flex; align-items: center; gap: .9rem; font-size: .92rem; color: #e6ebe4; }
+  .ac-perks li::before { content: ""; width: 8px; height: 8px; border: 1px solid var(--gold-light); transform: rotate(45deg); flex-shrink: 0; }
+
+  .ac-card { padding: clamp(1.6rem, 4vw, 3rem); }
+  .ac-tabs { display: flex; gap: 2rem; border-bottom: 1px solid var(--grey); margin-bottom: 1.8rem; }
+  .ac-tab { position: relative; padding: 0 0 .9rem; font-family: var(--font-display); font-size: 1.25rem; color: var(--olive); }
+  .ac-tab[aria-selected="true"] { color: var(--green); }
+  .ac-tab[aria-selected="true"]::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--gold); }
+  .ac-panel-lead { font-size: .92rem; color: var(--olive); margin-bottom: 1.4rem; }
+  .ac-form-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .6rem; margin-bottom: 1.2rem; }
+  .ac-form-row .ac-check { margin-bottom: 0; }
+  .ac-alt { margin-top: 1.4rem; font-size: .88rem; color: var(--olive); text-align: center; }
+  .ac-alt button { color: var(--green); border-bottom: 1px solid var(--gold); }
+  .ac-demo { margin-top: 1.4rem; padding: 1rem 1.1rem; border: 1px dashed var(--gold); background: rgba(201, 162, 75, .08); border-radius: var(--radius); font-size: .85rem; }
+  .ac-demo strong { font-weight: 500; }
+  .ac-notice { padding: .9rem 1.1rem; margin-bottom: 1.2rem; background: rgba(92, 107, 78, .1); border-left: 3px solid var(--olive); font-size: .88rem; }
+
+  /* ===========================================================
+     SIGNED-IN: dashboard
+     =========================================================== */
+  .ac-hero { background: var(--green); color: var(--ivory); padding-block: clamp(2rem, 5vw, 3rem); }
+  .ac-crumbs { display: flex; align-items: center; gap: .5rem; font-size: .8rem; color: #b9c4b6; margin-bottom: .9rem; }
+  .ac-crumbs a:hover { color: var(--gold-light); }
+  .ac-hero h1 { color: var(--ivory); margin-bottom: .35rem; }
+  .ac-hero p { color: #c9d1c6; font-size: .98rem; }
+
+  .ac-dash { padding-block: clamp(2rem, 4vw, 3rem) clamp(3rem, 6vw, 5rem); }
+  .ac-dash-grid { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: clamp(1.5rem, 3.5vw, 3rem); align-items: start; }
+
+  .ac-side { position: sticky; top: calc(var(--nav-h, 100px) + 1rem); background: var(--ivory-soft); border: 1px solid var(--grey); border-radius: var(--radius); padding: 1.2rem; }
+  .ac-user { display: flex; align-items: center; gap: .9rem; padding-bottom: 1.1rem; margin-bottom: .8rem; border-bottom: 1px solid var(--grey); }
+  .ac-avatar { width: 46px; height: 46px; border-radius: 50%; background: var(--green); color: var(--gold-light); display: grid; place-items: center; font-family: var(--font-display); font-size: 1.3rem; flex-shrink: 0; }
+  .ac-user strong { display: block; font-family: var(--font-display); font-size: 1.05rem; color: var(--green); line-height: 1.2; overflow-wrap: anywhere; }
+  .ac-user span { font-size: .78rem; color: var(--olive); overflow-wrap: anywhere; }
+  .ac-nav { display: grid; gap: .15rem; }
+  .ac-nav a, .ac-nav button { display: flex; align-items: center; justify-content: space-between; gap: .6rem; padding: .7rem .8rem; border-radius: var(--radius); font-size: .92rem; color: var(--charcoal); text-align: left; width: 100%; transition: background .2s var(--ease); }
+  .ac-nav a:hover, .ac-nav button:hover { background: rgba(201, 162, 75, .12); }
+  .ac-nav a[aria-current="page"] { background: var(--green); color: var(--ivory); }
+  .ac-count { font-size: .72rem; min-width: 22px; text-align: center; padding: .1rem .4rem; border-radius: 999px; background: rgba(201, 162, 75, .25); color: var(--green); }
+  .ac-nav a[aria-current="page"] .ac-count { background: rgba(245, 240, 230, .2); color: var(--ivory); }
+  .ac-nav .is-signout { margin-top: .6rem; border-top: 1px solid var(--grey); border-radius: 0; padding-top: 1rem; color: var(--olive); }
+
+  .ac-view { min-width: 0; }
+  .ac-view-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: .6rem 1rem; margin-bottom: 1.4rem; }
+  .ac-view-head h2 { font-size: clamp(1.6rem, 2.6vw, 2rem); }
+  .ac-view-head h2:focus { outline: none; }
+  .ac-card-box { background: var(--ivory-soft); border: 1px solid var(--grey); border-radius: var(--radius); padding: clamp(1.2rem, 3vw, 1.8rem); }
+  .ac-card-box + .ac-card-box { margin-top: 1.4rem; }
+  .ac-card-box h3 { font-size: 1.2rem; margin-bottom: 1rem; }
+  .ac-muted { font-size: .86rem; color: var(--olive); }
+
+  /* overview */
+  .ac-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.4rem; }
+  .ac-stat { display: block; padding: 1.3rem 1.4rem; background: var(--ivory-soft); border: 1px solid var(--grey); border-radius: var(--radius); transition: border-color .2s var(--ease); }
+  .ac-stat:hover { border-color: var(--gold); }
+  .ac-stat b { display: block; font-family: var(--font-display); font-size: 2.2rem; color: var(--green); font-weight: 600; line-height: 1.1; }
+  .ac-stat span { font-size: .82rem; letter-spacing: .06em; color: var(--olive); text-transform: uppercase; }
+  .ac-two { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+  .ac-two .ac-card-box + .ac-card-box { margin-top: 0; }
+
+  /* orders */
+  .ac-filters { display: flex; gap: .6rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+  .ac-filter { padding: .5rem 1.1rem; border: 1px solid var(--grey); border-radius: 999px; font-size: .84rem; color: var(--green); background: var(--ivory-soft); transition: all .2s var(--ease); }
+  .ac-filter[aria-pressed="true"] { background: var(--green); border-color: var(--green); color: var(--ivory); }
+  .ac-orders { display: grid; gap: 1.2rem; }
+  .ac-order { background: var(--ivory-soft); border: 1px solid var(--grey); border-radius: var(--radius); }
+  .ac-order-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .6rem 1rem; padding: 1.1rem 1.4rem; border-bottom: 1px dashed #d4cbb4; }
+  .ac-order-id { font-family: var(--font-display); font-size: 1.1rem; color: var(--green); letter-spacing: .04em; }
+  .ac-order-head small { display: block; font-size: .8rem; color: var(--olive); }
+  .ac-badge { font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; padding: .25rem .7rem; border-radius: 999px; border: 1px solid var(--gold); color: #8a6a1f; background: rgba(201, 162, 75, .12); }
+  .ac-badge.is-dispatched { border-color: var(--olive); color: var(--olive); background: rgba(92, 107, 78, .1); }
+  .ac-badge.is-delivered { border-color: var(--green); color: var(--ivory); background: var(--green); }
+  .ac-order-body { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem 1.5rem; padding: 1.2rem 1.4rem; }
+  .ac-thumbs { display: flex; align-items: center; gap: .6rem; }
+  .ac-thumb { display: block; width: 52px; aspect-ratio: 4 / 5; padding: 3px; border: 1px solid rgba(201, 162, 75, .65); border-radius: 50% 50% 3px 3px / 26% 26% 3px 3px; }
+  .ac-thumb span { display: block; width: 100%; height: 100%; overflow: hidden; border-radius: 50% 50% 2px 2px / 25% 25% 2px 2px; }
+  .ac-thumb svg, .ac-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .ac-more { font-size: .82rem; color: var(--olive); }
+  .ac-order-sum { font-size: .9rem; color: var(--charcoal); }
+  .ac-order-sum strong { font-family: var(--font-display); font-size: 1.25rem; color: var(--green); display: block; }
+  .ac-order-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem 1.3rem; padding: 0 1.4rem 1.2rem; }
+  .ac-order-detail { padding: 1.3rem 1.4rem; border-top: 1px dashed #d4cbb4; display: grid; grid-template-columns: 1.3fr 1fr; gap: 1.5rem 2rem; }
+  .ac-lines { display: grid; gap: .8rem; }
+  .ac-line { display: flex; justify-content: space-between; gap: 1rem; font-size: .9rem; }
+  .ac-line small { display: block; color: var(--olive); font-size: .78rem; }
+  .ac-order-detail h4 { font-family: var(--font-body); font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; color: var(--olive); font-weight: 500; margin-bottom: .5rem; }
+  .ac-order-detail p { font-size: .88rem; line-height: 1.6; max-width: none; }
+  .ac-trow { display: flex; justify-content: space-between; gap: 1rem; font-size: .88rem; padding: .2rem 0; }
+  .ac-trow.total { border-top: 1px solid var(--grey); margin-top: .4rem; padding-top: .6rem; font-weight: 500; color: var(--green); }
+
+  /* addresses */
+  .ac-addr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.2rem; }
+  .ac-addr { display: flex; flex-direction: column; gap: .6rem; padding: 1.3rem; background: var(--ivory-soft); border: 1px solid var(--grey); border-radius: var(--radius); }
+  .ac-addr.is-default { border-color: var(--gold); }
+  .ac-addr-head { display: flex; align-items: center; gap: .6rem; }
+  .ac-addr-head strong { font-family: var(--font-display); font-size: 1.1rem; color: var(--green); font-weight: 600; }
+  .ac-tag { font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; padding: .1rem .5rem; border: 1px solid var(--olive); color: var(--olive); border-radius: 999px; }
+  .ac-addr p { font-size: .9rem; line-height: 1.6; flex: 1; max-width: none; }
+  .ac-addr-actions { display: flex; flex-wrap: wrap; gap: .5rem 1.1rem; padding-top: .6rem; border-top: 1px dashed #d4cbb4; }
+  .ac-addr-add { align-items: center; justify-content: center; text-align: center; border-style: dashed; color: var(--green); min-height: 190px; transition: border-color .2s var(--ease); }
+  .ac-addr-add:hover { border-color: var(--gold); }
+  .ac-addr-add span { font-size: 2rem; line-height: 1; color: var(--gold); }
+
+  /* empty */
+  .ac-empty { text-align: center; padding: 2.5rem 1rem; background: var(--ivory-soft); border: 1px dashed var(--grey); border-radius: var(--radius); }
+  .ac-empty h3 { margin-bottom: .5rem; }
+  .ac-empty p { margin: 0 auto 1.2rem; color: var(--olive); }
+
+  /* profile */
+  .ac-form-actions { display: flex; gap: .8rem; flex-wrap: wrap; margin-top: .4rem; }
+  .ac-danger { border-color: rgba(181, 83, 60, .35); }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 960px) {
+    .ac-auth-grid { grid-template-columns: 1fr; }
+    .ac-brand { padding-block: 2rem; }
+    .ac-perks { display: none; }
+    .ac-dash-grid { grid-template-columns: 1fr; }
+    .ac-side { position: static; padding: 1rem; }
+    .ac-nav { display: flex; overflow-x: auto; gap: .4rem; padding-bottom: .2rem; }
+    .ac-nav a, .ac-nav button { width: auto; white-space: nowrap; border: 1px solid var(--grey); }
+    .ac-nav .is-signout { margin-top: 0; border-top: 1px solid var(--grey); padding-top: .7rem; }
+    .ac-stats { grid-template-columns: 1fr; }
+    .ac-two { grid-template-columns: 1fr; }
+    .ac-order-detail { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .ac-row2, .ac-row3 { grid-template-columns: 1fr; }
+    .ac-tabs { gap: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="navbar"></div>
+<div id="navSpacer"></div>
+
+<main>
+
+  <section class="ac-auth" id="acAuth" hidden>
+    <div class="container">
+      <div class="ac-auth-grid">
+
+        <aside class="ac-brand">
+          <svg class="ac-brand-mark" viewBox="0 0 120 150" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+            <path d="M60 10c-16 10-26 26-26 46 0 24 12 42 26 52 14-10 26-28 26-52 0-20-10-36-26-46Z"/>
+            <path d="M60 46v66"/><path d="M60 64c-7 3-15 1-15 1s2.5-9 9-12.5c3.6-2 8-1 8-1"/>
+            <path d="M60 80c7 3 15 1 15 1s-2.5-9-9-12.5c-3.6-2-8-1-8-1"/><path d="M60 96c-7 3-15 1-15 1s2.5-9 9-12.5c3.6-2 8-1 8-1"/>
+          </svg>
+          <span class="eyebrow">YOUR SUTRA ACCOUNT</span>
+          <h1>Every thread, <em>in one place.</em></h1>
+          <p>Sign in to keep your orders, addresses and favourite pieces together.</p>
+          <ul class="ac-perks">
+            <li>Track every order in one place</li>
+            <li>Save addresses for faster checkout</li>
+            <li>Keep your wishlist with you</li>
+            <li>Reorder your favourites in a tap</li>
+          </ul>
+        </aside>
+
+        <div class="ac-card">
+          <div class="ac-tabs" role="tablist" aria-label="Account">
+            <button type="button" class="ac-tab" role="tab" id="tabLogin" data-view="login" aria-selected="true" aria-controls="panelLogin">Sign in</button>
+            <button type="button" class="ac-tab" role="tab" id="tabRegister" data-view="register" aria-selected="false" aria-controls="panelRegister">Create account</button>
+          </div>
+
+          <div id="panelLogin" role="tabpanel" aria-labelledby="tabLogin">
+            <p class="ac-panel-lead" id="loginLead">Welcome back. Sign in to continue.</p>
+            <form id="loginForm" th:action="@{/login}" method="post" novalidate>
+              <div class="ac-field">
+                <label for="lgEmail">Email address</label>
+                <input class="ac-input" type="email" id="lgEmail" name="email" autocomplete="email" inputmode="email" aria-describedby="errLgEmail" required>
+                <div class="ac-error" id="errLgEmail" role="alert"></div>
+              </div>
+              <div class="ac-field">
+                <label for="lgPass">Password</label>
+                <div class="ac-pw"><input class="ac-input" type="password" id="lgPass" name="password" autocomplete="current-password" aria-describedby="errLgPass" required><button type="button" data-toggle="lgPass" aria-label="Show password">Show</button></div>
+                <div class="ac-error" id="errLgPass" role="alert"></div>
+              </div>
+              <div class="ac-form-row">
+                <label class="ac-check"><input type="checkbox" id="lgRemember" name="remember"> Remember me</label>
+                <button type="button" class="ac-link-btn" data-view="forgot">Forgot password?</button>
+              </div>
+              <button type="submit" class="ac-btn is-block">Sign In</button>
+            </form>
+            <p class="ac-alt">New to Sutra? <button type="button" data-view="register">Create an account</button></p>
+          </div>
+
+          <div id="panelRegister" role="tabpanel" aria-labelledby="tabRegister" hidden>
+            <p class="ac-panel-lead">Create your account in a minute.</p>
+            <form id="registerForm" th:action="@{/register}" method="post" novalidate>
+              <div class="ac-field">
+                <label for="rgName">Full name</label>
+                <input class="ac-input" id="rgName" name="fullName" autocomplete="name" aria-describedby="errRgName">
+                <div class="ac-error" id="errRgName" role="alert"></div>
+              </div>
+              <div class="ac-row2">
+                <div class="ac-field">
+                  <label for="rgEmail">Email address</label>
+                  <input class="ac-input" type="email" id="rgEmail" name="email" autocomplete="email" inputmode="email" aria-describedby="errRgEmail">
+                  <div class="ac-error" id="errRgEmail" role="alert"></div>
+                </div>
+                <div class="ac-field">
+                  <label for="rgPhone">Mobile <span class="opt">(optional)</span></label>
+                  <div class="ac-prefix"><span>+91</span><input class="ac-input" id="rgPhone" name="phone" type="tel" inputmode="numeric" maxlength="10" autocomplete="tel-national" aria-describedby="errRgPhone"></div>
+                  <div class="ac-error" id="errRgPhone" role="alert"></div>
+                </div>
+              </div>
+              <div class="ac-row2">
+                <div class="ac-field">
+                  <label for="rgPass">Password</label>
+                  <div class="ac-pw"><input class="ac-input" type="password" id="rgPass" name="password" autocomplete="new-password" aria-describedby="errRgPass rgMeterLabel"><button type="button" data-toggle="rgPass" aria-label="Show password">Show</button></div>
+                  <div class="ac-meter" id="rgMeter" data-level="0" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+                  <div class="ac-meter-label" id="rgMeterLabel">At least 8 characters, with a letter and a number.</div>
+                  <div class="ac-error" id="errRgPass" role="alert"></div>
+                </div>
+                <div class="ac-field">
+                  <label for="rgPass2">Confirm password</label>
+                  <div class="ac-pw"><input class="ac-input" type="password" id="rgPass2" name="confirmPassword" autocomplete="new-password" aria-describedby="errRgPass2"><button type="button" data-toggle="rgPass2" aria-label="Show password">Show</button></div>
+                  <div class="ac-error" id="errRgPass2" role="alert"></div>
+                </div>
+              </div>
+              <label class="ac-check"><input type="checkbox" id="rgNews"> Email me about new arrivals and offers</label>
+              <label class="ac-check"><input type="checkbox" id="rgTerms"> <span>I agree to the <a href="terms.html" target="_blank" rel="noopener">Terms &amp; Conditions</a> and <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.</span></label>
+              <div class="ac-error" id="errRgTerms" role="alert" style="margin:-.6rem 0 1rem"></div>
+              <button type="submit" class="ac-btn is-block">Create Account</button>
+            </form>
+            <p class="ac-alt">Already have an account? <button type="button" data-view="login">Sign in</button></p>
+          </div>
+
+          <div id="panelForgot" hidden>
+            <p class="ac-panel-lead">Enter your email and we&rsquo;ll send you a link to reset your password.</p>
+            <form id="forgotForm" th:action="@{/forgot}" method="post" novalidate>
+              <div class="ac-field">
+                <label for="fgEmail">Email address</label>
+                <input class="ac-input" type="email" id="fgEmail" autocomplete="email" inputmode="email" aria-describedby="errFgEmail">
+                <div class="ac-error" id="errFgEmail" role="alert"></div>
+              </div>
+              <button type="submit" class="ac-btn is-block">Send Reset Link</button>
+            </form>
+            <div class="ac-notice" id="fgNotice" role="status" hidden></div>
+            <div class="ac-demo" id="fgDemo" hidden>
+              <p style="margin-bottom:.9rem"><strong>Demo only:</strong> in production this step happens from the link emailed to the customer. Set a new password here to continue testing.</p>
+              <form id="resetForm" th:action="@{/reset}" method="post" novalidate>
+                <div class="ac-field">
+                  <label for="rsPass">New password</label>
+                  <div class="ac-pw"><input class="ac-input" type="password" id="rsPass" autocomplete="new-password" aria-describedby="errRsPass"><button type="button" data-toggle="rsPass" aria-label="Show password">Show</button></div>
+                  <div class="ac-error" id="errRsPass" role="alert"></div>
+                </div>
+                <button type="submit" class="ac-btn is-small">Set New Password</button>
+              </form>
+            </div>
+            <p class="ac-alt"><button type="button" data-view="login">&larr; Back to sign in</button></p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div id="acDash" hidden>
+    <section class="ac-hero">
+      <div class="container">
+        <nav class="ac-crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a><span aria-hidden="true">/</span><span aria-current="page">My Account</span></nav>
+        <h1>My Account</h1>
+        <p id="acWelcome"></p>
+      </div>
+    </section>
+
+    <section class="ac-dash">
+      <div class="container ac-dash-grid">
+        <aside class="ac-side" aria-label="Account menu">
+          <div class="ac-user">
+            <div class="ac-avatar" id="acAvatar" aria-hidden="true"></div>
+            <div><strong id="acUserName"></strong><span id="acUserEmail"></span></div>
+          </div>
+          <nav class="ac-nav" id="acNav" aria-label="Account sections"></nav>
+        </aside>
+        <div class="ac-view" id="acView"></div>
+      </div>
+    </section>
+  </div>
+
+</main>
+
+<div id="footer"></div>
+
+<script src="js/products.js" th:src="@{/js/products.js}"></script>
+<script src="js/script.js" th:src="@{/js/script.js}"></script>
+
+<script th:inline="none">
+(function () {
+  'use strict';
+
+  const cat = Sutra.catalog;
+  const money = cat.money;
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const num = (n) => (Number.isFinite(Number(n)) ? Number(n) : 0);
+  const digits = (s) => String(s).replace(/\D/g, '');
+
+  const DEMO_MODE = true;   
+  const K = { users: 'sutra_users_v1', session: 'sutra_session_v1', addresses: 'sutra_addresses_v1', orders: 'sutra_orders_v1' };
+  const STATES = ['Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal', 'Andaman and Nicobar Islands', 'Chandigarh', 'Dadra and Nagar Haveli and Daman and Diu', 'Delhi', 'Jammu and Kashmir', 'Ladakh', 'Lakshadweep', 'Puducherry'];
+  const STATUSES = ['Placed', 'Confirmed', 'Dispatched', 'Delivered'];
+
+  const Auth = (function () {
+    const users = () => Sutra.store.read(K.users, {});
+    const saveUsers = (u) => Sutra.store.write(K.users, u);
+
+    function readSession() {
+      try {
+        const raw = sessionStorage.getItem(K.session) || localStorage.getItem(K.session);
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) { return null; }
+    }
+    function clearSession() { try { sessionStorage.removeItem(K.session); localStorage.removeItem(K.session); } catch (e) { /* ignore */ } }
+    function writeSession(email, remember) {
+      clearSession();
+      try { (remember ? localStorage : sessionStorage).setItem(K.session, JSON.stringify({ email })); } catch (e) { /* ignore */ }
+    }
+
+    async function hash(salt, pw) {
+      const data = new TextEncoder().encode(salt + ':' + pw);
+      if (window.crypto && window.crypto.subtle) {
+        const buf = await window.crypto.subtle.digest('SHA-256', data);
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+      }
+      let h = 2166136261;                         // weak fallback for insecure contexts (demo only)
+      data.forEach(b => { h ^= b; h = Math.imul(h, 16777619); });
+      return 'f' + (h >>> 0).toString(16);
+    }
+    function makeSalt() {
+      if (window.crypto && window.crypto.getRandomValues) return Array.from(window.crypto.getRandomValues(new Uint8Array(12))).map(b => b.toString(16).padStart(2, '0')).join('');
+      return Math.random().toString(36).slice(2) + Date.now().toString(36);
+    }
+
+    return {
+      current() {
+        const s = readSession();
+        if (!s || !s.email) return null;
+        const u = users()[s.email];
+        if (!u) { clearSession(); return null; }
+        return u;
+      },
+      async register(d) {
+        const all = users();
+        const email = d.email.toLowerCase();
+        if (all[email]) return { ok: false, error: 'An account with this email already exists.' };
+        const salt = makeSalt();
+        all[email] = { name: d.name, email, phone: d.phone || '', newsletter: !!d.newsletter, createdAt: Date.now(), salt, hash: await hash(salt, d.password) };
+        saveUsers(all);
+        writeSession(email, false);
+        return { ok: true };
+      },
+      async login(emailRaw, password, remember) {
+        const email = emailRaw.toLowerCase();
+        const u = users()[email];
+        if (!u || (await hash(u.salt, password)) !== u.hash) return { ok: false, error: 'Incorrect email or password.' };
+        writeSession(email, remember);
+        return { ok: true };
+      },
+      logout() { clearSession(); },
+      exists(email) { return !!users()[email.toLowerCase()]; },
+      updateProfile(patch) {
+        const u = Auth.current(); if (!u) return;
+        const all = users(); all[u.email] = Object.assign({}, all[u.email], patch); saveUsers(all);
+      },
+      async verify(password) { const u = Auth.current(); return !!u && (await hash(u.salt, password)) === u.hash; },
+      async setPassword(email, password) {
+        const all = users(); const u = all[email.toLowerCase()]; if (!u) return false;
+        u.salt = makeSalt(); u.hash = await hash(u.salt, password); saveUsers(all); return true;
+      },
+      deleteAccount() {
+        const u = Auth.current(); if (!u) return;
+        const all = users(); delete all[u.email]; saveUsers(all); clearSession();
+      }
+    };
+  })();
+
+  function setError(inputId, errId, msg) {
+    const inp = $('#' + inputId), err = $('#' + errId);
+    if (err) err.textContent = msg || '';
+    if (inp) { if (msg) inp.setAttribute('aria-invalid', 'true'); else inp.removeAttribute('aria-invalid'); }
+    return !msg;
+  }
+  function firstInvalid(root) { const el = $('[aria-invalid="true"]', root); if (el) el.focus(); return !!el; }
+  const validEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+  function passwordLevel(pw) {
+    let n = 0;
+    if (pw.length >= 8) n++;
+    if (/[a-z]/.test(pw) && /[A-Z]/.test(pw)) n++;
+    if (/\d/.test(pw)) n++;
+    if (/[^A-Za-z0-9]/.test(pw) || pw.length >= 12) n++;
+    return pw.length ? Math.max(1, n) : 0;
+  }
+  const passwordOk = (pw) => pw.length >= 8 && /[A-Za-z]/.test(pw) && /\d/.test(pw);
+  const PW_MSG = 'Use at least 8 characters, with a letter and a number.';
+
+  const fmtDate = (ts) => new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(ts));
+  const fmtDay = (ts) => new Intl.DateTimeFormat('en-IN', { weekday: 'short', day: 'numeric', month: 'short' }).format(new Date(ts));
+  const firstName = (u) => String(u.name || '').trim().split(/\s+/)[0] || 'there';
+
+  function safeNext() {
+    const n = new URLSearchParams(window.location.search).get('next') || '';
+    return /^[a-z0-9_\-\/]+\.html(\?[\w=&%,\-]*)?$/i.test(n) ? n : '';
+  }
+
+  const AUTH_VIEWS = ['login', 'register', 'forgot'];
+  const DASH_VIEWS = ['overview', 'orders', 'addresses', 'profile'];
+  const state = { ordersFilter: 'all', openOrder: null, addrEditing: null };
+
+  function currentView(signedIn) {
+    const h = window.location.hash.replace('#', '');
+    if (signedIn) return DASH_VIEWS.includes(h) ? h : 'overview';
+    return AUTH_VIEWS.includes(h) ? h : 'login';
+  }
+  function go(view) { window.location.hash = view; }
+
+  function route() {
+    const user = Auth.current();
+    $('#acAuth').hidden = !!user;
+    $('#acDash').hidden = !user;
+    if (user) { renderDash(user, currentView(true)); return; }
+    renderAuth(currentView(false));
+  }
+  window.addEventListener('hashchange', route);
+
+  function renderAuth(view) {
+    document.title = (view === 'register' ? 'Create Account' : view === 'forgot' ? 'Reset Password' : 'Sign In') + ' \u2014 Sutra Textiles India';
+    $('#panelLogin').hidden = view !== 'login';
+    $('#panelRegister').hidden = view !== 'register';
+    $('#panelForgot').hidden = view !== 'forgot';
+    $('#tabLogin').setAttribute('aria-selected', String(view !== 'register'));
+    $('#tabRegister').setAttribute('aria-selected', String(view === 'register'));
+    $('.ac-tabs').hidden = view === 'forgot';
+    const next = safeNext();
+    $('#loginLead').textContent = next ? 'Please sign in to continue.' : 'Welcome back. Sign in to continue.';
+  }
+
+  $('#acAuth').addEventListener('click', (e) => {
+    const v = e.target.closest('[data-view]');
+    if (v) { e.preventDefault(); go(v.dataset.view); const first = $(`#panel${v.dataset.view[0].toUpperCase() + v.dataset.view.slice(1)} input`); if (first) first.focus(); return; }
+    const t = e.target.closest('[data-toggle]');
+    if (t) {
+      const inp = $('#' + t.dataset.toggle);
+      const show = inp.type === 'password';
+      inp.type = show ? 'text' : 'password';
+      t.textContent = show ? 'Hide' : 'Show';
+      t.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+    }
+  });
+  $('#acAuth').addEventListener('input', (e) => { if (e.target.hasAttribute('aria-invalid')) e.target.removeAttribute('aria-invalid'); });
+  $('#rgPhone').addEventListener('input', (e) => { e.target.value = digits(e.target.value).slice(0, 10); });
+  $('#rgPass').addEventListener('input', (e) => {
+    const lvl = passwordLevel(e.target.value);
+    $('#rgMeter').dataset.level = String(lvl);
+    $('#rgMeterLabel').textContent = lvl === 0 ? 'At least 8 characters, with a letter and a number.' : ['', 'Weak', 'Fair', 'Good', 'Strong'][lvl];
+  });
+
+  function afterSignIn(message) {
+    Sutra.toast(message);
+    const next = safeNext();
+    if (next) { window.location.href = next; return; }
+    if (window.location.hash === '#overview') route(); else go('overview');
+  }
+
+  $('#loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = $('#lgEmail').value.trim(), pw = $('#lgPass').value;
+    const ok = [
+      setError('lgEmail', 'errLgEmail', validEmail(email) ? '' : 'Please enter a valid email address.'),
+      setError('lgPass', 'errLgPass', pw ? '' : 'Please enter your password.')
+    ].every(Boolean);
+    if (!ok) { firstInvalid($('#loginForm')); return; }
+    const r = await Auth.login(email, pw, $('#lgRemember').checked);
+    if (!r.ok) { setError('lgPass', 'errLgPass', r.error); $('#lgPass').focus(); return; }
+    $('#loginForm').reset();
+    afterSignIn('Welcome back');
+  });
+
+  $('#registerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = $('#rgName').value.trim(), email = $('#rgEmail').value.trim(), phone = digits($('#rgPhone').value);
+    const pw = $('#rgPass').value, pw2 = $('#rgPass2').value, terms = $('#rgTerms').checked;
+    const ok = [
+      setError('rgName', 'errRgName', name.length >= 2 ? '' : 'Please enter your full name.'),
+      setError('rgEmail', 'errRgEmail', validEmail(email) ? '' : 'Please enter a valid email address.'),
+      setError('rgPhone', 'errRgPhone', !phone || /^[6-9]\d{9}$/.test(phone) ? '' : 'Enter a valid 10-digit mobile number.'),
+      setError('rgPass', 'errRgPass', passwordOk(pw) ? '' : PW_MSG),
+      setError('rgPass2', 'errRgPass2', pw2 && pw2 === pw ? '' : 'Passwords don\u2019t match.')
+    ].every(Boolean);
+    $('#errRgTerms').textContent = terms ? '' : 'Please accept the terms to create your account.';
+    if (!ok || !terms) { if (!firstInvalid($('#registerForm'))) $('#rgTerms').focus(); return; }
+    const r = await Auth.register({ name, email, phone, password: pw, newsletter: $('#rgNews').checked });
+    if (!r.ok) { setError('rgEmail', 'errRgEmail', r.error + ' Try signing in instead.'); $('#rgEmail').focus(); return; }
+    $('#registerForm').reset();
+    $('#rgMeter').dataset.level = '0';
+    afterSignIn('Welcome to Sutra');
+  });
+
+  let resetEmail = '';
+  $('#forgotForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = $('#fgEmail').value.trim();
+    if (!setError('fgEmail', 'errFgEmail', validEmail(email) ? '' : 'Please enter a valid email address.')) { $('#fgEmail').focus(); return; }
+    const n = $('#fgNotice');
+    n.hidden = false;
+    n.textContent = `If an account exists for ${email}, we\u2019ve sent a link to reset the password.`;
+    resetEmail = DEMO_MODE && Auth.exists(email) ? email : '';
+    $('#fgDemo').hidden = !resetEmail;
+  });
+  $('#resetForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const pw = $('#rsPass').value;
+    if (!setError('rsPass', 'errRsPass', passwordOk(pw) ? '' : PW_MSG)) { $('#rsPass').focus(); return; }
+    if (!resetEmail || !(await Auth.setPassword(resetEmail, pw))) return;
+    $('#resetForm').reset(); $('#fgDemo').hidden = true; $('#fgNotice').hidden = true; $('#forgotForm').reset();
+    go('login');
+    $('#lgEmail').value = resetEmail;
+    Sutra.toast('Password updated \u2014 please sign in');
+  });
+
+  const savedAddresses = () => Sutra.store.read(K.addresses, []);
+  function userOrders(u) {
+    const all = Sutra.store.read(K.orders, []);
+    return (Array.isArray(all) ? all : []).filter(o => o && o.email && String(o.email).toLowerCase() === u.email).sort((a, b) => num(b.placedAt) - num(a.placedAt));
+  }
+  const inProgress = (o) => o.status !== 'Delivered';
+  const badgeClass = (s) => (s === 'Delivered' ? 'is-delivered' : s === 'Dispatched' ? 'is-dispatched' : '');
+
+  const hexToRgb = (h) => { const n = parseInt(h.slice(1), 16); return [ (n >> 16) & 255, (n >> 8) & 255, n & 255 ]; };
+  const toHex = (r, g, b) => '#' + [r, g, b].map(v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')).join('');
+  const mix = (x, y, k) => { const p = hexToRgb(x), q = hexToRgb(y); return toHex(p[0] + (q[0] - p[0]) * k, p[1] + (q[1] - p[1]) * k, p[2] + (q[2] - p[2]) * k); };
+  const lum = (hex) => { const c = hexToRgb(hex).map(v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); }); return .2126 * c[0] + .7152 * c[1] + .0722 * c[2]; };
+  let uid = 0;
+  function artSvg(hex, category) {
+    const id = 'ac' + (++uid), dark = lum(hex) < .32;
+    const bgA = mix(hex, '#ffffff', dark ? .14 : .38), bgB = mix(hex, '#000000', dark ? .38 : .16);
+    const line = dark ? '#E3CB8E' : '#1C3329';
+    const g = `fill="${dark ? 'rgba(227,203,142,.13)' : 'rgba(28,51,41,.09)'}" stroke="${line}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"`;
+    let body;
+    if (category === 'sarees') body = `<g ${g}><path d="M130 90H270L292 450Q200 478 108 450Z"/><path d="M130 90C190 140 260 130 300 70L316 118C262 196 176 210 118 164Z" fill="${line}" fill-opacity=".2"/></g>`;
+    else if (category === 'lehengas') body = `<g ${g}><path d="M168 96H232L246 170Q200 196 154 170Z"/><path d="M148 232H252L336 452Q200 486 64 452Z"/></g>`;
+    else body = `<g ${g}><path d="M146 100H254L282 340H118Z"/><path d="M146 100 102 190 126 204 150 150M254 100 298 190 274 204 250 150"/><path d="M124 340H276L316 470H218L200 396 182 470H84Z"/></g>`;
+    return `<svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${bgA}"/><stop offset="1" stop-color="${bgB}"/></linearGradient></defs>
+      <rect width="400" height="500" fill="url(#${id})"/>${body}</svg>`;
+  }
+  function thumb(item) {
+    const p = cat.byId(item.id);
+    if (!p) return '<span class="ac-thumb"><span></span></span>';
+    const color = p.colors.find(c => c.name === item.color) || p.colors[0];
+    const set = p.images && (p.images[color.name] || p.images.default);
+    return `<a class="ac-thumb" href="product.html?id=${p.id}" aria-label="View ${esc(p.name)}"><span>${set && set.length ? `<img src="${esc(set[0])}" alt="" loading="lazy">` : artSvg(color.hex, p.category)}</span></a>`;
+  }
+
+  function renderDash(user, view) {
+    const orders = userOrders(user);
+    const wish = Sutra.wishlist.ids().length;
+    $('#acWelcome').textContent = `Welcome back, ${firstName(user)}.`;
+    $('#acAvatar').textContent = firstName(user).charAt(0).toUpperCase();
+    $('#acUserName').textContent = user.name;
+    $('#acUserEmail').textContent = user.email;
+    const items = [['overview', 'Overview', ''], ['orders', 'Orders', orders.length], ['addresses', 'Addresses', savedAddresses().length], ['profile', 'Profile & Security', '']];
+    $('#acNav').innerHTML = items.map(([id, label, n]) =>
+      `<a href="#${id}"${view === id ? ' aria-current="page"' : ''}>${label}${n !== '' ? `<span class="ac-count">${n}</span>` : ''}</a>`).join('') +
+      `<a href="wishlist.html">Wishlist<span class="ac-count">${wish}</span></a>
+       <button type="button" class="is-signout" id="acSignOut">Sign out</button>`;
+
+    document.title = `${{ overview: 'My Account', orders: 'My Orders', addresses: 'My Addresses', profile: 'Profile & Security' }[view]} \u2014 Sutra Textiles India`;
+    const views = { overview: viewOverview, orders: viewOrders, addresses: viewAddresses, profile: viewProfile };
+    $('#acView').innerHTML = views[view](user, orders);
+    const h = $('#acView h2'); if (h) { h.setAttribute('tabindex', '-1'); }
+  }
+  function rerender() { const u = Auth.current(); if (u) renderDash(u, currentView(true)); else route(); }
+
+  $('#acNav').addEventListener('click', (e) => {
+    if (!e.target.closest('#acSignOut')) return;
+    Auth.logout();
+    Sutra.toast('You\u2019ve been signed out');
+    go('login'); route();
+  });
+
+  function orderSummaryCard(o) {
+    return `<div class="ac-order-body" style="padding:0">
+      <div class="ac-thumbs">${o.items.slice(0, 3).map(thumb).join('')}${o.items.length > 3 ? `<span class="ac-more">+${o.items.length - 3} more</span>` : ''}</div>
+      <div class="ac-order-sum"><strong>${money(num(o.totals && o.totals.total))}</strong>${o.items.reduce((n, i) => n + num(i.qty), 0)} item${o.items.reduce((n, i) => n + num(i.qty), 0) === 1 ? '' : 's'}</div></div>`;
+  }
+  function viewOverview(user, orders) {
+    const addrs = savedAddresses(), def = addrs.find(a => a.isDefault) || addrs[0];
+    const recent = orders[0];
+    return `
+      <div class="ac-view-head"><h2>Overview</h2></div>
+      <div class="ac-stats">
+        <a class="ac-stat" href="#orders"><b>${orders.length}</b><span>Orders</span></a>
+        <a class="ac-stat" href="#addresses"><b>${addrs.length}</b><span>Saved addresses</span></a>
+        <a class="ac-stat" href="wishlist.html"><b>${Sutra.wishlist.ids().length}</b><span>Wishlist</span></a>
+      </div>
+      <div class="ac-two">
+        <div class="ac-card-box">
+          <h3>Recent order</h3>
+          ${recent ? `
+            <div class="ac-order-head" style="padding:0 0 .9rem;border-bottom:none">
+              <div><span class="ac-order-id">${esc(recent.id)}</span><small>${esc(fmtDate(num(recent.placedAt)))}</small></div>
+              <span class="ac-badge ${badgeClass(recent.status)}">${esc(recent.status)}</span>
+            </div>
+            ${orderSummaryCard(recent)}
+            <p style="margin-top:1rem"><a class="ac-link-btn" href="#orders">View all orders</a></p>`
+          : `<p class="ac-muted" style="margin-bottom:1rem">You haven&rsquo;t placed an order yet.</p><a href="shop.html" class="ac-btn is-small">Start Shopping</a>`}
+        </div>
+        <div class="ac-card-box">
+          <h3>Default address</h3>
+          ${def ? `<p style="font-size:.92rem;line-height:1.6"><strong style="font-weight:500">${esc(def.name)}</strong><br>${esc(def.line1)}${def.line2 ? ', ' + esc(def.line2) : ''}<br>${esc(def.city)}, ${esc(def.state)} \u2014 ${esc(def.pin)}<br>+91 ${esc(def.phone)}</p>
+            <p style="margin-top:1rem"><a class="ac-link-btn" href="#addresses">Manage addresses</a></p>`
+          : `<p class="ac-muted" style="margin-bottom:1rem">No saved address yet. Add one for faster checkout.</p><a href="#addresses" class="ac-btn is-small is-ghost">Add Address</a>`}
+        </div>
+      </div>
+      <div class="ac-card-box">
+        <h3>Quick links</h3>
+        <p style="display:flex;flex-wrap:wrap;gap:.8rem 1.6rem;max-width:none">
+          <a class="ac-link-btn" href="shop.html">New arrivals</a><a class="ac-link-btn" href="wishlist.html">My wishlist</a>
+          <a class="ac-link-btn" href="cart.html">My cart</a><a class="ac-link-btn" href="contact.html">Contact us</a><a class="ac-link-btn" href="#profile">Profile &amp; security</a>
+        </p>
+      </div>`;
+  }
+
+  function orderDetail(o) {
+    const t = o.totals || {}, a = o.address || {}, pay = o.payment || {};
+    return `<div class="ac-order-detail">
+      <div><h4>Items</h4><div class="ac-lines">${o.items.map(i => `
+        <div class="ac-line"><span>${esc(i.name)}<small>${[i.color, i.size && i.size !== 'Free Size' ? 'Size ' + i.size : '', 'Qty ' + num(i.qty)].filter(Boolean).map(esc).join(' \u00B7 ')}</small></span><span>${money(num(i.price) * Math.max(1, num(i.qty)))}</span></div>`).join('')}</div></div>
+      <div>
+        <h4>Shipped to</h4>
+        <p>${esc(a.name)}<br>${esc(a.line1)}${a.line2 ? ', ' + esc(a.line2) : ''}<br>${esc(a.city)}, ${esc(a.state)} \u2014 ${esc(a.pin)}</p>
+        <h4 style="margin-top:1rem">Payment</h4><p>${esc(pay.label || '')}${pay.status ? ' \u00B7 ' + esc(pay.status) : ''}</p>
+        ${o.eta ? `<h4 style="margin-top:1rem">Estimated delivery</h4><p>${esc(fmtDay(num(o.eta.from)))} \u2013 ${esc(fmtDay(num(o.eta.to)))}</p>` : ''}
+        <div style="margin-top:1rem">
+          <div class="ac-trow"><span>Price</span><span>${money(num(t.mrp))}</span></div>
+          ${num(t.mrpDiscount) > 0 ? `<div class="ac-trow"><span>Discount</span><span>\u2212${money(num(t.mrpDiscount))}</span></div>` : ''}
+          ${num(t.couponAmount) > 0 ? `<div class="ac-trow"><span>Coupon (${esc(t.couponCode)})</span><span>\u2212${money(num(t.couponAmount))}</span></div>` : ''}
+          <div class="ac-trow"><span>Shipping</span><span>${num(t.shipping) === 0 ? 'Free' : money(num(t.shipping))}</span></div>
+          <div class="ac-trow total"><span>${pay.method === 'cod' ? 'Amount due' : 'Total paid'}</span><span>${money(num(t.total))}</span></div>
+        </div>
+      </div></div>`;
+  }
+  function viewOrders(user, orders) {
+    const list = orders.filter(o => state.ordersFilter === 'all' || (state.ordersFilter === 'progress' ? inProgress(o) : !inProgress(o)));
+    return `
+      <div class="ac-view-head"><h2>My Orders</h2><span class="ac-muted">${orders.length} order${orders.length === 1 ? '' : 's'}</span></div>
+      ${orders.length ? `<div class="ac-filters" role="group" aria-label="Filter orders">
+          ${[['all', 'All'], ['progress', 'In progress'], ['delivered', 'Delivered']].map(([k, l]) => `<button type="button" class="ac-filter" data-filter="${k}" aria-pressed="${state.ordersFilter === k}">${l}</button>`).join('')}</div>` : ''}
+      ${!orders.length
+        ? `<div class="ac-empty"><h3>No orders yet</h3><p>When you place an order with <strong>${esc(user.email)}</strong>, it will appear here.</p><a href="shop.html" class="ac-btn is-small">Shop New Arrivals</a></div>`
+        : !list.length ? `<div class="ac-empty"><h3>Nothing in this view</h3><p>Try another filter.</p></div>`
+        : `<div class="ac-orders">${list.map(o => {
+            const open = state.openOrder === o.id;
+            return `<article class="ac-order" data-id="${esc(o.id)}">
+              <div class="ac-order-head">
+                <div><span class="ac-order-id">${esc(o.id)}</span><small>Placed on ${esc(fmtDate(num(o.placedAt)))}</small></div>
+                <span class="ac-badge ${badgeClass(o.status)}">${esc(o.status)}</span>
+              </div>
+              <div class="ac-order-body">${orderSummaryCard(o).replace('class="ac-order-body" style="padding:0"', 'style="display:contents"')}</div>
+              <div class="ac-order-actions">
+                <button type="button" class="ac-link-btn" data-act="toggle" aria-expanded="${open}">${open ? 'Hide details' : 'View details'}</button>
+                <a class="ac-link-btn" href="order-confirmation.html?order=${encodeURIComponent(o.id)}">Order confirmation</a>
+                <button type="button" class="ac-btn is-small is-ghost" data-act="reorder">Reorder</button>
+              </div>
+              ${open ? orderDetail(o) : ''}
+            </article>`; }).join('')}</div>`}`;
+  }
+
+  function addressForm(a) {
+    a = a || {};
+    return `<div class="ac-card-box" id="acAddrFormWrap">
+      <h3>${a.id ? 'Edit address' : 'Add a new address'}</h3>
+      <form id="addrForm" novalidate data-id="${esc(a.id || '')}">
+        <div class="ac-row2">
+          <div class="ac-field"><label for="adName">Full name</label><input class="ac-input" id="adName" value="${esc(a.name || '')}" autocomplete="name" aria-describedby="errAdName"><div class="ac-error" id="errAdName" role="alert"></div></div>
+          <div class="ac-field"><label for="adPhone">Mobile number</label><div class="ac-prefix"><span>+91</span><input class="ac-input" id="adPhone" value="${esc(a.phone || '')}" inputmode="numeric" maxlength="10" autocomplete="tel-national" aria-describedby="errAdPhone"></div><div class="ac-error" id="errAdPhone" role="alert"></div></div>
+        </div>
+        <div class="ac-field"><label for="adLine1">Address line 1 <span class="opt">(house / flat, street)</span></label><input class="ac-input" id="adLine1" value="${esc(a.line1 || '')}" autocomplete="address-line1" aria-describedby="errAdLine1"><div class="ac-error" id="errAdLine1" role="alert"></div></div>
+        <div class="ac-row2">
+          <div class="ac-field"><label for="adLine2">Address line 2 <span class="opt">(optional)</span></label><input class="ac-input" id="adLine2" value="${esc(a.line2 || '')}" autocomplete="address-line2"></div>
+          <div class="ac-field"><label for="adLandmark">Landmark <span class="opt">(optional)</span></label><input class="ac-input" id="adLandmark" value="${esc(a.landmark || '')}"></div>
+        </div>
+        <div class="ac-row3">
+          <div class="ac-field"><label for="adPin">Pincode</label><input class="ac-input" id="adPin" value="${esc(a.pin || '')}" inputmode="numeric" maxlength="6" autocomplete="postal-code" aria-describedby="errAdPin"><div class="ac-error" id="errAdPin" role="alert"></div></div>
+          <div class="ac-field"><label for="adCity">City</label><input class="ac-input" id="adCity" value="${esc(a.city || '')}" autocomplete="address-level2" aria-describedby="errAdCity"><div class="ac-error" id="errAdCity" role="alert"></div></div>
+          <div class="ac-field"><label for="adState">State</label><select class="ac-input" id="adState" autocomplete="address-level1" aria-describedby="errAdState"><option value="">Select state</option>${STATES.map(s => `<option${s === a.state ? ' selected' : ''}>${esc(s)}</option>`).join('')}</select><div class="ac-error" id="errAdState" role="alert"></div></div>
+        </div>
+        <div class="ac-field"><span class="ac-label" id="adTypeLabel">Address type</span>
+          <div class="ac-chips" role="radiogroup" aria-labelledby="adTypeLabel">
+            <label class="ac-chip"><input type="radio" name="adType" value="Home"${a.type === 'Work' ? '' : ' checked'}><span>Home</span></label>
+            <label class="ac-chip"><input type="radio" name="adType" value="Work"${a.type === 'Work' ? ' checked' : ''}><span>Work</span></label>
+          </div></div>
+        <label class="ac-check"><input type="checkbox" id="adDefault"${a.isDefault ? ' checked' : ''}> Make this my default address</label>
+        <div class="ac-form-actions"><button type="submit" class="ac-btn">Save Address</button><button type="button" class="ac-btn is-ghost" data-act="addr-cancel">Cancel</button></div>
+      </form></div>`;
+  }
+  function viewAddresses() {
+    const list = savedAddresses();
+    const editing = state.addrEditing;
+    const editAddr = editing && editing !== 'new' ? list.find(a => a.id === editing) : null;
+    return `
+      <div class="ac-view-head"><h2>My Addresses</h2><span class="ac-muted">${list.length} saved</span></div>
+      ${editing ? addressForm(editAddr) + '<div style="height:1.4rem"></div>' : ''}
+      <div class="ac-addr-grid">
+        ${list.map(a => `<article class="ac-addr${a.isDefault ? ' is-default' : ''}" data-id="${esc(a.id)}">
+          <div class="ac-addr-head"><strong>${esc(a.type || 'Home')}</strong>${a.isDefault ? '<span class="ac-tag">Default</span>' : ''}</div>
+          <p><strong style="font-weight:500">${esc(a.name)}</strong><br>${esc(a.line1)}${a.line2 ? ', ' + esc(a.line2) : ''}${a.landmark ? '<br>Landmark: ' + esc(a.landmark) : ''}<br>${esc(a.city)}, ${esc(a.state)} \u2014 ${esc(a.pin)}<br>+91 ${esc(a.phone)}</p>
+          <div class="ac-addr-actions">
+            <button type="button" class="ac-link-btn" data-act="addr-edit">Edit</button>
+            ${a.isDefault ? '' : '<button type="button" class="ac-link-btn" data-act="addr-default">Set as default</button>'}
+            <button type="button" class="ac-link-btn is-danger" data-act="addr-delete">Delete</button>
+          </div></article>`).join('')}
+        <button type="button" class="ac-addr ac-addr-add" data-act="addr-new"><span aria-hidden="true">+</span>Add a new address</button>
+      </div>
+      ${list.length ? '' : '<p class="ac-muted" style="margin-top:1.2rem">No addresses saved yet \u2014 add one and it will be ready at checkout.</p>'}`;
+  }
+
+  function viewProfile(user) {
+    return `
+      <div class="ac-view-head"><h2>Profile &amp; Security</h2></div>
+      <div class="ac-card-box">
+        <h3>Personal details</h3>
+        <form id="profileForm" novalidate>
+          <div class="ac-row2">
+            <div class="ac-field"><label for="pfName">Full name</label><input class="ac-input" id="pfName" value="${esc(user.name)}" autocomplete="name" aria-describedby="errPfName"><div class="ac-error" id="errPfName" role="alert"></div></div>
+            <div class="ac-field"><label for="pfPhone">Mobile <span class="opt">(optional)</span></label><div class="ac-prefix"><span>+91</span><input class="ac-input" id="pfPhone" value="${esc(user.phone || '')}" inputmode="numeric" maxlength="10" autocomplete="tel-national" aria-describedby="errPfPhone"></div><div class="ac-error" id="errPfPhone" role="alert"></div></div>
+          </div>
+          <div class="ac-field"><label for="pfEmail">Email address</label><input class="ac-input" id="pfEmail" value="${esc(user.email)}" readonly aria-describedby="pfEmailNote"><div class="ac-muted" id="pfEmailNote">Your email is your sign-in. To change it, please <a class="ac-link-btn" href="contact.html">contact us</a>.</div></div>
+          <label class="ac-check"><input type="checkbox" id="pfNews"${user.newsletter ? ' checked' : ''}> Email me about new arrivals and offers</label>
+          <div class="ac-form-actions"><button type="submit" class="ac-btn">Save Changes</button></div>
+        </form>
+      </div>
+      <div class="ac-card-box">
+        <h3>Change password</h3>
+        <form id="passForm" novalidate>
+          <div class="ac-field"><label for="pwCur">Current password</label><div class="ac-pw"><input class="ac-input" type="password" id="pwCur" autocomplete="current-password" aria-describedby="errPwCur"><button type="button" data-toggle="pwCur" aria-label="Show password">Show</button></div><div class="ac-error" id="errPwCur" role="alert"></div></div>
+          <div class="ac-row2">
+            <div class="ac-field"><label for="pwNew">New password</label><div class="ac-pw"><input class="ac-input" type="password" id="pwNew" autocomplete="new-password" aria-describedby="errPwNew"><button type="button" data-toggle="pwNew" aria-label="Show password">Show</button></div><div class="ac-error" id="errPwNew" role="alert"></div></div>
+            <div class="ac-field"><label for="pwNew2">Confirm new password</label><div class="ac-pw"><input class="ac-input" type="password" id="pwNew2" autocomplete="new-password" aria-describedby="errPwNew2"><button type="button" data-toggle="pwNew2" aria-label="Show password">Show</button></div><div class="ac-error" id="errPwNew2" role="alert"></div></div>
+          </div>
+          <div class="ac-form-actions"><button type="submit" class="ac-btn is-ghost">Update Password</button></div>
+        </form>
+      </div>
+      <div class="ac-card-box ac-danger">
+        <h3>Delete account</h3>
+        <p class="ac-muted" style="margin-bottom:1rem;max-width:60ch">This removes your account sign-in. Orders you have already placed are not affected.</p>
+        <button type="button" class="ac-link-btn is-danger" data-act="delete-account">Delete my account</button>
+      </div>`;
+  }
+
+  const view = $('#acView');
+
+  view.addEventListener('click', (e) => {
+    const toggle = e.target.closest('[data-toggle]');
+    if (toggle) {
+      const inp = $('#' + toggle.dataset.toggle); const show = inp.type === 'password';
+      inp.type = show ? 'text' : 'password'; toggle.textContent = show ? 'Hide' : 'Show';
+      toggle.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+      return;
+    }
+    const f = e.target.closest('[data-filter]');
+    if (f) { state.ordersFilter = f.dataset.filter; rerender(); return; }
+
+    const btn = e.target.closest('[data-act]');
+    if (!btn) return;
+    const act = btn.dataset.act;
+    const user = Auth.current(); if (!user) return;
+
+    if (act === 'toggle') {
+      const id = btn.closest('.ac-order').dataset.id;
+      state.openOrder = state.openOrder === id ? null : id;
+      rerender();
+      const again = $(`.ac-order[data-id="${CSS.escape ? CSS.escape(id) : id}"] [data-act="toggle"]`); if (again) again.focus({ preventScroll: true });
+    } else if (act === 'reorder') {
+      const order = userOrders(user).find(o => o.id === btn.closest('.ac-order').dataset.id);
+      if (order) reorder(order);
+    }
+    else if (act === 'addr-new') { state.addrEditing = 'new'; rerender(); const i = $('#adName'); if (i) i.focus(); }
+    else if (act === 'addr-edit') { state.addrEditing = btn.closest('.ac-addr').dataset.id; rerender(); const i = $('#adName'); if (i) i.focus(); }
+    else if (act === 'addr-cancel') { state.addrEditing = null; rerender(); }
+    else if (act === 'addr-default') {
+      const id = btn.closest('.ac-addr').dataset.id;
+      Sutra.store.write(K.addresses, savedAddresses().map(a => Object.assign({}, a, { isDefault: a.id === id })));
+      Sutra.toast('Default address updated'); rerender();
+    } else if (act === 'addr-delete') {
+      if (!window.confirm('Delete this address?')) return;
+      const id = btn.closest('.ac-addr').dataset.id;
+      let list = savedAddresses().filter(a => a.id !== id);
+      if (list.length && !list.some(a => a.isDefault)) list[0] = Object.assign({}, list[0], { isDefault: true });
+      Sutra.store.write(K.addresses, list);
+      Sutra.toast('Address deleted'); rerender();
+    }
+    else if (act === 'delete-account') {
+      if (!window.confirm('Delete your account? This cannot be undone.')) return;
+      Auth.deleteAccount();
+      Sutra.toast('Your account has been deleted');
+      go('login'); route();
+    }
+  });
+
+  view.addEventListener('input', (e) => {
+    if (e.target.hasAttribute('aria-invalid')) e.target.removeAttribute('aria-invalid');
+    if (e.target.id === 'adPhone' || e.target.id === 'pfPhone') e.target.value = digits(e.target.value).slice(0, 10);
+    if (e.target.id === 'adPin') e.target.value = digits(e.target.value).slice(0, 6);
+  });
+
+  function reorder(order) {
+    let added = 0, skipped = 0;
+    order.items.forEach(i => {
+      const p = cat.byId(i.id);
+      const sizeObj = p && p.sizes.find(s => s.label === i.size);
+      const ok = p && sizeObj && !(p.stock === 'in-stock' && sizeObj.qty === 0);
+      if (!ok) { skipped++; return; }
+      Sutra.cart.addItem({ id: p.id, size: i.size, color: i.color, qty: Math.max(1, num(i.qty)) });
+      added++;
+    });
+    const msg = [added ? `${added} item${added === 1 ? '' : 's'} added to your cart` : '', skipped ? `${skipped} unavailable` : ''].filter(Boolean).join(' \u00B7 ');
+    Sutra.toast(msg, added ? { actionText: 'View Cart', href: 'cart.html' } : {});
+  }
+
+  view.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const user = Auth.current(); if (!user) return;
+
+    if (e.target.id === 'addrForm') {
+      const a = {
+        name: $('#adName').value.trim(), phone: digits($('#adPhone').value), line1: $('#adLine1').value.trim(), line2: $('#adLine2').value.trim(),
+        landmark: $('#adLandmark').value.trim(), pin: digits($('#adPin').value), city: $('#adCity').value.trim(), state: $('#adState').value,
+        type: ($('input[name="adType"]:checked') || {}).value || 'Home'
+      };
+      const ok = [
+        setError('adName', 'errAdName', a.name.length >= 2 ? '' : 'Please enter the recipient\u2019s full name.'),
+        setError('adPhone', 'errAdPhone', /^[6-9]\d{9}$/.test(a.phone) ? '' : 'Enter a valid 10-digit mobile number.'),
+        setError('adLine1', 'errAdLine1', a.line1.length >= 5 ? '' : 'Please enter your house / street address.'),
+        setError('adPin', 'errAdPin', /^[1-9]\d{5}$/.test(a.pin) ? '' : 'Enter a valid 6-digit pincode.'),
+        setError('adCity', 'errAdCity', a.city.length >= 2 ? '' : 'Please enter your city.'),
+        setError('adState', 'errAdState', a.state ? '' : 'Please select your state.')
+      ].every(Boolean);
+      if (!ok) { firstInvalid(e.target); return; }
+
+      let list = savedAddresses();
+      const id = e.target.dataset.id;
+      let wantDefault = $('#adDefault').checked;
+      if (id) {
+        list = list.map(x => (x.id === id ? Object.assign({}, x, a) : x));
+      } else {
+        wantDefault = wantDefault || list.length === 0;
+        list = [Object.assign({ id: 'a' + Date.now(), isDefault: false }, a)].concat(list);
+      }
+      const targetId = id || list[0].id;
+      if (wantDefault) list = list.map(x => Object.assign({}, x, { isDefault: x.id === targetId }));
+      else if (!list.some(x => x.isDefault)) list[0] = Object.assign({}, list[0], { isDefault: true });
+      Sutra.store.write(K.addresses, list);
+      state.addrEditing = null;
+      Sutra.toast(id ? 'Address updated' : 'Address saved');
+      rerender();
+      return;
+    }
+
+    if (e.target.id === 'profileForm') {
+      const name = $('#pfName').value.trim(), phone = digits($('#pfPhone').value);
+      const ok = [
+        setError('pfName', 'errPfName', name.length >= 2 ? '' : 'Please enter your full name.'),
+        setError('pfPhone', 'errPfPhone', !phone || /^[6-9]\d{9}$/.test(phone) ? '' : 'Enter a valid 10-digit mobile number.')
+      ].every(Boolean);
+      if (!ok) { firstInvalid(e.target); return; }
+      Auth.updateProfile({ name, phone, newsletter: $('#pfNews').checked });
+      Sutra.toast('Profile updated');
+      rerender();
+      return;
+    }
+
+    if (e.target.id === 'passForm') {
+      const cur = $('#pwCur').value, nw = $('#pwNew').value, nw2 = $('#pwNew2').value;
+      const okCur = cur ? await Auth.verify(cur) : false;
+      const ok = [
+        setError('pwCur', 'errPwCur', !cur ? 'Please enter your current password.' : okCur ? '' : 'That password is incorrect.'),
+        setError('pwNew', 'errPwNew', passwordOk(nw) ? '' : PW_MSG),
+        setError('pwNew2', 'errPwNew2', nw2 && nw2 === nw ? '' : 'Passwords don\u2019t match.')
+      ].every(Boolean);
+      if (!ok) { firstInvalid(e.target); return; }
+      await Auth.setPassword(user.email, nw);
+      e.target.reset();
+      Sutra.toast('Password updated');
+    }
+  });
+
+  window.addEventListener('sutra:wishlist', () => { if (Auth.current()) rerender(); });
+  window.addEventListener('storage', () => route());
+
+  route();
+})();
+</script>
+
+</body>
+</html>

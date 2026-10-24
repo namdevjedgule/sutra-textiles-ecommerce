@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${customer.fullName} + ' | Admin'">Customer | Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+
+  <style>
+    /* ===== Admin: Customer details page only ===== */
+
+    .back-link {
+      display: inline-block;
+      font-size: 0.86rem;
+      color: var(--olive);
+      margin-bottom: 0.8rem;
+    }
+
+    .back-link:hover {
+      color: var(--green);
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-danger {
+      border: 1px solid var(--terracotta);
+      color: var(--terracotta);
+    }
+
+    .btn-danger:hover {
+      background: var(--terracotta);
+      color: var(--ivory);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 1.2rem;
+      align-items: start;
+    }
+
+    .stack {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .card {
+      background: var(--ivory-soft);
+      border: 1px solid var(--grey);
+      padding: 1.4rem;
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .card h2 {
+      font-size: 1.15rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-head h2 {
+      margin-bottom: 0;
+    }
+
+    .card-head a {
+      font-size: 0.84rem;
+      border-bottom: 1px solid var(--gold);
+      color: var(--green);
+    }
+
+    .card p,
+    .card address {
+      font-style: normal;
+      font-size: 0.9rem;
+      color: #3a3f37;
+    }
+
+    .muted {
+      color: var(--olive);
+    }
+
+    .notice {
+      padding: 0.9rem 1.1rem;
+      margin-bottom: 1.2rem;
+      font-size: 0.9rem;
+      background: rgba(181, 83, 60, 0.08);
+      border: 1px solid rgba(181, 83, 60, 0.35);
+      color: var(--terracotta);
+    }
+
+    /* Pills */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.22rem 0.7rem;
+      font-size: 0.76rem;
+      border-radius: 999px;
+    }
+
+    .pill::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .pill-active {
+      background: rgba(20, 50, 36, 0.12);
+      color: var(--green);
+    }
+
+    .pill-blocked,
+    .pill-cancelled {
+      background: rgba(181, 83, 60, 0.15);
+      color: var(--terracotta);
+    }
+
+    .pill-pending {
+      background: rgba(201, 162, 75, 0.2);
+      color: #7a5d1a;
+    }
+
+    .pill-shipped {
+      background: rgba(92, 107, 78, 0.2);
+      color: var(--olive);
+    }
+
+    .pill-delivered {
+      background: rgba(20, 50, 36, 0.12);
+      color: var(--green);
+    }
+
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: var(--ivory-soft);
+      border: 1px solid var(--grey);
+    }
+
+    .stat {
+      padding: 1.1rem 1.3rem;
+      border-left: 1px solid var(--grey);
+    }
+
+    .stat:first-child {
+      border-left: none;
+    }
+
+    .stat span {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--olive);
+    }
+
+    .stat strong {
+      display: block;
+      margin-top: 0.2rem;
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--green);
+      line-height: 1.2;
+    }
+
+    /* Table */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 500;
+      font-size: 0.8rem;
+      color: var(--olive);
+      padding: 0 1rem 0.7rem 0;
+      border-bottom: 1px solid var(--grey);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.8rem 1rem 0.8rem 0;
+      border-bottom: 1px solid rgba(217, 210, 196, 0.6);
+      white-space: nowrap;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    td a.link {
+      font-family: var(--font-display);
+      color: var(--green);
+    }
+
+    .empty {
+      font-size: 0.9rem;
+      color: var(--olive);
+    }
+
+    /* Right column */
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .avatar {
+      flex: none;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--green);
+      color: var(--gold-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+    }
+
+    .profile strong {
+      display: block;
+      font-family: var(--font-display);
+      color: var(--green);
+      line-height: 1.2;
+    }
+
+    .kv {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.5rem 1rem;
+      font-size: 0.88rem;
+    }
+
+    .kv dt {
+      color: var(--olive);
+    }
+
+    .kv dd {
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    .addr+.addr {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--grey);
+    }
+
+    .badge {
+      display: inline-block;
+      margin-bottom: 0.3rem;
+      padding: 0.12rem 0.55rem;
+      font-size: 0.72rem;
+      border-radius: 999px;
+      background: rgba(201, 162, 75, 0.2);
+      color: #7a5d1a;
+    }
+
+    @media (max-width: 1100px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stat:nth-child(3) {
+        border-left: none;
+      }
+
+      .stat:nth-child(n+3) {
+        border-top: 1px solid var(--grey);
+      }
+    }
+  </style>
+</head>
+
+<body class="adm-body">
+  <div class="adm-shell">
+
+    <div th:replace="~{admin/fragments/layout :: sidebar('customers')}"></div>
+
+    <div class="adm-main">
+      <header th:replace="~{admin/fragments/layout :: topbar}"></header>
+
+      <main class="adm-content">
+
+        <a class="back-link" th:href="@{/admin/customers}">&larr; Back to customers</a>
+
+        <div class="adm-head">
+          <div>
+            <div class="title-row">
+              <h1 th:text="${customer.fullName}">Customer name</h1>
+              <span class="pill" th:classappend="${customer.blocked} ? 'pill-blocked' : 'pill-active'"
+                th:text="${customer.blocked} ? 'Blocked' : 'Active'">Active</span>
+            </div>
+            <p th:text="'Customer since ' + ${#temporals.format(customer.createdAt, 'dd MMM yyyy')}">Customer since 01 Jan 2026</p>
+          </div>
+
+          <div class="adm-head-actions">
+            <a class="btn btn-ghost" th:href="@{/admin/orders(q=${customer.email})}">View all orders</a>
+            <form id="block-form" th:if="${!customer.blocked}" method="post" th:action="@{/admin/customers/{id}/block(id=${customer.id})}">
+              <button type="submit" class="btn btn-danger">Block customer</button>
+            </form>
+            <form th:if="${customer.blocked}" method="post" th:action="@{/admin/customers/{id}/unblock(id=${customer.id})}">
+              <button type="submit" class="btn btn-primary">Unblock customer</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="adm-alert ok" th:if="${message}" th:text="${message}" role="status"></div>
+        <div class="adm-alert err" th:if="${error}" th:text="${error}" role="alert"></div>
+
+        <div class="notice" th:if="${customer.blocked}">
+          This customer is blocked and can't sign in or place orders.
+        </div>
+
+        <div class="layout">
+
+          <!-- Left: stats + orders -->
+          <div class="stack">
+
+            <div class="stats">
+              <div class="stat"><span>Orders</span><strong th:text="${customer.orderCount}">0</strong></div>
+              <div class="stat"><span>Total spent</span><strong th:text="'₹' + ${#numbers.formatDecimal(customer.totalSpent, 1, 'COMMA', 0, 'POINT')}">₹0</strong></div>
+              <div class="stat"><span>Average order</span><strong th:text="'₹' + ${#numbers.formatDecimal(customer.averageOrder, 1, 'COMMA', 0, 'POINT')}">₹0</strong></div>
+              <div class="stat"><span>Last order</span><strong th:text="${customer.lastOrderAt != null} ? ${#temporals.format(customer.lastOrderAt, 'dd MMM yyyy')} : '-'">-</strong></div>
+            </div>
+
+            <div class="card">
+              <div class="card-head">
+                <h2>Recent orders</h2>
+                <a th:href="@{/admin/orders(q=${customer.email})}" th:if="${customer.orderCount > 0}">View all</a>
+              </div>
+              <p class="empty" th:if="${#lists.isEmpty(customer.recentOrders)}">This customer hasn't placed any orders yet.</p>
+              <div class="table-wrap" th:unless="${#lists.isEmpty(customer.recentOrders)}">
+                <table>
+                  <thead>
+                    <tr><th>Order</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr th:each="o : ${customer.recentOrders}">
+                      <td><a class="link" th:href="@{/admin/orders/{id}(id=${o.id})}" th:text="'#' + ${o.orderNumber}">#1001</a></td>
+                      <td th:text="${#temporals.format(o.createdAt, 'dd MMM yyyy')}">01 Jan 2026</td>
+                      <td th:text="${o.itemCount}">1</td>
+                      <td th:text="'₹' + ${#numbers.formatDecimal(o.total, 1, 'COMMA', 2, 'POINT')}">₹0.00</td>
+                      <td><span class="pill" th:classappend="'pill-' + ${#strings.toLowerCase(o.status)}"
+                          th:text="${#strings.capitalize(#strings.toLowerCase(o.status))}">Pending</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right: contact, account, addresses -->
+          <div class="stack">
+
+            <div class="card">
+              <div class="profile">
+                <span class="avatar" th:text="${#strings.toUpperCase(#strings.substring(customer.fullName, 0, 1))}">A</span>
+                <div>
+                  <strong th:text="${customer.fullName}">Customer</strong>
+                  <span class="muted" th:text="${customer.email}">email@example.com</span>
+                </div>
+              </div>
+              <dl class="kv">
+                <dt>Phone</dt>
+                <dd th:text="${customer.phone != null} ? ${customer.phone} : '-'">Phone</dd>
+                <dt>Email verified</dt>
+                <dd th:text="${customer.emailVerified} ? 'Yes' : 'No'">Yes</dd>
+                <dt>Last sign in</dt>
+                <dd th:text="${customer.lastLoginAt != null} ? ${#temporals.format(customer.lastLoginAt, 'dd MMM yyyy')} : 'Never'">Never</dd>
+              </dl>
+            </div>
+
+            <div class="card">
+              <h2>Addresses</h2>
+              <p class="empty" th:if="${#lists.isEmpty(customer.addresses)}">No saved addresses.</p>
+              <div class="addr" th:each="a : ${customer.addresses}">
+                <span class="badge" th:if="${a.primary}">Default</span>
+                <address>
+                  <span th:text="${a.fullName}">Name</span><br>
+                  <span th:text="${a.line1}">Line 1</span><br>
+                  <th:block th:if="${a.line2 != null and !#strings.isEmpty(a.line2)}">
+                    <span th:text="${a.line2}">Line 2</span><br>
+                  </th:block>
+                  <span th:text="${a.city} + ', ' + ${a.state} + ' ' + ${a.pincode}">City, State 000000</span><br>
+                  <span class="muted" th:text="${a.phone}">Phone</span>
+                </address>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script th:src="@{/js/script.js}"></script>
+  <script>
+    // Confirm before blocking a customer
+    var block = document.getElementById('block-form');
+    if (block) {
+      block.addEventListener('submit', function (e) {
+        if (!confirm('Block this customer? They will not be able to sign in or place orders.')) e.preventDefault();
+      });
+    }
+  </script>
+</body>
+
+</html>

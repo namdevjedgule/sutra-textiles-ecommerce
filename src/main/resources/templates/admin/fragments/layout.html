@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+  <div class="adm-nav-root" th:fragment="sidebar(active)">
+
+    <style>
+      .adm-body {
+        background: var(--ivory);
+      }
+
+      .adm-shell {
+        display: grid;
+        grid-template-columns: 256px minmax(0, 1fr);
+        min-height: 100vh;
+      }
+
+      .adm-nav-root {
+        display: contents;
+      }
+
+      .adm-toggle {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      /* neutralise global section / nav rules from style.css */
+      :where(.adm-main) section {
+        padding-block: 0;
+      }
+
+      /* Sidebar */
+      .adm-side {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        padding: 1.5rem 1rem 1.2rem;
+        background: var(--green-deep);
+        color: #aab5a6;
+        z-index: 60;
+      }
+
+      .adm-brand {
+        display: block;
+        padding: 0 0.8rem 1.2rem;
+        font-family: var(--font-display);
+        font-size: 1.35rem;
+        color: var(--ivory);
+        line-height: 1.2;
+      }
+
+      .adm-brand small {
+        display: block;
+        font-family: var(--font-body);
+        font-size: 0.74rem;
+        color: var(--gold-light);
+        margin-top: 0.15rem;
+      }
+
+      .adm-nav {
+        display: block;
+        flex: none;
+      }
+
+      .adm-group+.adm-group {
+        margin-top: 1.3rem;
+      }
+
+      .adm-group-title {
+        padding: 0 0.8rem;
+        margin-bottom: 0.35rem;
+        font-size: 0.76rem;
+        color: #7d8f7c;
+      }
+
+      .adm-nav a,
+      .adm-side-foot button {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+        text-align: left;
+        color: #aab5a6;
+        border-left: 2px solid transparent;
+        border-radius: var(--radius);
+        transition: color .2s var(--ease), background .2s var(--ease);
+      }
+
+      .adm-nav a:hover,
+      .adm-side-foot button:hover,
+      .adm-side-foot a:hover {
+        color: var(--ivory);
+        background: rgba(245, 240, 230, 0.06);
+      }
+
+      .adm-nav a.is-active {
+        color: var(--gold-light);
+        background: rgba(227, 203, 142, 0.1);
+        border-left-color: var(--gold);
+      }
+
+      .adm-count {
+        min-width: 19px;
+        height: 19px;
+        padding: 0 5px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        background: var(--terracotta);
+        color: var(--ivory);
+        font-size: 0.68rem;
+        font-weight: 500;
+      }
+
+      .adm-side-foot {
+        margin-top: auto;
+        padding-top: 1.2rem;
+      }
+
+      .adm-side-foot>div {
+        border-top: 1px solid rgba(217, 210, 196, 0.15);
+        padding-top: 0.8rem;
+      }
+
+      .adm-side-foot a {
+        display: block;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+        color: #aab5a6;
+        border-radius: var(--radius);
+      }
+
+      .adm-side-foot .out {
+        color: #d98f7c;
+      }
+
+      .adm-scrim {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(20, 38, 32, 0.5);
+        z-index: 55;
+      }
+
+      /* Main column + topbar */
+      .adm-main {
+        min-width: 0;
+      }
+
+      .adm-top {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        min-height: 68px;
+        padding: 0.6rem clamp(1.2rem, 3vw, 2.2rem);
+        background: var(--ivory-soft);
+        border-bottom: 1px solid var(--grey);
+      }
+
+      .adm-burger {
+        display: none;
+        width: 34px;
+        height: 34px;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        cursor: pointer;
+      }
+
+      .adm-burger span {
+        display: block;
+        width: 22px;
+        height: 1.5px;
+        background: var(--green);
+      }
+
+      .adm-search {
+        flex: 1;
+        max-width: 420px;
+      }
+
+      .adm-search input {
+        width: 100%;
+        padding: 0.6rem 0.95rem;
+        font-size: 0.88rem;
+        background: var(--ivory);
+        border: 1px solid var(--grey);
+        border-radius: var(--radius);
+        color: var(--charcoal);
+      }
+
+      .adm-search input:focus {
+        border-color: var(--gold);
+        outline: none;
+      }
+
+      .adm-top-right {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+      }
+
+      .adm-bell {
+        position: relative;
+        width: 22px;
+        height: 22px;
+        color: var(--green);
+      }
+
+      .adm-bell svg {
+        width: 22px;
+        height: 22px;
+      }
+
+      .adm-dot {
+        position: absolute;
+        top: -3px;
+        right: -4px;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--terracotta);
+        border: 2px solid var(--ivory-soft);
+      }
+
+      .adm-me {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+      }
+
+      .adm-me-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: var(--green);
+        color: var(--gold-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-display);
+      }
+
+      .adm-me strong {
+        display: block;
+        font-size: 0.88rem;
+        font-weight: 500;
+        line-height: 1.2;
+      }
+
+      .adm-me span {
+        display: block;
+        font-size: 0.75rem;
+        color: var(--olive);
+      }
+
+      /* Page content wrapper + shared page head / alerts */
+      .adm-content {
+        padding: clamp(1.3rem, 3vw, 2.2rem);
+        max-width: 1400px;
+      }
+
+      .adm-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.6rem;
+      }
+
+      .adm-head h1 {
+        font-size: clamp(1.7rem, 3vw, 2.3rem);
+      }
+
+      .adm-head p {
+        margin-top: 0.25rem;
+        font-size: 0.92rem;
+        color: #4b5048;
+      }
+
+      .adm-head-actions {
+        display: flex;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+      }
+
+      .adm-head-actions .btn {
+        padding: 0.68rem 1.3rem;
+        font-size: 0.85rem;
+        cursor: pointer;
+      }
+
+      .adm-alert {
+        padding: 0.85rem 1.1rem;
+        margin-bottom: 1.4rem;
+        font-size: 0.9rem;
+        border: 1px solid var(--grey);
+        background: var(--ivory-soft);
+      }
+
+      .adm-alert.ok {
+        border-left: 3px solid var(--olive);
+      }
+
+      .adm-alert.err {
+        border-left: 3px solid var(--terracotta);
+      }
+
+      @media (max-width: 1000px) {
+        .adm-shell {
+          grid-template-columns: 1fr;
+        }
+
+        .adm-side {
+          position: fixed;
+          inset: 0 auto 0 0;
+          width: 260px;
+          transform: translateX(-100%);
+          transition: transform .3s var(--ease);
+        }
+
+        body:has(#adm-toggle:checked) .adm-side {
+          transform: none;
+        }
+
+        body:has(#adm-toggle:checked) .adm-scrim {
+          display: block;
+        }
+
+        .adm-burger {
+          display: flex;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .adm-me div {
+          display: none;
+        }
+      }
+    </style>
+
+    <input type="checkbox" id="adm-toggle" class="adm-toggle" aria-hidden="true" tabindex="-1">
+    <label for="adm-toggle" class="adm-scrim"></label>
+
+    <aside class="adm-side">
+      <a class="adm-brand" th:href="@{/admin/dashboard}">Store admin<small>Management console</small></a>
+
+      <nav class="adm-nav" aria-label="Admin">
+        <div class="adm-group">
+          <div class="adm-group-title">Main</div>
+          <a th:href="@{/admin/dashboard}" th:classappend="${active == 'dashboard'} ? 'is-active'">Dashboard</a>
+          <a th:href="@{/admin/orders}" th:classappend="${active == 'orders'} ? 'is-active'">Orders
+            <span class="adm-count" th:if="${pendingOrders != null and pendingOrders > 0}" th:text="${pendingOrders}">3</span></a>
+          <a th:href="@{/admin/products}" th:classappend="${active == 'products'} ? 'is-active'">Products</a>
+          <a th:href="@{/admin/categories}" th:classappend="${active == 'categories'} ? 'is-active'">Categories</a>
+          <a th:href="@{/admin/customers}" th:classappend="${active == 'customers'} ? 'is-active'">Customers</a>
+        </div>
+
+        <div class="adm-group">
+          <div class="adm-group-title">Manage</div>
+          <a th:href="@{/admin/inventory}" th:classappend="${active == 'inventory'} ? 'is-active'">Inventory</a>
+          <a th:href="@{/admin/coupons}" th:classappend="${active == 'coupons'} ? 'is-active'">Coupons</a>
+          <a th:href="@{/admin/returns}" th:classappend="${active == 'returns'} ? 'is-active'">Returns</a>
+          <a th:href="@{/admin/reviews}" th:classappend="${active == 'reviews'} ? 'is-active'">Reviews</a>
+        </div>
+
+        <div class="adm-group">
+          <div class="adm-group-title">Insights</div>
+          <a th:href="@{/admin/reports}" th:classappend="${active == 'reports'} ? 'is-active'">Reports</a>
+        </div>
+
+        <div class="adm-group">
+          <div class="adm-group-title">Store</div>
+          <a th:href="@{/admin/content}" th:classappend="${active == 'content'} ? 'is-active'">Banners and content</a>
+          <a th:href="@{/admin/settings}" th:classappend="${active == 'settings'} ? 'is-active'">Settings</a>
+        </div>
+      </nav>
+
+      <div class="adm-side-foot">
+        <div>
+          <a th:href="@{/}" target="_blank" rel="noopener">View store</a>
+          <form th:action="@{/logout}" method="post">
+            <button type="submit" class="out">Sign out</button>
+          </form>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ===================== TOPBAR ===================== -->
+  <header class="adm-top" th:fragment="topbar">
+    <label for="adm-toggle" class="adm-burger" aria-label="Open menu"><span></span><span></span><span></span></label>
+
+    <form class="adm-search" th:action="@{/admin/products}" method="get" role="search">
+      <input type="search" name="q" placeholder="Search products by name or SKU" aria-label="Search products">
+    </form>
+
+    <div class="adm-top-right">
+      <a class="adm-bell" th:href="@{/admin/orders(status='PENDING')}" aria-label="Pending orders">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>
+        </svg>
+        <span class="adm-dot" th:if="${pendingOrders != null and pendingOrders > 0}"></span>
+      </a>
+
+      <div class="adm-me">
+        <span class="adm-me-avatar" th:text="${#strings.toUpperCase(#strings.substring(admin.fullName, 0, 1))}">A</span>
+        <div>
+          <strong th:text="${admin.fullName}">Admin</strong>
+          <span th:text="${admin.roleLabel}">Store owner</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+</body>
+
+</html>

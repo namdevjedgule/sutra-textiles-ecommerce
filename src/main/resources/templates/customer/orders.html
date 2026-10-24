@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My orders</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <style>
+        /* ===== Customer dashboard: My orders page only ===== */
+
+        .dash-head {
+            margin-bottom: 1.8rem;
+        }
+
+        .dash-head h1 {
+            font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+        }
+
+        .dash-head p {
+            color: #4b5048;
+            margin-top: 0.3rem;
+        }
+
+        /* Toolbar: status tabs + search */
+        .orders-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem 2rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--grey);
+            margin-bottom: 0.4rem;
+        }
+
+        .orders-tabs {
+            display: flex;
+            gap: 1.6rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .orders-tabs a {
+            padding: 0.7rem 0;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            color: var(--charcoal);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+        }
+
+        .orders-tabs a:hover {
+            color: var(--green);
+        }
+
+        .orders-tabs a.is-active {
+            color: var(--green);
+            font-weight: 500;
+            border-bottom-color: var(--gold);
+        }
+
+        .orders-search {
+            display: flex;
+            gap: 0.5rem;
+            padding-bottom: 0.6rem;
+        }
+
+        .orders-search input {
+            width: 210px;
+            max-width: 100%;
+            padding: 0.5rem 0.8rem;
+            font-size: 0.86rem;
+            background: var(--ivory-soft);
+            border: 1px solid var(--grey);
+            border-radius: var(--radius);
+            color: var(--charcoal);
+        }
+
+        .orders-search button {
+            padding: 0.5rem 1rem;
+            font-size: 0.84rem;
+            border: 1px solid var(--green);
+            color: var(--green);
+            border-radius: var(--radius);
+            transition: background .25s var(--ease), color .25s var(--ease);
+        }
+
+        .orders-search button:hover {
+            background: var(--green);
+            color: var(--ivory);
+        }
+
+        .orders-count {
+            font-size: 0.84rem;
+            color: var(--olive);
+            margin: 0.9rem 0 0.2rem;
+        }
+
+        /* Order rows */
+        .order-row {
+            display: grid;
+            grid-template-columns: 230px minmax(0, 1fr);
+            gap: 1.5rem;
+            padding: 1.6rem 0;
+            border-bottom: 1px solid var(--grey);
+        }
+
+        .order-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            font-size: 0.88rem;
+        }
+
+        .order-meta .order-no {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            color: var(--green);
+        }
+
+        .order-meta .muted {
+            color: var(--olive);
+        }
+
+        .order-meta .total {
+            font-weight: 500;
+        }
+
+        .order-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem 1.1rem;
+            margin-top: 0.4rem;
+        }
+
+        .order-links a,
+        .order-links button {
+            font-size: 0.84rem;
+            border-bottom: 1px solid var(--gold);
+            padding: 0 0 1px;
+            color: var(--charcoal);
+        }
+
+        .order-thumbs {
+            display: flex;
+            gap: 0.6rem;
+            overflow-x: auto;
+            align-items: flex-start;
+            scrollbar-width: thin;
+        }
+
+        .order-thumb {
+            flex: 0 0 auto;
+            width: 96px;
+            aspect-ratio: 4 / 5;
+            background: var(--ivory-soft);
+            border: 1px solid var(--grey);
+            overflow: hidden;
+        }
+
+        .order-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .order-more {
+            align-self: center;
+            padding: 0 0.6rem;
+            font-size: 0.84rem;
+            color: var(--green);
+            text-decoration: underline;
+            text-decoration-color: var(--gold);
+            text-underline-offset: 3px;
+            white-space: nowrap;
+        }
+
+        /* Status badge */
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            width: fit-content;
+            padding: 0.22rem 0.7rem;
+            font-size: 0.74rem;
+            letter-spacing: 0.03em;
+            border-radius: 999px;
+        }
+
+        .status::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .status-pending {
+            background: rgba(201, 162, 75, 0.2);
+            color: #7a5d1a;
+        }
+
+        .status-shipped {
+            background: rgba(92, 107, 78, 0.2);
+            color: var(--olive);
+        }
+
+        .status-delivered {
+            background: rgba(20, 50, 36, 0.12);
+            color: var(--green);
+        }
+
+        .status-cancelled {
+            background: rgba(181, 83, 60, 0.15);
+            color: var(--terracotta);
+        }
+
+        /* Pagination */
+        .pager {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            font-size: 0.88rem;
+            color: var(--olive);
+        }
+
+        .pager a {
+            padding: 0.5rem 1.1rem;
+            border: 1px solid var(--green);
+            color: var(--green);
+            border-radius: var(--radius);
+            transition: background .25s var(--ease), color .25s var(--ease);
+        }
+
+        .pager a:hover {
+            background: var(--green);
+            color: var(--ivory);
+        }
+
+        .pager .is-disabled {
+            padding: 0.5rem 1.1rem;
+            border: 1px solid var(--grey);
+            color: var(--grey);
+            border-radius: var(--radius);
+        }
+
+        /* Empty state */
+        .dash-empty {
+            text-align: center;
+            padding: 3rem 1rem;
+            border: 1px dashed var(--grey);
+            background: var(--ivory-soft);
+            margin-top: 1.4rem;
+        }
+
+        .dash-empty p {
+            margin: 0.4rem auto 1.4rem;
+            color: #4b5048;
+        }
+
+        @media (max-width: 720px) {
+
+            .orders-search,
+            .orders-search input {
+                width: 100%;
+            }
+
+            .orders-search input {
+                flex: 1;
+            }
+
+            .order-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .order-thumb {
+                width: 82px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- change to match your existing navbar fragment name -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <main class="dash-page">
+        <div class="container dash-layout">
+
+            <aside th:replace="~{customer/fragments/sidebar :: sidebar('orders')}"></aside>
+
+            <div class="dash-main">
+
+                <header class="dash-head">
+                    <h1>My orders</h1>
+                    <p>Check the status of recent orders, track packages and view past purchases.</p>
+                </header>
+
+                <!-- Filter by status (links) + search (GET form): handled by the controller, no JS -->
+                <div class="orders-toolbar">
+                    <nav class="orders-tabs" aria-label="Filter by status">
+                        <a th:href="@{/customer/orders(q=${q})}"
+                            th:classappend="${status == null} ? 'is-active'">All</a>
+                        <a th:each="s : ${ {'PENDING', 'SHIPPED', 'DELIVERED', 'CANCELLED'} }"
+                            th:href="@{/customer/orders(status=${s}, q=${q})}"
+                            th:classappend="${status == s} ? 'is-active'"
+                            th:text="${#strings.capitalize(#strings.toLowerCase(s))}">Pending</a>
+                    </nav>
+
+                    <form class="orders-search" th:action="@{/customer/orders}" method="get" role="search">
+                        <input type="hidden" name="status" th:value="${status}" th:if="${status != null}">
+                        <input type="search" name="q" th:value="${q}" placeholder="Order number"
+                            aria-label="Search by order number">
+                        <button type="submit">Search</button>
+                    </form>
+                </div>
+
+                <p class="orders-count" th:if="${orders.totalElements > 0}"
+                    th:text="${orders.totalElements} + (${orders.totalElements == 1} ? ' order' : ' orders')">12 orders
+                </p>
+
+                <!-- Empty -->
+                <div class="dash-empty" th:if="${orders.totalElements == 0}">
+                    <h3 th:text="${status != null or q != null} ? 'No orders match your filter' : 'No orders yet'">No
+                        orders yet</h3>
+                    <p th:if="${status != null or q != null}">Try a different status or order number.</p>
+                    <p th:unless="${status != null or q != null}">When you place an order, you can track it here.</p>
+                    <a th:if="${status != null or q != null}" th:href="@{/customer/orders}" class="btn btn-ghost">Clear
+                        filters</a>
+                    <a th:unless="${status != null or q != null}" th:href="@{/shop}" class="btn btn-primary">Start
+                        shopping</a>
+                </div>
+
+                <!-- Orders -->
+                <article class="order-row" th:each="o : ${orders.content}">
+                    <div class="order-meta">
+                        <span class="status" th:classappend="'status-' + ${#strings.toLowerCase(o.status)}"
+                            th:text="${#strings.capitalize(#strings.toLowerCase(o.status))}">Shipped</span>
+                        <a class="order-no" th:href="@{/customer/orders/{id}(id=${o.id})}"
+                            th:text="'Order #' + ${o.orderNumber}">Order #1001</a>
+                        <span class="muted"
+                            th:text="'Placed ' + ${#temporals.format(o.createdAt, 'dd MMM yyyy')}">Placed 01 Jan
+                            2026</span>
+                        <span class="muted" th:if="${o.status == 'SHIPPED' and o.estimatedDelivery != null}"
+                            th:text="'Estimated delivery ' + ${#temporals.format(o.estimatedDelivery, 'dd MMM yyyy')}">Estimated
+                            delivery</span>
+                        <span class="muted" th:if="${o.status == 'DELIVERED' and o.deliveredAt != null}"
+                            th:text="'Delivered ' + ${#temporals.format(o.deliveredAt, 'dd MMM yyyy')}">Delivered</span>
+                        <span class="total"
+                            th:text="'₹' + ${#numbers.formatDecimal(o.total, 1, 'COMMA', 2, 'POINT')} + ' · ' + ${#lists.size(o.items)} + (${#lists.size(o.items) == 1} ? ' item' : ' items')">₹0.00</span>
+
+                        <div class="order-links">
+                            <a th:href="@{/customer/orders/{id}(id=${o.id})}">View details</a>
+                            <a th:if="${o.status == 'SHIPPED'}"
+                                th:href="@{/customer/orders/{id}/track(id=${o.id})}">Track package</a>
+                            <form th:if="${o.status == 'DELIVERED' or o.status == 'CANCELLED'}"
+                                th:action="@{/customer/orders/{id}/reorder(id=${o.id})}" method="post">
+                                <button type="submit">Reorder</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="order-thumbs">
+                        <div class="order-thumb" th:each="item, st : ${o.items}" th:if="${st.index < 5}">
+                            <img th:src="@{${item.imageUrl}}" th:alt="${item.productName}" loading="lazy">
+                        </div>
+                        <a class="order-more" th:if="${#lists.size(o.items) > 5}"
+                            th:href="@{/customer/orders/{id}(id=${o.id})}"
+                            th:text="'+' + ${#lists.size(o.items) - 5} + ' items'">+2 items</a>
+                    </div>
+                </article>
+
+                <!-- Pagination -->
+                <nav class="pager" th:if="${orders.totalPages > 1}" aria-label="Pages">
+                    <a th:if="${orders.hasPrevious()}"
+                        th:href="@{/customer/orders(page=${orders.number - 1}, status=${status}, q=${q})}">Previous</a>
+                    <span class="is-disabled" th:unless="${orders.hasPrevious()}">Previous</span>
+
+                    <span th:text="'Page ' + ${orders.number + 1} + ' of ' + ${orders.totalPages}">Page 1 of 3</span>
+
+                    <a th:if="${orders.hasNext()}"
+                        th:href="@{/customer/orders(page=${orders.number + 1}, status=${status}, q=${q})}">Next</a>
+                    <span class="is-disabled" th:unless="${orders.hasNext()}">Next</span>
+                </nav>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- change to match your existing footer fragment name -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <!-- base JS shared by the whole site; this page needs no extra JS -->
+    <script th:src="@{/js/script.js}"></script>
+
+</body>
+
+</html>

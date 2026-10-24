@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${productForm.id == null} ? 'Add product | Admin' : 'Edit product | Admin'">Product | Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+
+  <style>
+    /* ===== Admin: Product add / edit page only ===== */
+
+    .back-link {
+      display: inline-block;
+      font-size: 0.86rem;
+      color: var(--olive);
+      margin-bottom: 0.8rem;
+    }
+
+    .back-link:hover {
+      color: var(--green);
+    }
+
+    .form-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 1.2rem;
+      align-items: start;
+    }
+
+    .stack {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .card {
+      background: var(--ivory-soft);
+      border: 1px solid var(--grey);
+      padding: 1.5rem;
+    }
+
+    .card h2 {
+      font-size: 1.2rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.1rem;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.84rem;
+      margin-bottom: 0.35rem;
+      color: var(--green);
+    }
+
+    .field input[type="text"],
+    .field input[type="number"],
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 0.75rem 0.9rem;
+      font: inherit;
+      font-size: 0.92rem;
+      background: var(--ivory);
+      border: 1px solid var(--grey);
+      border-radius: var(--radius);
+      color: var(--charcoal);
+      transition: border-color .2s var(--ease);
+    }
+
+    .field textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--gold);
+      outline: none;
+    }
+
+    .field .has-error {
+      border-color: var(--terracotta);
+    }
+
+    .field .hint {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--olive);
+      margin-top: 0.3rem;
+    }
+
+    .field .error {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--terracotta);
+      margin-top: 0.3rem;
+    }
+
+    .check {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.9rem;
+    }
+
+    .check input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--green);
+    }
+
+    /* Images */
+    .images {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+      gap: 0.7rem;
+      margin-bottom: 1rem;
+    }
+
+    .images:empty {
+      display: none;
+    }
+
+    .thumb {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      border: 1px solid var(--grey);
+      background: var(--ivory);
+      overflow: hidden;
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .thumb label {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.45rem;
+      font-size: 0.72rem;
+      background: rgba(20, 38, 32, 0.82);
+      color: var(--ivory);
+    }
+
+    .thumb label input {
+      accent-color: var(--terracotta);
+    }
+
+    .upload {
+      display: block;
+      padding: 1.4rem 1rem;
+      text-align: center;
+      font-size: 0.88rem;
+      color: var(--olive);
+      border: 1px dashed var(--grey);
+      background: var(--ivory);
+      cursor: pointer;
+    }
+
+    .upload:hover {
+      border-color: var(--gold);
+    }
+
+    .upload input {
+      display: none;
+    }
+
+    /* Sticky action card */
+    .side-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-top: 1.2rem;
+    }
+
+    .side-actions .btn {
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .btn-danger {
+      border: 1px solid var(--terracotta);
+      color: var(--terracotta);
+    }
+
+    .btn-danger:hover {
+      background: var(--terracotta);
+      color: var(--ivory);
+    }
+
+    .sticky {
+      position: sticky;
+      top: 88px;
+    }
+
+    @media (max-width: 1100px) {
+      .form-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sticky {
+        position: static;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body class="adm-body">
+  <div class="adm-shell">
+
+    <div th:replace="~{admin/fragments/layout :: sidebar('products')}"></div>
+
+    <div class="adm-main">
+      <header th:replace="~{admin/fragments/layout :: topbar}"></header>
+
+      <main class="adm-content">
+
+        <a class="back-link" th:href="@{/admin/products}">&larr; Back to products</a>
+
+        <div class="adm-head">
+          <div>
+            <h1 th:text="${productForm.id == null} ? 'Add product' : 'Edit product'">Add product</h1>
+            <p>Fill in the details customers will see in the shop.</p>
+          </div>
+        </div>
+
+        <div class="adm-alert err" th:if="${error}" th:text="${error}" role="alert"></div>
+
+        <form id="product-form" th:object="${productForm}" method="post" enctype="multipart/form-data"
+          th:action="${productForm.id == null} ? @{/admin/products} : @{/admin/products/{id}(id=${productForm.id})}">
+
+          <div class="form-layout">
+
+            <!-- Main column -->
+            <div class="stack">
+
+              <div class="card">
+                <h2>Basic information</h2>
+                <div class="grid">
+                  <div class="field full">
+                    <label for="name">Product name</label>
+                    <input id="name" type="text" th:field="*{name}" th:errorclass="has-error" maxlength="150" required>
+                    <span class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+                  </div>
+                  <div class="field">
+                    <label for="sku">SKU</label>
+                    <input id="sku" type="text" th:field="*{sku}" th:errorclass="has-error" maxlength="50" required>
+                    <span class="error" th:if="${#fields.hasErrors('sku')}" th:errors="*{sku}"></span>
+                  </div>
+                  <div class="field">
+                    <label for="region">Region</label>
+                    <input id="region" type="text" th:field="*{region}" th:errorclass="has-error" maxlength="80">
+                    <span class="error" th:if="${#fields.hasErrors('region')}" th:errors="*{region}"></span>
+                  </div>
+                  <div class="field full">
+                    <label for="description">Description</label>
+                    <textarea id="description" th:field="*{description}" th:errorclass="has-error" maxlength="3000"></textarea>
+                    <span class="error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <h2>Pricing and stock</h2>
+                <div class="grid">
+                  <div class="field">
+                    <label for="price">Price (₹)</label>
+                    <input id="price" type="number" step="0.01" min="0" th:field="*{price}" th:errorclass="has-error" required>
+                    <span class="error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span>
+                  </div>
+                  <div class="field">
+                    <label for="salePrice">Sale price (₹)</label>
+                    <input id="salePrice" type="number" step="0.01" min="0" th:field="*{salePrice}" th:errorclass="has-error">
+                    <span class="hint">Leave empty if the product is not on sale.</span>
+                    <span class="error" th:if="${#fields.hasErrors('salePrice')}" th:errors="*{salePrice}"></span>
+                  </div>
+                  <div class="field">
+                    <label for="stock">Stock quantity</label>
+                    <input id="stock" type="number" step="1" min="0" th:field="*{stock}" th:errorclass="has-error" required>
+                    <span class="error" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></span>
+                  </div>
+                  <div class="field">
+                    <label for="lowStockThreshold">Low stock alert at</label>
+                    <input id="lowStockThreshold" type="number" step="1" min="0" th:field="*{lowStockThreshold}" th:errorclass="has-error">
+                    <span class="hint">You'll see a warning when stock falls to this number.</span>
+                    <span class="error" th:if="${#fields.hasErrors('lowStockThreshold')}" th:errors="*{lowStockThreshold}"></span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <h2>Images</h2>
+                <div class="images" th:if="${images != null and !#lists.isEmpty(images)}">
+                  <div class="thumb" th:each="img : ${images}">
+                    <img th:src="@{${img.url}}" alt="">
+                    <label><input type="checkbox" name="removeImageIds" th:value="${img.id}"> Remove</label>
+                  </div>
+                </div>
+                <div class="images" id="preview"></div>
+                <label class="upload">
+                  Click to add images (JPG, PNG or WebP, up to 5 MB each)
+                  <input id="newImages" type="file" name="newImages" accept="image/jpeg,image/png,image/webp" multiple>
+                </label>
+              </div>
+
+            </div>
+
+            <!-- Side column -->
+            <div class="stack sticky">
+              <div class="card">
+                <h2>Publish</h2>
+                <div class="field">
+                  <label for="status">Status</label>
+                  <select id="status" th:field="*{status}">
+                    <option value="ACTIVE">Active (visible in shop)</option>
+                    <option value="DRAFT">Draft (hidden)</option>
+                    <option value="ARCHIVED">Archived</option>
+                  </select>
+                </div>
+                <div class="field" style="margin-top:1rem">
+                  <label class="check"><input type="checkbox" th:field="*{featured}"> Feature on the home page</label>
+                </div>
+
+                <div class="side-actions">
+                  <button type="submit" class="btn btn-primary"
+                    th:text="${productForm.id == null} ? 'Save product' : 'Save changes'">Save product</button>
+                  <a class="btn btn-ghost" th:href="@{/admin/products}">Cancel</a>
+                </div>
+              </div>
+
+              <div class="card">
+                <h2>Category</h2>
+                <div class="field">
+                  <label for="categoryId">Category</label>
+                  <select id="categoryId" th:field="*{categoryId}" th:errorclass="has-error" required>
+                    <option value="" disabled>Select a category</option>
+                    <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}">Category</option>
+                  </select>
+                  <span class="error" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}"></span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </form>
+
+        <!-- Delete (edit mode only), separate form so it doesn't nest -->
+        <form id="delete-form" th:if="${productForm.id != null}" method="post"
+          th:action="@{/admin/products/{id}/delete(id=${productForm.id})}" style="margin-top:1.5rem">
+          <button type="submit" class="btn btn-danger">Delete product</button>
+        </form>
+
+      </main>
+    </div>
+  </div>
+
+  <script th:src="@{/js/script.js}"></script>
+  <script>
+    // Preview newly chosen images before saving
+    var input = document.getElementById('newImages');
+    var preview = document.getElementById('preview');
+    input.addEventListener('change', function () {
+      preview.innerHTML = '';
+      Array.prototype.forEach.call(input.files, function (f) {
+        var box = document.createElement('div');
+        box.className = 'thumb';
+        var img = document.createElement('img');
+        img.src = URL.createObjectURL(f);
+        img.alt = '';
+        box.appendChild(img);
+        preview.appendChild(box);
+      });
+    });
+
+    // Confirm before deleting
+    var del = document.getElementById('delete-form');
+    if (del) {
+      del.addEventListener('submit', function (e) {
+        if (!confirm('Delete this product? This cannot be undone.')) e.preventDefault();
+      });
+    }
+  </script>
+</body>
+
+</html>

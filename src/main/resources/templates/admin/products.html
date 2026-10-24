@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Products | Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+
+  <style>
+    /* ===== Admin: Products list page only ===== */
+
+    .card {
+      background: var(--ivory-soft);
+      border: 1px solid var(--grey);
+    }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem 1.5rem;
+      flex-wrap: wrap;
+      padding: 0.9rem 1.1rem;
+      border-bottom: 1px solid var(--grey);
+    }
+
+    .tabs {
+      display: flex;
+      flex: none;
+      justify-content: flex-start;
+      gap: 0.3rem;
+      background: var(--ivory);
+      padding: 3px;
+      border: 1px solid var(--grey);
+    }
+
+    .tabs a {
+      padding: 0.4rem 0.9rem;
+      font-size: 0.84rem;
+      color: var(--charcoal);
+      white-space: nowrap;
+    }
+
+    .tabs a.is-active {
+      background: var(--green);
+      color: var(--ivory);
+    }
+
+    .tabs small {
+      opacity: 0.7;
+      margin-left: 0.2rem;
+    }
+
+    .filters {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filters input,
+    .filters select {
+      padding: 0.5rem 0.8rem;
+      font: inherit;
+      font-size: 0.86rem;
+      background: var(--ivory);
+      border: 1px solid var(--grey);
+      border-radius: var(--radius);
+      color: var(--charcoal);
+    }
+
+    .filters input {
+      width: 220px;
+    }
+
+    .filters button {
+      padding: 0.5rem 1.1rem;
+      font-size: 0.84rem;
+      border: 1px solid var(--green);
+      color: var(--green);
+      border-radius: var(--radius);
+      transition: background .25s var(--ease), color .25s var(--ease);
+    }
+
+    .filters button:hover {
+      background: var(--green);
+      color: var(--ivory);
+    }
+
+    /* Table */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 500;
+      font-size: 0.8rem;
+      color: var(--olive);
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid var(--grey);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid rgba(217, 210, 196, 0.6);
+      vertical-align: middle;
+    }
+
+    tbody tr:hover {
+      background: rgba(245, 240, 230, 0.6);
+    }
+
+    th:first-child,
+    td:first-child {
+      width: 44px;
+      padding-right: 0;
+    }
+
+    input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--green);
+    }
+
+    .prod {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      min-width: 220px;
+    }
+
+    .prod img {
+      width: 44px;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      border: 1px solid var(--grey);
+      background: var(--ivory);
+    }
+
+    .prod a {
+      font-weight: 500;
+      color: var(--green);
+    }
+
+    .prod small {
+      display: block;
+      color: var(--olive);
+      font-size: 0.78rem;
+    }
+
+    .price s {
+      color: var(--olive);
+      font-size: 0.8rem;
+      margin-left: 0.3rem;
+    }
+
+    .stock.low {
+      color: var(--terracotta);
+      font-weight: 500;
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 1rem;
+      white-space: nowrap;
+    }
+
+    .row-actions a {
+      font-size: 0.84rem;
+      border-bottom: 1px solid var(--gold);
+      color: var(--charcoal);
+    }
+
+    /* Pills */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.2rem 0.65rem;
+      font-size: 0.74rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .pill::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .pill-active {
+      background: rgba(20, 50, 36, 0.12);
+      color: var(--green);
+    }
+
+    .pill-draft {
+      background: rgba(32, 36, 31, 0.08);
+      color: #5b6058;
+    }
+
+    .pill-archived {
+      background: rgba(92, 107, 78, 0.2);
+      color: var(--olive);
+    }
+
+    .pill-out {
+      background: rgba(181, 83, 60, 0.15);
+      color: var(--terracotta);
+    }
+
+    /* Bulk bar */
+    .bulk {
+      position: fixed;
+      left: 50%;
+      bottom: 1.5rem;
+      transform: translateX(-50%);
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 94vw;
+      padding: 0.6rem 0.8rem;
+      background: var(--green-deep);
+      color: var(--ivory);
+      box-shadow: 0 8px 30px rgba(20, 38, 32, 0.3);
+      border-radius: var(--radius);
+      font-size: 0.86rem;
+    }
+
+    .bulk[hidden] {
+      display: none;
+    }
+
+    .bulk span {
+      padding: 0 0.6rem;
+    }
+
+    .bulk button {
+      padding: 0.45rem 0.9rem;
+      border: 1px solid rgba(227, 203, 142, 0.4);
+      border-radius: var(--radius);
+      font-size: 0.82rem;
+      color: var(--gold-light);
+    }
+
+    .bulk button:hover {
+      background: rgba(227, 203, 142, 0.12);
+    }
+
+    .bulk button.danger {
+      color: #e8a392;
+      border-color: rgba(232, 163, 146, 0.4);
+    }
+
+    /* Pager + empty */
+    .pager {
+      display: flex;
+      flex: none;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.9rem 1.1rem;
+      font-size: 0.86rem;
+      color: var(--olive);
+    }
+
+    .pager div {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .pager a,
+    .pager .off {
+      padding: 0.4rem 0.9rem;
+      border: 1px solid var(--green);
+      border-radius: var(--radius);
+      color: var(--green);
+    }
+
+    .pager a:hover {
+      background: var(--green);
+      color: var(--ivory);
+    }
+
+    .pager .off {
+      border-color: var(--grey);
+      color: var(--grey);
+    }
+
+    .empty {
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+
+    .empty p {
+      margin: 0.4rem auto 1.4rem;
+      color: #4b5048;
+    }
+  </style>
+</head>
+
+<body class="adm-body">
+  <div class="adm-shell">
+
+    <div th:replace="~{admin/fragments/layout :: sidebar('products')}"></div>
+
+    <div class="adm-main">
+      <header th:replace="~{admin/fragments/layout :: topbar}"></header>
+
+      <main class="adm-content">
+
+        <div class="adm-head">
+          <div>
+            <h1>Products</h1>
+            <p>Manage your catalogue, prices and stock.</p>
+          </div>
+          <div class="adm-head-actions">
+            <a class="btn btn-ghost" th:href="@{/admin/products/export(status=${status}, category=${category}, q=${q})}">Export CSV</a>
+            <a class="btn btn-primary" th:href="@{/admin/products/new}">Add product</a>
+          </div>
+        </div>
+
+        <div class="adm-alert ok" th:if="${message}" th:text="${message}" role="status"></div>
+        <div class="adm-alert err" th:if="${error}" th:text="${error}" role="alert"></div>
+
+        <div class="card">
+
+          <div class="toolbar">
+            <nav class="tabs" aria-label="Filter by status">
+              <a th:href="@{/admin/products(category=${category}, q=${q})}" th:classappend="${status == null} ? 'is-active'">All<small th:text="${counts.all}">0</small></a>
+              <a th:href="@{/admin/products(status='ACTIVE', category=${category}, q=${q})}" th:classappend="${status == 'ACTIVE'} ? 'is-active'">Active<small th:text="${counts.active}">0</small></a>
+              <a th:href="@{/admin/products(status='DRAFT', category=${category}, q=${q})}" th:classappend="${status == 'DRAFT'} ? 'is-active'">Drafts<small th:text="${counts.draft}">0</small></a>
+              <a th:href="@{/admin/products(status='ARCHIVED', category=${category}, q=${q})}" th:classappend="${status == 'ARCHIVED'} ? 'is-active'">Archived<small th:text="${counts.archived}">0</small></a>
+            </nav>
+
+            <form class="filters" th:action="@{/admin/products}" method="get" role="search">
+              <input type="hidden" name="status" th:value="${status}" th:if="${status != null}">
+              <input type="search" name="q" th:value="${q}" placeholder="Name or SKU" aria-label="Search products">
+              <select name="category" aria-label="Category">
+                <option value="">All categories</option>
+                <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"
+                  th:selected="${category != null and category == c.id}">Category</option>
+              </select>
+              <button type="submit">Filter</button>
+            </form>
+          </div>
+
+          <div class="empty" th:if="${products.totalElements == 0}">
+            <h3>No products found</h3>
+            <p th:if="${status != null or q != null or category != null}">Try a different filter or search term.</p>
+            <p th:unless="${status != null or q != null or category != null}">Add your first product to start selling.</p>
+            <a class="btn btn-primary" th:href="@{/admin/products/new}">Add product</a>
+          </div>
+
+          <form id="bulk-form" th:action="@{/admin/products/bulk}" method="post" th:if="${products.totalElements > 0}">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th><input type="checkbox" id="check-all" aria-label="Select all products on this page"></th>
+                    <th>Product</th>
+                    <th>SKU</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Status</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="p : ${products.content}">
+                    <td><input type="checkbox" name="ids" th:value="${p.id}" th:aria-label="'Select ' + ${p.name}"></td>
+                    <td>
+                      <div class="prod">
+                        <img th:src="@{${p.imageUrl}}" th:alt="${p.name}" loading="lazy">
+                        <div>
+                          <a th:href="@{/admin/products/{id}/edit(id=${p.id})}" th:text="${p.name}">Product name</a>
+                          <small th:text="${p.categoryName}">Category</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td th:text="${p.sku}">SKU-001</td>
+                    <td class="price">
+                      <span th:text="'₹' + ${#numbers.formatDecimal(p.salePrice != null ? p.salePrice : p.price, 1, 'COMMA', 2, 'POINT')}">₹0.00</span>
+                      <s th:if="${p.salePrice != null}" th:text="'₹' + ${#numbers.formatDecimal(p.price, 1, 'COMMA', 2, 'POINT')}">₹0.00</s>
+                    </td>
+                    <td class="stock" th:classappend="${p.lowStock} ? 'low'" th:text="${p.stock}">0</td>
+                    <td>
+                      <span class="pill pill-out" th:if="${p.stock == 0 and p.status == 'ACTIVE'}">Out of stock</span>
+                      <span class="pill" th:unless="${p.stock == 0 and p.status == 'ACTIVE'}"
+                        th:classappend="'pill-' + ${#strings.toLowerCase(p.status)}"
+                        th:text="${p.status == 'DRAFT'} ? 'Draft' : ${#strings.capitalize(#strings.toLowerCase(p.status))}">Active</span>
+                    </td>
+                    <td>
+                      <div class="row-actions">
+                        <a th:href="@{/admin/products/{id}/edit(id=${p.id})}">Edit</a>
+                        <a th:href="@{/product/{id}(id=${p.id})}" target="_blank" rel="noopener">View</a>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="bulk" id="bulk-bar" hidden>
+              <span id="bulk-count">0 selected</span>
+              <button type="submit" name="action" value="activate">Set active</button>
+              <button type="submit" name="action" value="draft">Move to draft</button>
+              <button type="submit" name="action" value="archive">Archive</button>
+              <button type="submit" name="action" value="delete" class="danger">Delete</button>
+              <button type="button" id="bulk-clear">Clear</button>
+            </div>
+          </form>
+
+          <div class="pager" th:if="${products.totalPages > 1}">
+            <span th:text="'Page ' + ${products.number + 1} + ' of ' + ${products.totalPages} + ' · ' + ${products.totalElements} + ' products'">Page 1 of 3</span>
+            <div>
+              <a th:if="${products.hasPrevious()}" th:href="@{/admin/products(page=${products.number - 1}, status=${status}, category=${category}, q=${q})}">Previous</a>
+              <span class="off" th:unless="${products.hasPrevious()}">Previous</span>
+              <a th:if="${products.hasNext()}" th:href="@{/admin/products(page=${products.number + 1}, status=${status}, category=${category}, q=${q})}">Next</a>
+              <span class="off" th:unless="${products.hasNext()}">Next</span>
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script th:src="@{/js/script.js}"></script>
+  <script>
+    // Select rows, show the bulk action bar, confirm bulk delete
+    var form = document.getElementById('bulk-form');
+    if (form) {
+      var all = document.getElementById('check-all');
+      var bar = document.getElementById('bulk-bar');
+      var count = document.getElementById('bulk-count');
+      var boxes = form.querySelectorAll('input[name="ids"]');
+
+      function sync() {
+        var n = form.querySelectorAll('input[name="ids"]:checked').length;
+        count.textContent = n + ' selected';
+        bar.hidden = n === 0;
+        all.checked = n > 0 && n === boxes.length;
+      }
+      function setAll(v) { boxes.forEach(function (b) { b.checked = v; }); sync(); }
+
+      all.addEventListener('change', function () { setAll(all.checked); });
+      boxes.forEach(function (b) { b.addEventListener('change', sync); });
+      document.getElementById('bulk-clear').addEventListener('click', function () { setAll(false); });
+      form.addEventListener('submit', function (e) {
+        if (e.submitter && e.submitter.value === 'delete' && !confirm('Delete the selected products? This cannot be undone.')) {
+          e.preventDefault();
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,2519 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product — Sutra Textiles India</title>
+    <meta name="description" id="metaDesc"
+        content="Traditional ethnic wear from every state, made in-house in Bhilwara, Rajasthan — Sutra Textiles India.">
+ <link rel="icon" type="image/x-icon" th:href="@{/favicon_io/favicon.ico}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Work+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        [hidden] {
+            display: none !important;
+        }
+
+        /* ---------- Layout ---------- */
+        .pd-main {
+            padding-block: 0 clamp(2.5rem, 5vw, 4rem);
+        }
+
+        .pd-breadcrumb {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: .45rem;
+            font-size: .8rem;
+            color: var(--olive);
+            padding-block: 1.1rem 1.6rem;
+        }
+
+        .pd-breadcrumb a:hover {
+            color: var(--green);
+        }
+
+        .pd-breadcrumb [aria-current] {
+            color: var(--charcoal);
+        }
+
+        .pd-breadcrumb .sep {
+            opacity: .5;
+        }
+
+        .pd-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr);
+            gap: clamp(1.75rem, 4vw, 4rem);
+            align-items: start;
+        }
+
+        /* ---------- Gallery ---------- */
+        .pd-gallery {
+            display: grid;
+            grid-template-columns: 78px minmax(0, 1fr);
+            gap: 1rem;
+            position: sticky;
+            top: calc(var(--nav-h, 100px) + 1rem);
+        }
+
+        .pd-thumbs {
+            display: flex;
+            flex-direction: column;
+            gap: .7rem;
+        }
+
+        .pd-thumb {
+            width: 78px;
+            aspect-ratio: 4 / 5;
+            border: 1px solid var(--grey);
+            border-radius: 50% 50% 3px 3px / 26% 26% 3px 3px;
+            overflow: hidden;
+            padding: 0;
+            background: var(--ivory-soft);
+            opacity: .72;
+            transition: opacity .2s var(--ease), border-color .2s var(--ease);
+        }
+
+        .pd-thumb:hover {
+            opacity: 1;
+        }
+
+        .pd-thumb.is-active {
+            opacity: 1;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 1px var(--gold);
+        }
+
+        .pd-thumb svg,
+        .pd-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .pd-stage {
+            min-width: 0;
+        }
+
+        .pd-frame {
+            position: relative;
+            width: min(100%, max(320px, calc((100vh - var(--nav-h, 100px) - 5rem) * .8)));
+            aspect-ratio: 4 / 5;
+            margin-inline: auto;
+            border: 1px solid rgba(201, 162, 75, .65);
+            border-radius: 50% 50% 8px 8px / 28% 28% 8px 8px;
+            padding: 12px;
+            cursor: zoom-in;
+            outline-offset: 4px;
+        }
+
+        .pd-slide {
+            position: absolute;
+            inset: 12px;
+            border-radius: 50% 50% 4px 4px / 27% 27% 4px 4px;
+            overflow: hidden;
+            background: var(--ivory-soft);
+        }
+
+        .pd-slide>svg,
+        .pd-slide>img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .25s var(--ease);
+        }
+
+        .pd-slide.pd-fade>* {
+            animation: pd-fade .4s var(--ease);
+        }
+
+        @keyframes pd-fade {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .pd-frame.is-zooming .pd-slide>* {
+            transform: scale(1.9);
+            transform-origin: var(--zx, 50%) var(--zy, 50%);
+        }
+
+        .pd-tag {
+            position: absolute;
+            top: 2.2rem;
+            left: 1.4rem;
+            z-index: 2;
+            background: var(--terracotta);
+            color: var(--ivory);
+            font-size: .7rem;
+            letter-spacing: .08em;
+            padding: .3rem .65rem;
+            border-radius: var(--radius);
+        }
+
+        .pd-icon-btn,
+        .pd-arrow {
+            position: absolute;
+            z-index: 2;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(251, 248, 242, .92);
+            color: var(--green);
+            border: 1px solid rgba(20, 38, 32, .12);
+            transition: background .2s var(--ease), opacity .2s var(--ease);
+        }
+
+        .pd-icon-btn:hover,
+        .pd-arrow:hover {
+            background: var(--ivory-soft);
+        }
+
+        .pd-icon-btn svg,
+        .pd-arrow svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .pd-expand {
+            top: 2rem;
+            right: 1.2rem;
+        }
+
+        .pd-arrow {
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .pd-prev {
+            left: 1.2rem;
+        }
+
+        .pd-next {
+            right: 1.2rem;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .pd-arrow {
+                opacity: 0;
+            }
+
+            .pd-frame:hover .pd-arrow,
+            .pd-frame:focus-within .pd-arrow {
+                opacity: 1;
+            }
+        }
+
+        .pd-counter {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            background: rgba(20, 38, 32, .72);
+            color: var(--ivory);
+            font-size: .72rem;
+            letter-spacing: .08em;
+            padding: .25rem .7rem;
+            border-radius: 999px;
+        }
+
+        .pd-view-label {
+            text-align: center;
+            font-size: .8rem;
+            color: var(--olive);
+            margin: .9rem auto 0;
+        }
+
+        /* ---------- Info column ---------- */
+        .pd-info {
+            min-width: 0;
+        }
+
+        .pd-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: .7rem;
+            font-size: .76rem;
+            letter-spacing: .14em;
+            color: var(--olive);
+        }
+
+        .pd-eyebrow i {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--gold);
+        }
+
+        .pd-eyebrow a:hover {
+            color: var(--green);
+        }
+
+        .pd-title {
+            font-size: clamp(1.9rem, 3.2vw, 2.7rem);
+            margin: .55rem 0 .7rem;
+        }
+
+        .pd-rating {
+            display: inline-flex;
+            align-items: center;
+            gap: .6rem;
+            font-size: .86rem;
+            color: var(--olive);
+        }
+
+        .pd-rating:hover .pd-rating-text {
+            color: var(--green);
+            text-decoration: underline;
+        }
+
+        .stars {
+            --pct: 0%;
+            display: inline-block;
+            font-size: 1.05rem;
+            letter-spacing: 2px;
+            line-height: 1;
+            background: linear-gradient(90deg, var(--gold) var(--pct), var(--grey) var(--pct));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .pd-price-row {
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: .8rem;
+            margin-top: 1.2rem;
+        }
+
+        .pd-price {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 3vw, 2.3rem);
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        .pd-mrp {
+            color: var(--olive);
+            font-size: 1rem;
+            opacity: .85;
+        }
+
+        .pd-off {
+            font-size: .74rem;
+            letter-spacing: .06em;
+            color: var(--ivory);
+            background: var(--olive);
+            padding: .22rem .55rem;
+            border-radius: var(--radius);
+        }
+
+        .pd-tax {
+            font-size: .8rem;
+            color: var(--olive);
+            margin-top: .35rem;
+        }
+
+        .pd-blurb {
+            margin-top: 1.1rem;
+            color: #3a3f37;
+        }
+
+        .pd-divider {
+            border: none;
+            height: 1px;
+            background: var(--grey);
+            margin: 1.6rem 0;
+            position: relative;
+            overflow: visible;
+        }
+
+        .pd-divider::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 7px;
+            height: 7px;
+            background: var(--ivory);
+            border: 1px solid var(--gold);
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+
+        .pd-field {
+            margin-top: 1.4rem;
+        }
+
+        .pd-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: .86rem;
+            margin-bottom: .7rem;
+            color: var(--olive);
+        }
+
+        .pd-label strong {
+            color: var(--charcoal);
+            font-weight: 500;
+        }
+
+        .pd-link {
+            font-size: .82rem;
+            color: var(--green);
+            border-bottom: 1px solid var(--gold);
+            padding-bottom: 1px;
+        }
+
+        .pd-link:hover {
+            color: var(--green-deep);
+        }
+
+        .pd-swatches {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .8rem;
+        }
+
+        .pd-swatch {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--sw);
+            border: 1px solid rgba(0, 0, 0, .15);
+            transition: transform .2s var(--ease);
+        }
+
+        .pd-swatch:hover {
+            transform: scale(1.08);
+        }
+
+        .pd-swatch[aria-checked="true"] {
+            outline: 2px solid var(--gold);
+            outline-offset: 3px;
+        }
+
+        .pd-sizes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .6rem;
+        }
+
+        .pd-size {
+            min-width: 56px;
+            height: 46px;
+            padding: 0 1rem;
+            border: 1px solid var(--grey);
+            background: var(--ivory-soft);
+            color: var(--charcoal);
+            font-size: .9rem;
+            border-radius: var(--radius);
+            transition: border-color .2s var(--ease), background .2s var(--ease), color .2s var(--ease);
+        }
+
+        .pd-size:hover:not(:disabled) {
+            border-color: var(--green);
+        }
+
+        .pd-size[aria-checked="true"] {
+            background: var(--green);
+            border-color: var(--green);
+            color: var(--ivory);
+        }
+
+        .pd-size:disabled {
+            cursor: not-allowed;
+            color: #9a978c;
+            background: linear-gradient(to top right, transparent calc(50% - .5px), #b9b3a3 50%, transparent calc(50% + .5px)), var(--ivory-soft);
+        }
+
+        .pd-error {
+            color: var(--terracotta);
+            font-size: .82rem;
+            margin-top: .6rem;
+            min-height: 0;
+        }
+
+        .pd-shake {
+            animation: pd-shake .4s var(--ease);
+        }
+
+        @keyframes pd-shake {
+
+            20%,
+            60% {
+                transform: translateX(-5px);
+            }
+
+            40%,
+            80% {
+                transform: translateX(5px);
+            }
+        }
+
+        .pd-lowstock {
+            color: var(--terracotta);
+            font-size: .82rem;
+            margin-top: .6rem;
+        }
+
+        .pd-avail {
+            display: flex;
+            align-items: center;
+            gap: .55rem;
+            margin-top: 1.4rem;
+            font-size: .88rem;
+            color: var(--green);
+        }
+
+        .pd-avail::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--olive);
+            flex-shrink: 0;
+        }
+
+        .pd-avail.is-mto::before {
+            background: var(--gold);
+        }
+
+        /* ---------- Buy box ---------- */
+        .pd-buy {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: .8rem;
+            margin-top: 1.4rem;
+            align-items: stretch;
+        }
+
+        .pd-qty {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid var(--grey);
+            background: var(--ivory-soft);
+            border-radius: var(--radius);
+        }
+
+        .pd-qty button {
+            width: 42px;
+            height: 100%;
+            min-height: 52px;
+            font-size: 1.2rem;
+            color: var(--green);
+        }
+
+        .pd-qty button:disabled {
+            opacity: .35;
+            cursor: not-allowed;
+        }
+
+        .pd-qty output {
+            min-width: 30px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .pd-btn-add,
+        .pd-btn-now {
+            min-height: 52px;
+            padding: 0 1.5rem;
+            font-size: .92rem;
+            letter-spacing: .05em;
+            border-radius: var(--radius);
+            transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
+        }
+
+        .pd-btn-add {
+            background: var(--green);
+            color: var(--ivory);
+        }
+
+        .pd-btn-add:hover {
+            background: var(--green-deep);
+        }
+
+        .pd-btn-add.is-added {
+            background: var(--olive);
+        }
+
+        .pd-btn-now {
+            grid-column: 1 / -1;
+            background: var(--gold);
+            color: var(--green-deep);
+            font-weight: 500;
+        }
+
+        .pd-btn-now:hover {
+            background: var(--gold-light);
+        }
+
+        .pd-wish {
+            width: 52px;
+            border: 1px solid var(--grey);
+            background: var(--ivory-soft);
+            color: var(--green);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color .2s var(--ease), color .2s var(--ease);
+        }
+
+        .pd-wish svg {
+            width: 21px;
+            height: 21px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.6;
+            transition: fill .2s var(--ease);
+        }
+
+        .pd-wish:hover {
+            border-color: var(--terracotta);
+            color: var(--terracotta);
+        }
+
+        .pd-wish[aria-pressed="true"] {
+            color: var(--terracotta);
+            border-color: var(--terracotta);
+        }
+
+        .pd-wish[aria-pressed="true"] svg {
+            fill: var(--terracotta);
+        }
+
+        .pd-secondary {
+            display: flex;
+            gap: 1.4rem;
+            margin-top: 1rem;
+            font-size: .84rem;
+        }
+
+        .pd-secondary button {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            color: var(--olive);
+        }
+
+        .pd-secondary button:hover {
+            color: var(--green);
+        }
+
+        .pd-secondary svg {
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.6;
+        }
+
+        /* ---------- Delivery ---------- */
+        .pd-delivery {
+            margin-top: 1.6rem;
+            padding: 1.2rem;
+            border: 1px dashed #c3b99e;
+            border-radius: var(--radius);
+            background: var(--ivory-soft);
+        }
+
+        .pd-delivery h3 {
+            font-family: var(--font-body);
+            font-size: .86rem;
+            letter-spacing: .06em;
+            margin-bottom: .8rem;
+            font-weight: 500;
+        }
+
+        .pd-pin {
+            display: flex;
+            gap: .6rem;
+        }
+
+        .pd-pin input {
+            flex: 1;
+            min-width: 0;
+            padding: .75rem 1rem;
+            border: 1px solid var(--grey);
+            background: var(--ivory);
+            border-radius: var(--radius);
+            color: var(--charcoal);
+        }
+
+        .pd-pin button {
+            padding: 0 1.3rem;
+            border: 1px solid var(--green);
+            color: var(--green);
+            border-radius: var(--radius);
+            font-size: .86rem;
+        }
+
+        .pd-pin button:hover {
+            background: var(--green);
+            color: var(--ivory);
+        }
+
+        .pd-pin-result {
+            margin-top: .8rem;
+            font-size: .86rem;
+        }
+
+        .pd-pin-result.is-ok {
+            color: var(--green);
+        }
+
+        .pd-pin-result.is-err {
+            color: var(--terracotta);
+        }
+
+        .pd-trust {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: .8rem;
+            margin-top: 1.4rem;
+        }
+
+        .pd-trust li {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: .5rem;
+            font-size: .76rem;
+            color: var(--olive);
+            line-height: 1.35;
+        }
+
+        .pd-trust svg {
+            width: 26px;
+            height: 26px;
+            fill: none;
+            stroke: var(--green);
+            stroke-width: 1.4;
+        }
+
+        /* ---------- Accordions ---------- */
+        .pd-acc {
+            margin-top: 1.8rem;
+            border-top: 1px solid var(--grey);
+        }
+
+        .pd-acc details {
+            border-bottom: 1px solid var(--grey);
+        }
+
+        .pd-acc summary {
+            list-style: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.1rem 0;
+            font-family: var(--font-display);
+            font-size: 1.12rem;
+            color: var(--green);
+        }
+
+        .pd-acc summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .pd-acc summary::after {
+            content: "+";
+            font-family: var(--font-body);
+            font-size: 1.3rem;
+            color: var(--gold);
+            transition: transform .25s var(--ease);
+        }
+
+        .pd-acc details[open] summary::after {
+            transform: rotate(45deg);
+        }
+
+        .pd-acc .pd-acc-body {
+            padding-bottom: 1.3rem;
+            font-size: .92rem;
+            color: #3a3f37;
+        }
+
+        .pd-acc ul.pd-list {
+            display: grid;
+            gap: .45rem;
+            margin-top: .8rem;
+        }
+
+        .pd-acc ul.pd-list li {
+            position: relative;
+            padding-left: 1.1rem;
+        }
+
+        .pd-acc ul.pd-list li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: .6em;
+            width: 5px;
+            height: 5px;
+            background: var(--gold);
+            transform: rotate(45deg);
+        }
+
+        .pd-spec {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .pd-spec th,
+        .pd-spec td {
+            text-align: left;
+            padding: .55rem 0;
+            border-bottom: 1px dashed #d4cbb4;
+            font-weight: 400;
+            vertical-align: top;
+        }
+
+        .pd-spec th {
+            color: var(--olive);
+            width: 38%;
+            padding-right: 1rem;
+        }
+
+        .pd-spec tr:last-child th,
+        .pd-spec tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ---------- Reviews ---------- */
+        .pd-reviews {
+            background: var(--ivory-soft);
+            border-block: 1px solid var(--grey);
+        }
+
+        .rv-head {
+            display: grid;
+            grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
+            gap: clamp(1.5rem, 5vw, 4rem);
+            align-items: center;
+        }
+
+        .rv-score {
+            font-family: var(--font-display);
+            font-size: 4rem;
+            line-height: 1;
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        .rv-score small {
+            font-size: 1.2rem;
+            color: var(--olive);
+            font-weight: 400;
+        }
+
+        .rv-meta {
+            font-size: .88rem;
+            color: var(--olive);
+            margin: .5rem 0 1.2rem;
+        }
+
+        .rv-bars {
+            display: grid;
+            gap: .5rem;
+        }
+
+        .rv-bar {
+            display: grid;
+            grid-template-columns: 34px 1fr 30px;
+            align-items: center;
+            gap: .8rem;
+            font-size: .82rem;
+            color: var(--olive);
+            text-align: left;
+            padding: .15rem .3rem;
+            border-radius: var(--radius);
+        }
+
+        .rv-bar:hover,
+        .rv-bar.is-active {
+            background: rgba(201, 162, 75, .12);
+        }
+
+        .rv-track {
+            height: 6px;
+            background: var(--grey);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .rv-fill {
+            display: block;
+            height: 100%;
+            background: var(--gold);
+            border-radius: 3px;
+        }
+
+        .rv-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 2.4rem 0 .5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--grey);
+        }
+
+        .rv-toolbar .left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: .86rem;
+            color: var(--olive);
+        }
+
+        .rv-clear {
+            color: var(--terracotta);
+            border-bottom: 1px solid transparent;
+        }
+
+        .rv-clear:hover {
+            border-color: var(--terracotta);
+        }
+
+        .rv-sort {
+            border: 1px solid var(--grey);
+            background: var(--ivory);
+            padding: .5rem .8rem;
+            border-radius: var(--radius);
+            font-size: .85rem;
+            color: var(--charcoal);
+        }
+
+        .rv-item {
+            display: grid;
+            grid-template-columns: 48px 1fr;
+            gap: 1rem;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--grey);
+        }
+
+        .rv-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--green);
+            color: var(--gold-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+        }
+
+        .rv-who {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: .3rem .8rem;
+            font-size: .86rem;
+        }
+
+        .rv-who strong {
+            font-weight: 500;
+            color: var(--charcoal);
+        }
+
+        .rv-who span {
+            color: var(--olive);
+        }
+
+        .rv-badge {
+            font-size: .68rem;
+            letter-spacing: .06em;
+            padding: .15rem .5rem;
+            border: 1px solid var(--olive);
+            color: var(--olive);
+            border-radius: 999px;
+        }
+
+        .rv-badge.mine {
+            border-color: var(--gold);
+            color: #8a6a1f;
+        }
+
+        .rv-line {
+            display: flex;
+            align-items: center;
+            gap: .7rem;
+            margin: .35rem 0;
+            font-size: .82rem;
+            color: var(--olive);
+        }
+
+        .rv-title {
+            font-family: var(--font-display);
+            font-size: 1.12rem;
+            color: var(--green);
+            margin-bottom: .3rem;
+        }
+
+        .rv-body {
+            font-size: .93rem;
+            color: #3a3f37;
+            max-width: 70ch;
+        }
+
+        .rv-actions {
+            display: flex;
+            gap: 1.2rem;
+            margin-top: .8rem;
+            font-size: .82rem;
+        }
+
+        .rv-actions button {
+            color: var(--olive);
+            display: inline-flex;
+            gap: .4rem;
+            align-items: center;
+        }
+
+        .rv-actions button:hover,
+        .rv-actions button[aria-pressed="true"] {
+            color: var(--green);
+        }
+
+        .rv-actions button[aria-pressed="true"] {
+            font-weight: 500;
+        }
+
+        .rv-more {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .rv-form-wrap {
+            margin-top: 2rem;
+            padding: clamp(1.3rem, 3vw, 2rem);
+            background: var(--ivory);
+            border: 1px solid var(--grey);
+            border-radius: var(--radius);
+        }
+
+        .rv-form-wrap h3 {
+            margin-bottom: 1rem;
+        }
+
+        .rv-form {
+            display: grid;
+            gap: 1.1rem;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .rv-form .full {
+            grid-column: 1 / -1;
+        }
+
+        .rv-form label.lbl {
+            display: block;
+            font-size: .84rem;
+            color: var(--olive);
+            margin-bottom: .4rem;
+        }
+
+        .rv-form input[type="text"],
+        .rv-form textarea {
+            width: 100%;
+            padding: .75rem 1rem;
+            border: 1px solid var(--grey);
+            background: var(--ivory-soft);
+            border-radius: var(--radius);
+            color: var(--charcoal);
+            font: inherit;
+        }
+
+        .rv-form textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .rv-form .field-error {
+            color: var(--terracotta);
+            font-size: .8rem;
+            margin-top: .35rem;
+            min-height: 1em;
+        }
+
+        .rv-count {
+            font-size: .76rem;
+            color: var(--olive);
+            text-align: right;
+            margin-top: .25rem;
+        }
+
+        .star-input {
+            display: inline-flex;
+            flex-direction: row-reverse;
+            gap: .15rem;
+        }
+
+        .star-input input {
+            position: absolute;
+            opacity: 0;
+            width: 1px;
+            height: 1px;
+        }
+
+        .star-input label {
+            font-size: 1.9rem;
+            color: var(--grey);
+            cursor: pointer;
+            line-height: 1;
+            transition: color .15s var(--ease);
+        }
+
+        .star-input input:checked~label,
+        .star-input label:hover,
+        .star-input label:hover~label {
+            color: var(--gold);
+        }
+
+        .star-input input:focus-visible+label {
+            outline: 2px solid var(--gold);
+            outline-offset: 2px;
+        }
+
+        .rv-form-actions {
+            display: flex;
+            gap: .8rem;
+        }
+
+        /* ---------- Related / recent ---------- */
+        .pd-related {
+            background: var(--ivory);
+        }
+
+        .pd-recent {
+            background: var(--ivory-soft);
+            border-top: 1px solid var(--grey);
+        }
+
+        .pd-card-link {
+            display: block;
+        }
+
+        .pd-card-link:hover .product-art {
+            transform: translateY(-3px);
+        }
+
+        .product-art {
+            transition: transform .35s var(--ease);
+        }
+
+        /* ---------- Sticky buy bar ---------- */
+        .pd-sticky {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 900;
+            background: var(--ivory-soft);
+            border-top: 1px solid var(--grey);
+            box-shadow: 0 -8px 24px rgba(20, 38, 32, .08);
+            transform: translateY(110%);
+            transition: transform .3s var(--ease);
+        }
+
+        .pd-sticky.is-visible {
+            transform: none;
+        }
+
+        .pd-sticky-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding-block: .8rem;
+        }
+
+        .pd-sticky-name {
+            font-family: var(--font-display);
+            color: var(--green);
+            font-size: 1.05rem;
+            line-height: 1.2;
+        }
+
+        .pd-sticky-price {
+            font-size: .86rem;
+            color: var(--olive);
+        }
+
+        .pd-sticky .pd-btn-add {
+            padding-inline: 2rem;
+            white-space: nowrap;
+        }
+
+        /* ---------- Lightbox ---------- */
+        .lb {
+            position: fixed;
+            inset: 0;
+            z-index: 2100;
+            background: rgba(14, 26, 21, .96);
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            color: var(--ivory);
+        }
+
+        .lb-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem clamp(1rem, 3vw, 2rem);
+            font-size: .85rem;
+            letter-spacing: .08em;
+        }
+
+        .lb-top .actions {
+            display: flex;
+            gap: .6rem;
+        }
+
+        .lb-btn {
+            min-width: 42px;
+            height: 42px;
+            padding: 0 1rem;
+            border: 1px solid rgba(245, 240, 230, .35);
+            border-radius: 999px;
+            color: var(--ivory);
+            font-size: .82rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lb-btn:hover {
+            background: rgba(245, 240, 230, .1);
+        }
+
+        .lb-stage {
+            position: relative;
+            min-height: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 clamp(3.5rem, 8vw, 6rem);
+            overflow: hidden;
+        }
+
+        .lb-slide {
+            height: 100%;
+            max-height: 100%;
+            aspect-ratio: 4 / 5;
+            max-width: 100%;
+            border-radius: 50% 50% 6px 6px / 22% 22% 6px 6px;
+            overflow: hidden;
+            cursor: zoom-in;
+        }
+
+        .lb-slide>svg,
+        .lb-slide>img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .25s var(--ease);
+        }
+
+        .lb-stage.is-zoomed .lb-slide {
+            cursor: zoom-out;
+        }
+
+        .lb-stage.is-zoomed .lb-slide>* {
+            transform: scale(2);
+            transform-origin: var(--zx, 50%) var(--zy, 50%);
+        }
+
+        .lb-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            border: 1px solid rgba(245, 240, 230, .35);
+            color: var(--ivory);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lb-nav:hover {
+            background: rgba(245, 240, 230, .1);
+        }
+
+        .lb-nav svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .lb-prev {
+            left: clamp(.6rem, 2vw, 1.5rem);
+        }
+
+        .lb-next {
+            right: clamp(.6rem, 2vw, 1.5rem);
+        }
+
+        .lb-thumbs {
+            display: flex;
+            justify-content: center;
+            gap: .7rem;
+            padding: 1rem;
+        }
+
+        .lb-thumbs .pd-thumb {
+            width: 60px;
+        }
+
+        /* ---------- Size guide dialog ---------- */
+        .pd-dialog {
+            border: none;
+            border-radius: var(--radius);
+            background: var(--ivory-soft);
+            color: var(--charcoal);
+            width: min(640px, calc(100vw - 1.5rem));
+            max-height: calc(100vh - 2rem);
+            padding: 0;
+            margin: auto;
+        }
+
+        .pd-dialog::backdrop {
+            background: rgba(20, 38, 32, .55);
+        }
+
+        .sg-inner {
+            padding: clamp(1.3rem, 3vw, 2rem);
+        }
+
+        .sg-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .sg-close {
+            font-size: 1.6rem;
+            line-height: 1;
+            color: var(--green);
+            width: 36px;
+            height: 36px;
+        }
+
+        .sg-toggle {
+            display: inline-flex;
+            border: 1px solid var(--grey);
+            border-radius: 999px;
+            margin: .6rem 0 1rem;
+            overflow: hidden;
+        }
+
+        .sg-toggle button {
+            padding: .4rem 1.1rem;
+            font-size: .82rem;
+            color: var(--olive);
+        }
+
+        .sg-toggle button[aria-pressed="true"] {
+            background: var(--green);
+            color: var(--ivory);
+        }
+
+        .sg-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .9rem;
+        }
+
+        .sg-table th,
+        .sg-table td {
+            padding: .65rem .5rem;
+            text-align: center;
+            border-bottom: 1px solid var(--grey);
+        }
+
+        .sg-table th {
+            font-weight: 500;
+            color: var(--green);
+            background: var(--ivory);
+        }
+
+        .sg-table tbody th {
+            background: transparent;
+        }
+
+        .sg-tips {
+            margin-top: 1.2rem;
+            font-size: .88rem;
+            color: #3a3f37;
+        }
+
+        .sg-tips h3 {
+            font-family: var(--font-body);
+            font-size: .86rem;
+            letter-spacing: .06em;
+            margin-bottom: .5rem;
+        }
+
+        /* ---------- Not found ---------- */
+        .pd-notfound {
+            text-align: center;
+            padding: clamp(3rem, 8vw, 6rem) 1rem;
+        }
+
+        .pd-notfound p {
+            margin: .8rem auto 1.6rem;
+            color: var(--olive);
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 920px) {
+            .pd-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pd-gallery {
+                position: static;
+                grid-template-columns: 1fr;
+            }
+
+            .pd-thumbs {
+                order: 2;
+                flex-direction: row;
+                justify-content: center;
+                overflow-x: auto;
+            }
+
+            .pd-thumb {
+                width: 64px;
+                flex-shrink: 0;
+            }
+
+            .pd-frame {
+                width: min(100%, 480px);
+            }
+
+            .rv-head {
+                grid-template-columns: 1fr;
+            }
+
+            .pd-arrow {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .pd-buy {
+                grid-template-columns: auto 1fr auto;
+            }
+
+            .pd-trust {
+                gap: .4rem;
+            }
+
+            .rv-form {
+                grid-template-columns: 1fr;
+            }
+
+            .pd-sticky-name {
+                font-size: .95rem;
+            }
+
+            .pd-sticky .pd-btn-add {
+                padding-inline: 1.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="navbar" th:replace="~{fragments/navbar :: navbar}"></div>
+  <div id="navSpacer"></div>
+
+    <main>
+
+        <!-- ===================== PRODUCT ===================== -->
+        <section class="pd-main" id="pdMain">
+            <div class="container">
+                <nav class="pd-breadcrumb" id="pdBreadcrumb" aria-label="Breadcrumb"></nav>
+
+                <div class="pd-notfound" id="pdNotFound" hidden>
+                    <h1>We couldn't find that piece</h1>
+                    <p>It may have been removed or the link may be incorrect.</p>
+                    <a href="shop.html" class="btn btn-ghost">Browse New Arrivals</a>
+                </div>
+
+                <div class="pd-grid" id="pdGrid">
+                    <div class="pd-gallery" id="pdGallery">
+                        <div class="pd-thumbs" id="pdThumbs"></div>
+                        <div class="pd-stage">
+                            <div class="pd-frame" id="pdFrame" tabindex="0" role="group" aria-roledescription="carousel"
+                                aria-label="Product images. Use arrow keys to change image, Enter to view full screen.">
+                                <div class="pd-slide" id="pdSlide"></div>
+                                <span class="pd-tag" id="pdTag" hidden></span>
+                                <button type="button" class="pd-icon-btn pd-expand" id="pdExpand"
+                                    aria-label="View full screen">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                                        <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
+                                    </svg>
+                                </button>
+                                <button type="button" class="pd-arrow pd-prev" id="pdPrev" aria-label="Previous image">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                        <path d="m15 5-7 7 7 7" />
+                                    </svg>
+                                </button>
+                                <button type="button" class="pd-arrow pd-next" id="pdNext" aria-label="Next image">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                        <path d="m9 5 7 7-7 7" />
+                                    </svg>
+                                </button>
+                                <span class="pd-counter" id="pdCounter"></span>
+                            </div>
+                            <p class="pd-view-label" id="pdViewLabel" aria-live="polite"></p>
+                        </div>
+                    </div>
+
+                    <div class="pd-info" id="pdInfo"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================== REVIEWS ===================== -->
+        <section class="pd-reviews" id="reviews" data-pd-only>
+            <div class="container">
+                <div class="section-head">
+                    <span class="eyebrow">CUSTOMER REVIEWS</span>
+                    <h2>What Customers Say</h2>
+                </div>
+
+                <div class="rv-head">
+                    <div>
+                        <div class="rv-score" id="rvScore"></div>
+                        <div id="rvStars"></div>
+                        <p class="rv-meta" id="rvMeta"></p>
+                        <button type="button" class="btn btn-ghost" id="rvWriteBtn" aria-expanded="false"
+                            aria-controls="rvFormWrap">Write a Review</button>
+                    </div>
+                    <div class="rv-bars" id="rvBars" role="group" aria-label="Filter reviews by rating"></div>
+                </div>
+
+                <div class="rv-form-wrap" id="rvFormWrap" hidden>
+                    <h3>Share your experience</h3>
+                    <form class="rv-form" id="rvForm" novalidate>
+                        <div class="full">
+                            <span class="lbl"
+                                style="display:block;font-size:.84rem;color:var(--olive);margin-bottom:.4rem;">Your
+                                rating</span>
+                            <div class="star-input" id="rvStarInput">
+                                <input type="radio" name="rating" id="st5" value="5"><label for="st5" title="5 stars"
+                                    aria-label="5 stars">&#9733;</label>
+                                <input type="radio" name="rating" id="st4" value="4"><label for="st4" title="4 stars"
+                                    aria-label="4 stars">&#9733;</label>
+                                <input type="radio" name="rating" id="st3" value="3"><label for="st3" title="3 stars"
+                                    aria-label="3 stars">&#9733;</label>
+                                <input type="radio" name="rating" id="st2" value="2"><label for="st2" title="2 stars"
+                                    aria-label="2 stars">&#9733;</label>
+                                <input type="radio" name="rating" id="st1" value="1"><label for="st1" title="1 star"
+                                    aria-label="1 star">&#9733;</label>
+                            </div>
+                            <div class="field-error" id="errRating" role="alert"></div>
+                        </div>
+                        <div>
+                            <label class="lbl" for="rvName">Name</label>
+                            <input type="text" id="rvName" maxlength="40" autocomplete="name">
+                            <div class="field-error" id="errName" role="alert"></div>
+                        </div>
+                        <div>
+                            <label class="lbl" for="rvCity">City (optional)</label>
+                            <input type="text" id="rvCity" maxlength="40" autocomplete="address-level2">
+                        </div>
+                        <div class="full">
+                            <label class="lbl" for="rvTitle">Review title</label>
+                            <input type="text" id="rvTitle" maxlength="80">
+                            <div class="field-error" id="errTitle" role="alert"></div>
+                        </div>
+                        <div class="full">
+                            <label class="lbl" for="rvBody">Your review</label>
+                            <textarea id="rvBody" maxlength="1000"
+                                placeholder="How was the fabric, fit and finish?"></textarea>
+                            <div class="rv-count"><span id="rvCharCount">0</span> / 1000</div>
+                            <div class="field-error" id="errBody" role="alert"></div>
+                        </div>
+                        <div class="full rv-form-actions">
+                            <button type="submit" class="btn btn-primary">Submit Review</button>
+                            <button type="button" class="btn btn-ghost" id="rvCancel">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="rv-toolbar">
+                    <div class="left">
+                        <span id="rvShowing"></span>
+                        <button type="button" class="rv-clear" id="rvClear" hidden>Clear filter</button>
+                    </div>
+                    <label for="rvSort" class="left">Sort by
+                        <select class="rv-sort" id="rvSort">
+                            <option value="recent">Most recent</option>
+                            <option value="helpful">Most helpful</option>
+                            <option value="high">Highest rated</option>
+                            <option value="low">Lowest rated</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div id="rvList"></div>
+                <div class="rv-more"><button type="button" class="btn btn-ghost" id="rvMore">Show More Reviews</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================== RELATED ===================== -->
+        <section class="pd-related" data-pd-only>
+            <div class="container">
+                <div class="section-head">
+                    <span class="eyebrow">COMPLETE THE WARDROBE</span>
+                    <h2>You May Also Like</h2>
+                </div>
+                <div class="product-grid" id="pdRelated"></div>
+            </div>
+        </section>
+
+        <!-- ===================== RECENTLY VIEWED ===================== -->
+        <section class="pd-recent" id="pdRecentSection" data-pd-only hidden>
+            <div class="container">
+                <div class="section-head">
+                    <h2>Recently Viewed</h2>
+                </div>
+                <div class="product-grid" id="pdRecent"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===================== STICKY BUY BAR ===================== -->
+    <div class="pd-sticky" id="pdSticky" aria-hidden="true">
+        <div class="container pd-sticky-inner">
+            <div>
+                <div class="pd-sticky-name" id="pdStickyName"></div>
+                <div class="pd-sticky-price" id="pdStickyPrice"></div>
+            </div>
+            <button type="button" class="pd-btn-add" id="pdStickyAdd" tabindex="-1">Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- ===================== LIGHTBOX ===================== -->
+    <div class="lb" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Product images, full screen">
+        <div class="lb-top">
+            <span id="lbCounter"></span>
+            <div class="actions">
+                <button type="button" class="lb-btn" id="lbZoom" aria-pressed="false">Zoom</button>
+                <button type="button" class="lb-btn" id="lbClose" aria-label="Close full screen view">Close
+                    &times;</button>
+            </div>
+        </div>
+        <div class="lb-stage" id="lbStage">
+            <button type="button" class="lb-nav lb-prev" id="lbPrev" aria-label="Previous image"><svg
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="m15 5-7 7 7 7" />
+                </svg></button>
+            <div class="lb-slide" id="lbSlide"></div>
+            <button type="button" class="lb-nav lb-next" id="lbNext" aria-label="Next image"><svg viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="m9 5 7 7-7 7" />
+                </svg></button>
+        </div>
+        <div class="lb-thumbs" id="lbThumbs"></div>
+    </div>
+
+    <!-- ===================== SIZE GUIDE ===================== -->
+    <dialog class="pd-dialog" id="sizeDialog" aria-labelledby="sgTitle">
+        <div class="sg-inner" id="sgContent"></div>
+    </dialog>
+
+    <div id="footer" th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="js/products.js"></script>
+    <script src="js/script.js"></script>
+
+    <!-- ===================== PAGE-SPECIFIC JS (Product Detail) ===================== -->
+    <script>
+        (function () {
+            'use strict';
+
+            const cat = Sutra.catalog;
+            const params = new URLSearchParams(window.location.search);
+            const p = cat.byId(params.get('id'));
+            const $ = (sel, root = document) => root.querySelector(sel);
+            const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const smooth = reduceMotion ? 'auto' : 'smooth';
+            const esc = (s) => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+            const money = cat.money;
+            const FREE_SHIP = 2999;
+
+            /* ---------- Not found ---------- */
+            if (!p) {
+                $('#pdGrid').hidden = true;
+                $('#pdNotFound').hidden = false;
+                $$('[data-pd-only]').forEach(el => { el.hidden = true; });
+                document.title = 'Product not found — Sutra Textiles India';
+                return;
+            }
+
+            /* ---------- State ---------- */
+            const state = {
+                color: cat.defaultColor(p),
+                size: cat.needsSize(p) ? null : p.sizes[0].label,
+                qty: 1,
+                view: 0
+            };
+            let slides = [];
+
+            /* ---------- Page meta ---------- */
+            document.title = `${p.name} — Sutra Textiles India`;
+            $('#metaDesc').setAttribute('content', `${p.name} \u2014 ${p.description}`.slice(0, 300));
+            $('#pdBreadcrumb').innerHTML = `
+    <a href="index.html">Home</a><span class="sep">/</span>
+    <a href="shop.html">Shop</a><span class="sep">/</span>
+    <a href="shop.html?cat=${p.category}">${esc(cat.categoryLabel(p.category))}</a><span class="sep">/</span>
+    <span aria-current="page">${esc(p.name)}</span>`;
+
+            const hexToRgb = (h) => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
+            const toHex = (r, g, b) => '#' + [r, g, b].map(v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')).join('');
+            const mix = (a, b, t) => { const x = hexToRgb(a), y = hexToRgb(b); return toHex(x[0] + (y[0] - x[0]) * t, x[1] + (y[1] - x[1]) * t, x[2] + (y[2] - x[2]) * t); };
+            const luminance = (hex) => {
+                const [r, g, b] = hexToRgb(hex).map(v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); });
+                return .2126 * r + .7152 * g + .0722 * b;
+            };
+
+            const VIEW_LABELS = {
+                sarees: ['Full drape', 'Pallu', 'Fabric detail', 'Motif'],
+                default: ['Front view', 'Back view', 'Fabric detail', 'Motif']
+            };
+
+            let uid = 0;
+            function artSvg(view, hex, category) {
+                const id = 'art' + (++uid);
+                const dark = luminance(hex) < .32;
+                const bgA = mix(hex, '#ffffff', dark ? .14 : .38);
+                const bgB = mix(hex, '#000000', dark ? .38 : .16);
+                const line = dark ? '#E3CB8E' : '#1C3329';
+                const soft = dark ? 'rgba(227,203,142,.13)' : 'rgba(28,51,41,.09)';
+                const g = `fill="${soft}" stroke="${line}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"`;
+                let body = '';
+
+                if (view === 'detail') {
+                    body = `
+        <pattern id="${id}p" width="56" height="56" patternUnits="userSpaceOnUse">
+          <path d="M28 8 48 28 28 48 8 28Z" fill="none" stroke="${line}" stroke-opacity=".55" stroke-width="1.4"/>
+          <circle cx="28" cy="28" r="3" fill="${line}" fill-opacity=".6"/>
+          <circle cx="0" cy="0" r="2" fill="${line}" fill-opacity=".4"/><circle cx="56" cy="0" r="2" fill="${line}" fill-opacity=".4"/>
+          <circle cx="0" cy="56" r="2" fill="${line}" fill-opacity=".4"/><circle cx="56" cy="56" r="2" fill="${line}" fill-opacity=".4"/>
+        </pattern>
+        <rect width="400" height="500" fill="url(#${id}p)"/>
+        <rect width="400" height="64" fill="${bgB}" fill-opacity=".6"/>
+        <rect y="436" width="400" height="64" fill="${bgB}" fill-opacity=".6"/>
+        <path d="M0 64H400M0 72H400M0 428H400M0 436H400" stroke="${line}" stroke-width="1.5" stroke-opacity=".8"/>
+        <path d="M0 500 400 150V500Z" fill="#fff" fill-opacity=".07"/>`;
+                } else if (view === 'motif') {
+                    body = `
+        <path d="M52 470V230A148 148 0 0 1 348 230V470" fill="none" stroke="${line}" stroke-opacity=".5" stroke-width="1.5"/>
+        <g transform="translate(68 88) scale(2.2)" fill="none" stroke="${line}" stroke-width="1.2" stroke-linecap="round">
+          <path d="M60 10c-16 10-26 26-26 46 0 24 12 42 26 52 14-10 26-28 26-52 0-20-10-36-26-46Z"/>
+          <path d="M60 46v66"/>
+          <path d="M60 64c-7 3-15 1-15 1s2.5-9 9-12.5c3.6-2 8-1 8-1"/>
+          <path d="M60 80c7 3 15 1 15 1s-2.5-9-9-12.5c-3.6-2-8-1-8-1"/>
+          <path d="M60 96c-7 3-15 1-15 1s2.5-9 9-12.5c3.6-2 8-1 8-1"/>
+        </g>`;
+                } else if (category === 'sarees') {
+                    let pleats = '';
+                    for (let i = 0; i < 8; i++) pleats += `M${152 + i * 13} 214L${140 + i * 17} 458`;
+                    body = view === 'back'
+                        ? `<g ${g}>
+            <path d="M120 90H280L292 450Q200 478 108 450Z"/>
+            <path d="M118 128H282M116 150H284M114 172H286" fill="none"/>
+            <path d="M120 128 140 150 160 128 180 150 200 128 220 150 240 128 260 150 280 128" fill="none"/>
+            <path d="M200 190V460" fill="none" stroke-opacity=".5"/>
+            <path d="M108 450Q200 478 292 450" fill="none"/>
+          </g>`
+                        : `<g ${g}>
+            <path d="M130 90H270L292 450Q200 478 108 450Z"/>
+            <path d="${pleats}" fill="none" stroke-opacity=".7"/>
+            <path d="M130 90C190 140 260 130 300 70L316 118C262 196 176 210 118 164Z" fill="${line}" fill-opacity=".2"/>
+            <path d="M108 450Q200 478 292 450M112 430Q200 456 288 430" fill="none"/>
+          </g>`;
+                } else if (category === 'lehengas') {
+                    body = view === 'back'
+                        ? `<g ${g}>
+            <path d="M168 96H232L246 170H154Z"/><path d="M180 96 200 140 220 96M200 140V170" fill="none"/>
+            <path d="M150 214H250L252 232H148Z"/>
+            <path d="M148 232H252L336 452Q200 486 64 452Z"/>
+            <path d="M200 232V470M172 232 130 462M228 232 270 462" fill="none" stroke-opacity=".55"/>
+            <path d="M70 440Q200 474 330 440" fill="none"/>
+          </g>`
+                        : `<g ${g}>
+            <path d="M168 96H232L246 170Q200 196 154 170Z"/>
+            <path d="M150 214H250L252 232H148Z"/>
+            <path d="M148 232H252L336 452Q200 486 64 452Z"/>
+            <path d="M120 330Q200 350 280 330M96 392Q200 414 304 392M70 440Q200 474 330 440" fill="none"/>
+            <path d="M232 100C300 140 330 260 300 330" fill="none"/>
+          </g>`;
+                } else {
+                    const longKurta = category === 'regional';
+                    const hem = longKurta ? 380 : 340;
+                    body = view === 'back'
+                        ? `<g ${g}>
+            <path d="M146 100H254L${longKurta ? 274 : 282} ${hem}H${longKurta ? 126 : 118}Z"/>
+            <path d="M180 100Q200 108 220 100M200 108V${hem}" fill="none" stroke-opacity=".6"/>
+            <path d="M146 100 102 190 126 204 150 150M254 100 298 190 274 204 250 150"/>
+            ${longKurta ? `<path d="M150 ${hem}L146 470M250 ${hem}L254 470" fill="none"/>` : `<path d="M124 ${hem}H276L316 470H218L200 396 182 470H84Z"/>`}
+          </g>`
+                        : `<g ${g}>
+            <path d="M146 100H254L${longKurta ? 274 : 282} ${hem}H${longKurta ? 126 : 118}Z"/>
+            <path d="M178 100Q200 132 222 100" fill="none"/>
+            <path d="M146 100 102 190 126 204 150 150M254 100 298 190 274 204 250 150"/>
+            ${longKurta ? `<path d="M150 ${hem}L146 470M250 ${hem}L254 470" fill="none"/>` : `<path d="M124 ${hem}H276L316 470H218L200 396 182 470H84Z"/>`}
+            <path d="M232 104C320 150 340 280 296 ${longKurta ? 400 : 400}" fill="none"/>
+            <path d="M${longKurta ? 126 : 118} ${hem - 22}H${longKurta ? 274 : 282}" fill="none" stroke-opacity=".6"/>
+          </g>`;
+                }
+
+                return `<svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs><linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${bgA}"/><stop offset="1" stop-color="${bgB}"/></linearGradient></defs>
+      <rect width="400" height="500" fill="url(#${id}g)"/>${body}</svg>`;
+            }
+
+            function getSlides() {
+                const imgs = p.images && (p.images[state.color] || p.images.default);
+                if (imgs && imgs.length) {
+                    return imgs.map((src, i) => ({ kind: 'img', src, label: `View ${i + 1}` }));
+                }
+                const labels = VIEW_LABELS[p.category] || VIEW_LABELS.default;
+                return ['front', 'back', 'detail', 'motif'].map((view, i) => ({ kind: 'art', view, label: labels[i] }));
+            }
+            function currentHex() { const c = p.colors.find(c => c.name === state.color); return c ? c.hex : p.colors[0].hex; }
+            function slideHTML(s) {
+                return s.kind === 'img'
+                    ? `<img src="${esc(s.src)}" alt="${esc(p.name)} \u2014 ${esc(s.label)}" loading="lazy">`
+                    : artSvg(s.view, currentHex(), p.category);
+            }
+
+            /* ===========================================================
+               GALLERY
+               =========================================================== */
+            const frame = $('#pdFrame'), slideEl = $('#pdSlide'), thumbsEl = $('#pdThumbs');
+
+            function renderThumbs() {
+                thumbsEl.innerHTML = slides.map((s, i) =>
+                    `<button type="button" class="pd-thumb${i === state.view ? ' is-active' : ''}" data-i="${i}" aria-label="Show ${esc(s.label)}" aria-current="${i === state.view}">${slideHTML(s)}</button>`
+                ).join('');
+            }
+            function showSlide(i, animate = true) {
+                state.view = (i + slides.length) % slides.length;
+                slideEl.innerHTML = slideHTML(slides[state.view]);
+                slideEl.classList.remove('pd-fade');
+                if (animate && !reduceMotion) { void slideEl.offsetWidth; slideEl.classList.add('pd-fade'); }
+                $$('.pd-thumb', thumbsEl).forEach((t, idx) => {
+                    t.classList.toggle('is-active', idx === state.view);
+                    t.setAttribute('aria-current', String(idx === state.view));
+                });
+                $('#pdCounter').textContent = `${state.view + 1} / ${slides.length}`;
+                $('#pdViewLabel').textContent = slides[state.view].label;
+                $('#pdPrev').hidden = $('#pdNext').hidden = slides.length < 2;
+            }
+            function renderGallery() {
+                slides = getSlides();
+                state.view = Math.min(state.view, slides.length - 1);
+                renderThumbs();
+                showSlide(state.view, false);
+            }
+
+            const tagText = p.tag || (cat.discount(p) >= 18 ? 'Special price' : '');
+            if (tagText) { const t = $('#pdTag'); t.textContent = tagText; t.hidden = false; }
+
+            thumbsEl.addEventListener('click', e => { const b = e.target.closest('.pd-thumb'); if (b) showSlide(Number(b.dataset.i)); });
+            $('#pdPrev').addEventListener('click', () => showSlide(state.view - 1));
+            $('#pdNext').addEventListener('click', () => showSlide(state.view + 1));
+            frame.addEventListener('keydown', e => {
+                if (e.key === 'ArrowLeft') { e.preventDefault(); showSlide(state.view - 1); }
+                if (e.key === 'ArrowRight') { e.preventDefault(); showSlide(state.view + 1); }
+                if (e.key === 'Enter' && e.target === frame) openLightbox();
+            });
+            frame.addEventListener('click', e => { if (!e.target.closest('button')) openLightbox(); });
+            $('#pdExpand').addEventListener('click', openLightbox);
+
+            // hover zoom (mouse only)
+            const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+            if (canHover) {
+                frame.addEventListener('mousemove', e => {
+                    if (e.target.closest('button')) { frame.classList.remove('is-zooming'); return; }
+                    const r = frame.getBoundingClientRect();
+                    slideEl.style.setProperty('--zx', ((e.clientX - r.left) / r.width * 100) + '%');
+                    slideEl.style.setProperty('--zy', ((e.clientY - r.top) / r.height * 100) + '%');
+                    frame.classList.add('is-zooming');
+                });
+                frame.addEventListener('mouseleave', () => frame.classList.remove('is-zooming'));
+            }
+            // swipe (touch)
+            let touchX = null;
+            frame.addEventListener('touchstart', e => { touchX = e.changedTouches[0].clientX; }, { passive: true });
+            frame.addEventListener('touchend', e => {
+                if (touchX === null) return;
+                const dx = e.changedTouches[0].clientX - touchX;
+                touchX = null;
+                if (Math.abs(dx) > 40) showSlide(state.view + (dx < 0 ? 1 : -1));
+            }, { passive: true });
+
+            /* ===========================================================
+               LIGHTBOX
+               =========================================================== */
+            const lb = $('#lightbox'), lbStage = $('#lbStage'), lbSlide = $('#lbSlide');
+            let lbReturnFocus = null;
+
+            function lbRender() {
+                lbSlide.innerHTML = slideHTML(slides[state.view]);
+                $('#lbCounter').textContent = `${slides[state.view].label}  \u00B7  ${state.view + 1} / ${slides.length}`;
+                $('#lbThumbs').innerHTML = slides.map((s, i) =>
+                    `<button type="button" class="pd-thumb${i === state.view ? ' is-active' : ''}" data-i="${i}" aria-label="Show ${esc(s.label)}">${slideHTML(s)}</button>`
+                ).join('');
+                $('#lbPrev').hidden = $('#lbNext').hidden = slides.length < 2;
+            }
+            function lbGo(i) {
+                state.view = (i + slides.length) % slides.length;
+                setZoom(false);
+                lbRender();
+                showSlide(state.view, false);
+            }
+            function setZoom(on) {
+                lbStage.classList.toggle('is-zoomed', on);
+                $('#lbZoom').setAttribute('aria-pressed', String(on));
+            }
+            function openLightbox() {
+                lbReturnFocus = document.activeElement;
+                setZoom(false);
+                lbRender();
+                lb.hidden = false;
+                document.body.style.overflow = 'hidden';
+                $('#lbClose').focus();
+            }
+            function closeLightbox() {
+                lb.hidden = true;
+                document.body.style.overflow = '';
+                frame.classList.remove('is-zooming');
+                if (lbReturnFocus && lbReturnFocus.focus) lbReturnFocus.focus();
+            }
+            $('#lbClose').addEventListener('click', closeLightbox);
+            $('#lbPrev').addEventListener('click', () => lbGo(state.view - 1));
+            $('#lbNext').addEventListener('click', () => lbGo(state.view + 1));
+            $('#lbZoom').addEventListener('click', () => setZoom(!lbStage.classList.contains('is-zoomed')));
+            lbSlide.addEventListener('click', () => setZoom(!lbStage.classList.contains('is-zoomed')));
+            lbSlide.addEventListener('mousemove', e => {
+                if (!lbStage.classList.contains('is-zoomed')) return;
+                const r = lbSlide.getBoundingClientRect();
+                lbSlide.style.setProperty('--zx', ((e.clientX - r.left) / r.width * 100) + '%');
+                lbSlide.style.setProperty('--zy', ((e.clientY - r.top) / r.height * 100) + '%');
+            });
+            lbStage.style.setProperty('--zx', '50%');
+            $('#lbThumbs').addEventListener('click', e => { const b = e.target.closest('.pd-thumb'); if (b) lbGo(Number(b.dataset.i)); });
+            lb.addEventListener('click', e => { if (e.target === lbStage) closeLightbox(); });
+            document.addEventListener('keydown', e => {
+                if (lb.hidden) return;
+                if (e.key === 'Escape') closeLightbox();
+                else if (e.key === 'ArrowLeft') lbGo(state.view - 1);
+                else if (e.key === 'ArrowRight') lbGo(state.view + 1);
+                else if (e.key === 'Tab') {
+                    const f = $$('button:not([hidden])', lb);
+                    if (!f.length) return;
+                    const first = f[0], last = f[f.length - 1];
+                    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+                    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+                }
+            });
+
+            /* ===========================================================
+               REVIEWS DATA (mock seed + reviews written on this device)
+               =========================================================== */
+            const POOL = [
+                ['Ritika S.', 'Pune', 5, 'Looks even better in person', x => `The colour matches the photos and the ${x.fabric.toLowerCase()} feels premium. Packed neatly and arrived on time.`],
+                ['Meera K.', 'Hyderabad', 5, 'Worth every rupee', x => `I was unsure about ordering ethnic wear online, but the finish on the ${x.work.toLowerCase()} is lovely. Got compliments all evening.`],
+                ['Harleen B.', 'Delhi', 4, 'Lovely, slightly different shade', () => 'Beautiful piece and neat stitching. The shade is a touch deeper than on my screen, but I like it.'],
+                ['Ananya D.', 'Kolkata', 5, 'Exactly what I wanted', () => 'Fits well and the fabric falls nicely. Delivery was quicker than I expected.'],
+                ['Priya N.', 'Chennai', 4, 'Good quality for the price', () => 'The fabric and finishing are better than I expected at this price. Would order again.'],
+                ['Kavya R.', 'Bengaluru', 3, 'Good, but check the size guide', () => 'Lovely fabric. I went a size down and it was snug \u2014 the size guide is accurate, so do measure first.'],
+                ['Sneha P.', 'Mumbai', 5, 'A festive favourite', () => 'Wore it for Diwali and it was perfect. It looks rich without feeling heavy.'],
+                ['Aditi M.', 'Jaipur', 4, 'Pretty and comfortable', () => 'Comfortable to wear all day and the detailing is neat. Support also helped with a delivery query quickly.'],
+                ['Nandini V.', 'Ahmedabad', 5, 'Beautiful craftsmanship', () => 'The detailing is neat on both sides. A very elegant piece.']
+            ];
+            const DAYS_AGO = [4, 12, 27, 49, 83, 131];
+            const HELPFUL_SEED = [11, 6, 3, 8, 2, 4];
+
+            function seededReviews() {
+                const start = p.id % POOL.length;
+                return DAYS_AGO.map((d, i) => {
+                    const row = POOL[(start + i * 2) % POOL.length];
+                    return {
+                        id: `${p.id}-s${i}`, name: row[0], city: row[1], rating: row[2], title: row[3], body: row[4](p),
+                        ts: Date.now() - d * 864e5, verified: true, mine: false, helpful: HELPFUL_SEED[i],
+                        size: p.sizes.length > 1 ? p.sizes[(i + 1) % p.sizes.length].label : null
+                    };
+                });
+            }
+            const USER_KEY = 'sutra_user_reviews_v1';
+            const HELPFUL_KEY = 'sutra_helpful_v1';
+            const userReviews = () => (Sutra.store.read(USER_KEY, {})[p.id] || []);
+            const allReviews = () => seededReviews().concat(userReviews());
+
+            const rv = { filter: 0, sort: 'recent', visible: 4 };
+            const fmtDate = (ts) => new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(ts));
+            const starsHTML = (avg) => `<span class="stars" style="--pct:${(avg / 5 * 100).toFixed(1)}%" aria-hidden="true">\u2605\u2605\u2605\u2605\u2605</span>`;
+
+            function ratingSummary() {
+                const list = allReviews();
+                const avg = list.reduce((s, r) => s + r.rating, 0) / list.length;
+                return { list, avg, n: list.length };
+            }
+
+            function renderRatingRow() {
+                const { avg, n } = ratingSummary();
+                const el = $('#pdRating');
+                if (el) el.innerHTML = `${starsHTML(avg)}<span class="pd-rating-text">${avg.toFixed(1)} \u00B7 ${n} review${n === 1 ? '' : 's'}</span>`;
+                updateSchema();
+            }
+
+            function renderReviews() {
+                const { list, avg, n } = ratingSummary();
+                $('#rvScore').innerHTML = `${avg.toFixed(1)}<small> / 5</small>`;
+                $('#rvStars').innerHTML = starsHTML(avg);
+                $('#rvMeta').textContent = `Based on ${n} review${n === 1 ? '' : 's'}`;
+
+                const counts = [5, 4, 3, 2, 1].map(s => ({ s, c: list.filter(r => r.rating === s).length }));
+                $('#rvBars').innerHTML = counts.map(({ s, c }) => `
+      <button type="button" class="rv-bar${rv.filter === s ? ' is-active' : ''}" data-star="${s}" aria-pressed="${rv.filter === s}" aria-label="${s} star reviews: ${c}">
+        <span>${s} \u2605</span><span class="rv-track"><span class="rv-fill" style="width:${(c / n * 100).toFixed(0)}%"></span></span><span>${c}</span>
+      </button>`).join('');
+
+                let shown = rv.filter ? list.filter(r => r.rating === rv.filter) : list.slice();
+                const helpedSet = new Set(Sutra.store.read(HELPFUL_KEY, []));
+                const helpfulCount = (r) => r.helpful + (helpedSet.has(r.id) ? 1 : 0);
+                shown.sort((a, b) => ({
+                    recent: b.ts - a.ts,
+                    helpful: helpfulCount(b) - helpfulCount(a),
+                    high: b.rating - a.rating || b.ts - a.ts,
+                    low: a.rating - b.rating || b.ts - a.ts
+                }[rv.sort]));
+
+                const total = shown.length;
+                shown = shown.slice(0, rv.visible);
+                $('#rvShowing').textContent = total ? `Showing ${shown.length} of ${total}` : 'No reviews match this filter';
+                $('#rvClear').hidden = !rv.filter;
+                $('#rvMore').parentElement.hidden = total <= rv.visible;
+
+                $('#rvList').innerHTML = shown.map(r => `
+      <article class="rv-item" data-id="${esc(r.id)}">
+        <div class="rv-avatar" aria-hidden="true">${esc(r.name.trim().charAt(0).toUpperCase())}</div>
+        <div>
+          <div class="rv-who">
+            <strong>${esc(r.name)}</strong>
+            ${r.city ? `<span>${esc(r.city)}</span>` : ''}
+            <span class="rv-badge${r.mine ? ' mine' : ''}">${r.mine ? 'Your review' : 'Verified buyer'}</span>
+          </div>
+          <div class="rv-line">${starsHTML(r.rating)}<span>${fmtDate(r.ts)}</span>${r.size ? `<span>Size: ${esc(r.size)}</span>` : ''}</div>
+          <h3 class="rv-title">${esc(r.title)}</h3>
+          <p class="rv-body">${esc(r.body)}</p>
+          <div class="rv-actions">
+            <button type="button" data-helpful="${esc(r.id)}" aria-pressed="${helpedSet.has(r.id)}">Helpful (${helpfulCount(r)})</button>
+            ${r.mine ? `<button type="button" data-delete="${esc(r.id)}">Delete</button>` : ''}
+          </div>
+        </div>
+      </article>`).join('');
+            }
+
+            $('#rvBars').addEventListener('click', e => {
+                const b = e.target.closest('.rv-bar'); if (!b) return;
+                const s = Number(b.dataset.star);
+                rv.filter = rv.filter === s ? 0 : s; rv.visible = 4; renderReviews();
+            });
+            $('#rvClear').addEventListener('click', () => { rv.filter = 0; rv.visible = 4; renderReviews(); });
+            $('#rvSort').addEventListener('change', e => { rv.sort = e.target.value; renderReviews(); });
+            $('#rvMore').addEventListener('click', () => { rv.visible += 4; renderReviews(); });
+            $('#rvList').addEventListener('click', e => {
+                const h = e.target.closest('[data-helpful]');
+                if (h) {
+                    const set = new Set(Sutra.store.read(HELPFUL_KEY, []));
+                    const id = h.dataset.helpful;
+                    set.has(id) ? set.delete(id) : set.add(id);
+                    Sutra.store.write(HELPFUL_KEY, Array.from(set));
+                    renderReviews();
+                    return;
+                }
+                const d = e.target.closest('[data-delete]');
+                if (d && window.confirm('Delete your review?')) {
+                    const store = Sutra.store.read(USER_KEY, {});
+                    store[p.id] = (store[p.id] || []).filter(r => r.id !== d.dataset.delete);
+                    Sutra.store.write(USER_KEY, store);
+                    renderReviews(); renderRatingRow();
+                }
+            });
+
+            /* ---- Write a review ---- */
+            const formWrap = $('#rvFormWrap'), form = $('#rvForm'), writeBtn = $('#rvWriteBtn');
+            function toggleForm(open) {
+                formWrap.hidden = !open;
+                writeBtn.setAttribute('aria-expanded', String(open));
+                if (open) {
+                    $('#rvName').value = Sutra.store.read('sutra_reviewer_v1', { name: '', city: '' }).name || '';
+                    $('#rvCity').value = Sutra.store.read('sutra_reviewer_v1', { name: '', city: '' }).city || '';
+                    formWrap.scrollIntoView({ behavior: smooth, block: 'center' });
+                    $('#rvName').focus({ preventScroll: true });
+                }
+            }
+            writeBtn.addEventListener('click', () => toggleForm(formWrap.hidden));
+            $('#rvCancel').addEventListener('click', () => toggleForm(false));
+            $('#rvBody').addEventListener('input', e => { $('#rvCharCount').textContent = e.target.value.length; });
+
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+                const rating = Number((form.querySelector('input[name="rating"]:checked') || {}).value || 0);
+                const name = $('#rvName').value.trim(), city = $('#rvCity').value.trim();
+                const title = $('#rvTitle').value.trim(), body = $('#rvBody').value.trim();
+                const errs = {
+                    errRating: rating ? '' : 'Please choose a star rating.',
+                    errName: name ? '' : 'Please enter your name.',
+                    errTitle: title.length >= 3 ? '' : 'Please add a short title (3+ characters).',
+                    errBody: body.length >= 20 ? '' : 'Please write at least 20 characters.'
+                };
+                Object.keys(errs).forEach(k => { $('#' + k).textContent = errs[k]; });
+                if (Object.values(errs).some(Boolean)) return;
+
+                const review = {
+                    id: 'u-' + Date.now(), name, city, rating, title, body, ts: Date.now(),
+                    verified: false, mine: true, helpful: 0, size: state.size
+                };
+                const store = Sutra.store.read(USER_KEY, {});
+                store[p.id] = [review].concat(store[p.id] || []);
+                Sutra.store.write(USER_KEY, store);
+                Sutra.store.write('sutra_reviewer_v1', { name, city });
+                form.reset(); $('#rvCharCount').textContent = '0';
+                rv.filter = 0; rv.sort = 'recent'; $('#rvSort').value = 'recent';
+                toggleForm(false);
+                renderReviews(); renderRatingRow();
+                $('#rvList').scrollIntoView({ behavior: smooth, block: 'start' });
+                Sutra.toast('Thank you \u2014 your review has been added');
+            });
+
+            /* ===========================================================
+               INFO COLUMN
+               =========================================================== */
+            const info = $('#pdInfo');
+            const discount = cat.discount(p);
+
+            function sizeGuideLabel() { return p.category === 'sarees' ? 'Saree dimensions' : 'Size guide'; }
+
+            info.innerHTML = `
+    <div class="pd-eyebrow">
+      <span>${esc(cat.regionLabel(p.region)).toUpperCase()}</span><i aria-hidden="true"></i>
+      <a href="shop.html?cat=${p.category}">${esc(cat.categoryLabel(p.category)).toUpperCase()}</a>
+    </div>
+    <h1 class="pd-title">${esc(p.name)}</h1>
+    <a class="pd-rating" id="pdRating" href="#reviews"></a>
+
+    <div class="pd-price-row">
+      <span class="pd-price" id="pdPrice">${money(p.price)}</span>
+      ${discount ? `<s class="pd-mrp" aria-label="Original price">${money(p.mrp)}</s><span class="pd-off">${discount}% OFF</span>` : ''}
+    </div>
+    <p class="pd-tax" id="pdTax"></p>
+    <p class="pd-blurb">${esc(p.description)}</p>
+
+    <hr class="pd-divider">
+
+    <div class="pd-field" style="margin-top:0">
+      <div class="pd-label"><span>Colour: <strong id="pdColorName">${esc(state.color)}</strong></span></div>
+      <div class="pd-swatches" role="radiogroup" aria-label="Colour">
+        ${p.colors.map(c => `<button type="button" class="pd-swatch" role="radio" aria-checked="${c.name === state.color}" aria-label="${esc(c.name)}" title="${esc(c.name)}" data-color="${esc(c.name)}" style="--sw:${c.hex}"></button>`).join('')}
+      </div>
+    </div>
+
+    <div class="pd-field" id="pdSizeField">
+      <div class="pd-label">
+        <span>Size: <strong id="pdSizeName">${state.size ? esc(state.size) : 'Select a size'}</strong></span>
+        <button type="button" class="pd-link" id="pdSizeGuide">${sizeGuideLabel()}</button>
+      </div>
+      <div class="pd-sizes" id="pdSizes" role="radiogroup" aria-label="Size">
+        ${p.sizes.map(s => `<button type="button" class="pd-size" role="radio" data-size="${esc(s.label)}" aria-checked="${s.label === state.size}" ${p.stock === 'in-stock' && s.qty === 0 ? 'disabled title="Out of stock"' : ''}>${esc(s.label)}</button>`).join('')}
+      </div>
+      <p class="pd-error" id="pdSizeError" role="alert"></p>
+      <p class="pd-lowstock" id="pdLowStock"></p>
+    </div>
+
+    <p class="pd-avail ${p.stock === 'made-to-order' ? 'is-mto' : ''}" id="pdAvail"></p>
+
+    <div class="pd-buy" id="pdBuy">
+      <div class="pd-qty" role="group" aria-label="Quantity">
+        <button type="button" id="pdQtyMinus" aria-label="Decrease quantity">&minus;</button>
+        <output id="pdQty" aria-live="polite">1</output>
+        <button type="button" id="pdQtyPlus" aria-label="Increase quantity">+</button>
+      </div>
+      <button type="button" class="pd-btn-add" id="pdAdd">Add to Cart</button>
+      <button type="button" class="pd-wish" id="pdWish" aria-pressed="false" aria-label="Save to wishlist">
+        <svg viewBox="0 0 24 24"><path d="M12 20s-7-4.3-9.5-8.8C.8 7.8 2.6 4 6.3 4 8.6 4 10.6 5.3 12 7.2 13.4 5.3 15.4 4 17.7 4c3.7 0 5.5 3.8 3.8 7.2C19 15.7 12 20 12 20Z"/></svg>
+      </button>
+      <button type="button" class="pd-btn-now" id="pdBuyNow">Buy Now</button>
+    </div>
+
+    <div class="pd-secondary">
+      <button type="button" id="pdShare"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="m8.2 10.8 7.6-3.6M8.2 13.2l7.6 3.6"/></svg>Share</button>
+      <a href="contact.html" class="pd-secondary-link" style="display:inline-flex;gap:.45rem;align-items:center;color:var(--olive)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16v11H9l-5 4Z"/></svg>Ask about this piece</a>
+    </div>
+
+    <div class="pd-delivery">
+      <h3>CHECK DELIVERY</h3>
+      <form class="pd-pin" id="pdPinForm" novalidate>
+        <input type="text" id="pdPin" inputmode="numeric" maxlength="6" placeholder="Enter 6-digit pincode" aria-label="Delivery pincode" autocomplete="postal-code">
+        <button type="submit">Check</button>
+      </form>
+      <p class="pd-pin-result" id="pdPinResult" role="status"></p>
+    </div>
+
+    <ul class="pd-trust">
+      <li><svg viewBox="0 0 24 24"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg>Made in-house in Bhilwara</li>
+      <li><svg viewBox="0 0 24 24"><path d="M2 7h12v9H2zM14 10h4l3 3v3h-7M6.5 18.5a1.5 1.5 0 1 0 0 .01M17.5 18.5a1.5 1.5 0 1 0 0 .01"/></svg>Free shipping above ${money(FREE_SHIP)}</li>
+      <li><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 4v5h-5M20 12a8 8 0 0 1-14 5.3L4 15M4 20v-5h5"/></svg>Easy returns &amp; exchange</li>
+    </ul>
+
+    <div class="pd-acc">
+      <details open>
+        <summary>Description</summary>
+        <div class="pd-acc-body">
+          <p>${esc(p.description)}</p>
+          <ul class="pd-list">${p.highlights.map(h => `<li>${esc(h)}</li>`).join('')}</ul>
+          <p style="margin-top:.9rem"><strong style="font-weight:500">Set includes:</strong> ${esc(p.includes)}</p>
+        </div>
+      </details>
+      <details>
+        <summary>Fabric &amp; Care</summary>
+        <div class="pd-acc-body">
+          <table class="pd-spec">
+            <tr><th>Fabric</th><td>${esc(p.fabric)}</td></tr>
+            <tr><th>Work</th><td>${esc(p.work)}</td></tr>
+            <tr><th>Colour</th><td id="pdSpecColor">${esc(state.color)}</td></tr>
+          </table>
+          <ul class="pd-list">${p.care.map(c => `<li>${esc(c)}</li>`).join('')}</ul>
+          <p style="margin-top:.9rem;font-size:.84rem;color:var(--olive)">Slight variations in shade are natural \u2014 screens display colour differently.</p>
+        </div>
+      </details>
+      <details>
+        <summary>Shipping &amp; Returns</summary>
+        <div class="pd-acc-body">
+          <ul class="pd-list">
+            <li>We ship across India. Shipping is free on orders above ${money(FREE_SHIP)}.</li>
+            <li>${p.stock === 'made-to-order'
+                    ? `This piece is made to order and dispatches in ${p.dispatchDays[0]}\u2013${p.dispatchDays[1]} days.`
+                    : `Ready stock dispatches in ${p.dispatchDays[0]}\u2013${p.dispatchDays[1]} days.`}</li>
+            <li>Easy returns and exchanges \u2014 see our <a class="pd-link" href="returns-policy.html">Returns &amp; Exchange Policy</a> for eligibility and timelines.</li>
+            <li>Delivery details: <a class="pd-link" href="shipping-policy.html">Shipping &amp; Delivery Policy</a>.</li>
+          </ul>
+        </div>
+      </details>
+      <details>
+        <summary>Product Details</summary>
+        <div class="pd-acc-body">
+          <table class="pd-spec">
+            <tr><th>Product code</th><td>${esc(p.sku)}</td></tr>
+            <tr><th>Category</th><td>${esc(cat.categoryLabel(p.category))}</td></tr>
+            <tr><th>Region</th><td>${esc(cat.regionLabel(p.region))}</td></tr>
+            <tr><th>Occasion</th><td>${esc(p.occasion)}</td></tr>
+            <tr><th>Made by</th><td>Sutra Textiles India, Bhilwara, Rajasthan</td></tr>
+            <tr><th>Country of origin</th><td>India</td></tr>
+          </table>
+        </div>
+      </details>
+    </div>`;
+
+            /* ---------- Variant logic ---------- */
+            function sizeQty() {
+                if (!state.size) return null;
+                const s = p.sizes.find(s => s.label === state.size);
+                return s ? s.qty : null;
+            }
+            function maxQty() {
+                const q = sizeQty();
+                return p.stock === 'in-stock' && q ? Math.min(Sutra.cart.MAX_QTY, q) : Sutra.cart.MAX_QTY;
+            }
+
+            function updateBuyState() {
+                const max = maxQty();
+                state.qty = Math.max(1, Math.min(state.qty, max));
+                $('#pdQty').textContent = state.qty;
+                $('#pdQtyMinus').disabled = state.qty <= 1;
+                $('#pdQtyPlus').disabled = state.qty >= max;
+
+                const total = p.price * state.qty;
+                $('#pdTax').textContent = 'Inclusive of all taxes' +
+                    (state.qty > 1 ? ` \u00B7 Total for ${state.qty}: ${money(total)}` : '') +
+                    (total >= FREE_SHIP ? ' \u00B7 Free shipping' : '');
+
+                const q = sizeQty();
+                $('#pdLowStock').textContent = (p.stock === 'in-stock' && q > 0 && q <= 3) ? `Only ${q} left in size ${state.size} \u2014 order soon.` : '';
+                $('#pdAvail').textContent = p.stock === 'made-to-order'
+                    ? `Made to order \u00B7 dispatches in ${p.dispatchDays[0]}\u2013${p.dispatchDays[1]} days`
+                    : `In stock \u00B7 dispatches in ${p.dispatchDays[0]}\u2013${p.dispatchDays[1]} days`;
+                $('#pdSizeName').textContent = state.size || 'Select a size';
+                $('#pdStickyPrice').textContent = `${money(p.price)}${state.size && cat.needsSize(p) ? ' \u00B7 Size ' + state.size : ''}`;
+            }
+
+            $('#pdSizes').addEventListener('click', e => {
+                const b = e.target.closest('.pd-size'); if (!b || b.disabled) return;
+                state.size = b.dataset.size;
+                $$('.pd-size').forEach(x => x.setAttribute('aria-checked', String(x === b)));
+                $('#pdSizeError').textContent = '';
+                updateBuyState();
+            });
+            info.addEventListener('click', e => {
+                const sw = e.target.closest('.pd-swatch'); if (!sw) return;
+                state.color = sw.dataset.color;
+                $$('.pd-swatch').forEach(x => x.setAttribute('aria-checked', String(x === sw)));
+                $('#pdColorName').textContent = state.color;
+                $('#pdSpecColor').textContent = state.color;
+                renderGallery();
+            });
+            $('#pdQtyMinus').addEventListener('click', () => { state.qty--; updateBuyState(); });
+            $('#pdQtyPlus').addEventListener('click', () => { state.qty++; updateBuyState(); });
+
+            /* ---------- Cart actions ---------- */
+            function validate() {
+                if (cat.needsSize(p) && !state.size) {
+                    $('#pdSizeError').textContent = 'Please select a size to continue.';
+                    const field = $('#pdSizeField');
+                    field.scrollIntoView({ behavior: smooth, block: 'center' });
+                    field.classList.remove('pd-shake'); void field.offsetWidth; field.classList.add('pd-shake');
+                    return false;
+                }
+                return true;
+            }
+            function addToCart() {
+                if (!validate()) return false;
+                Sutra.cart.addItem({ id: p.id, size: state.size, color: state.color, qty: state.qty });
+                return true;
+            }
+            function flash(btn, label) {
+                const original = btn.textContent;
+                btn.textContent = label; btn.classList.add('is-added');
+                setTimeout(() => { btn.textContent = original; btn.classList.remove('is-added'); }, 1500);
+            }
+            function onAdd(btn) {
+                if (!addToCart()) return;
+                flash(btn, 'Added \u2713');
+                Sutra.toast(`${p.name} (${state.color}${cat.needsSize(p) ? ', ' + state.size : ''}) added to your cart`, { actionText: 'View Cart', href: 'cart.html' });
+            }
+            $('#pdAdd').addEventListener('click', e => onAdd(e.currentTarget));
+            $('#pdStickyAdd').addEventListener('click', e => onAdd(e.currentTarget));
+            $('#pdBuyNow').addEventListener('click', () => { if (addToCart()) window.location.href = 'checkout.html'; });
+
+            /* ---------- Wishlist ---------- */
+            const wishBtn = $('#pdWish');
+            function syncWish() {
+                const on = Sutra.wishlist.has(p.id);
+                wishBtn.setAttribute('aria-pressed', String(on));
+                wishBtn.setAttribute('aria-label', on ? 'Remove from wishlist' : 'Save to wishlist');
+            }
+            wishBtn.addEventListener('click', () => {
+                const added = Sutra.wishlist.toggle(p.id);
+                syncWish();
+                Sutra.toast(added ? `${p.name} saved to your wishlist` : 'Removed from your wishlist', added ? { actionText: 'View Wishlist', href: 'wishlist.html' } : {});
+            });
+            syncWish();
+
+            /* ---------- Share ---------- */
+            $('#pdShare').addEventListener('click', async () => {
+                const url = window.location.href;
+                const data = { title: p.name, text: `${p.name} \u2014 Sutra Textiles India`, url };
+                try {
+                    if (navigator.share) { await navigator.share(data); return; }
+                    await navigator.clipboard.writeText(url);
+                    Sutra.toast('Link copied to clipboard');
+                } catch (err) {
+                    if (err && err.name !== 'AbortError') Sutra.toast('Copy this page link from your address bar');
+                }
+            });
+
+            /* ---------- Delivery estimate (mock — replace with API) ---------- */
+            const TRANSIT = { '1': [2, 4], '2': [2, 4], '3': [1, 2], '4': [2, 4], '5': [3, 5], '6': [3, 5], '7': [3, 6], '8': [3, 5] };
+            const fmtDay = (d) => new Intl.DateTimeFormat('en-IN', { weekday: 'short', day: 'numeric', month: 'short' }).format(d);
+            function checkPin(pin) {
+                const res = $('#pdPinResult');
+                if (!/^[1-9][0-9]{5}$/.test(pin)) {
+                    res.className = 'pd-pin-result is-err'; res.textContent = 'Please enter a valid 6-digit pincode.'; return;
+                }
+                const t = TRANSIT[pin[0]];
+                if (!t) { res.className = 'pd-pin-result is-err'; res.textContent = 'We\u2019ll confirm delivery for this pincode \u2014 please contact us.'; return; }
+                const from = new Date(), to = new Date();
+                from.setDate(from.getDate() + p.dispatchDays[0] + t[0]);
+                to.setDate(to.getDate() + p.dispatchDays[1] + t[1]);
+                res.className = 'pd-pin-result is-ok';
+                res.innerHTML = `Delivery to <strong>${esc(pin)}</strong> by <strong>${fmtDay(from)} \u2013 ${fmtDay(to)}</strong>${p.stock === 'made-to-order' ? ' (made to order)' : ''}.`;
+                Sutra.store.write('sutra_pin_v1', pin);
+            }
+            $('#pdPinForm').addEventListener('submit', e => { e.preventDefault(); checkPin($('#pdPin').value.trim()); });
+            $('#pdPin').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, ''); });
+            const savedPin = Sutra.store.read('sutra_pin_v1', '');
+            if (savedPin) { $('#pdPin').value = savedPin; checkPin(savedPin); }
+
+            /* ---------- Size guide ---------- */
+            const dlg = $('#sizeDialog');
+            const MEASURES = { XS: [32, 26, 35], S: [34, 28, 37], M: [36, 30, 39], L: [38, 32, 41], XL: [40, 34, 43], XXL: [42, 36, 45] };
+            let unit = 'in';
+
+            function renderSizeGuide() {
+                let body;
+                if (p.category === 'sarees') {
+                    body = `
+        <p>Sarees are one size and fit most heights and builds.</p>
+        <table class="sg-table"><tbody>
+          <tr><th scope="row">Saree length</th><td>5.5 m</td></tr>
+          <tr><th scope="row">Blouse piece</th><td>0.8 m (unstitched)</td></tr>
+        </tbody></table>
+        <div class="sg-tips"><h3>STITCHING THE BLOUSE</h3><p>Have your tailor measure bust, waist and sleeve length, and allow a little extra at the seams so the blouse can be adjusted later.</p></div>`;
+                } else {
+                    const f = unit === 'in' ? 1 : 2.54;
+                    const fmt = (n) => unit === 'in' ? n : Math.round(n * f);
+                    body = `
+        <div class="sg-toggle" role="group" aria-label="Units">
+          <button type="button" data-unit="in" aria-pressed="${unit === 'in'}">Inches</button>
+          <button type="button" data-unit="cm" aria-pressed="${unit === 'cm'}">Centimetres</button>
+        </div>
+        <table class="sg-table">
+          <thead><tr><th>Size</th><th>Bust</th><th>Waist</th><th>Hip</th></tr></thead>
+          <tbody>${p.sizes.map(s => { const m = MEASURES[s.label] || ['-', '-', '-']; return `<tr><th scope="row">${esc(s.label)}</th><td>${fmt(m[0])}</td><td>${fmt(m[1])}</td><td>${fmt(m[2])}</td></tr>`; }).join('')}</tbody>
+        </table>
+        <p style="font-size:.8rem;color:var(--olive);margin-top:.6rem">Body measurements, not garment measurements.</p>
+        <div class="sg-tips"><h3>HOW TO MEASURE</h3>
+          <ul class="pd-list" style="display:grid;gap:.4rem">
+            <li><strong style="font-weight:500">Bust:</strong> around the fullest part of your chest.</li>
+            <li><strong style="font-weight:500">Waist:</strong> around the narrowest part of your waist.</li>
+            <li><strong style="font-weight:500">Hip:</strong> around the fullest part of your hips.</li>
+          </ul>
+          <p style="margin-top:.8rem">Between sizes? Choose the larger size for a relaxed fit, or <a class="pd-link" href="contact.html">ask us</a>.</p>
+        </div>`;
+                }
+                $('#sgContent').innerHTML = `
+      <div class="sg-head"><h2 id="sgTitle">${sizeGuideLabel()}</h2><button type="button" class="sg-close" id="sgClose" aria-label="Close size guide">&times;</button></div>${body}`;
+            }
+            $('#pdSizeGuide').addEventListener('click', () => {
+                renderSizeGuide();
+                typeof dlg.showModal === 'function' ? dlg.showModal() : dlg.setAttribute('open', '');
+            });
+            dlg.addEventListener('click', e => {
+                if (e.target === dlg || e.target.closest('#sgClose')) dlg.close();
+                const u = e.target.closest('[data-unit]');
+                if (u) { unit = u.dataset.unit; renderSizeGuide(); }
+            });
+
+            /* ===========================================================
+               CARDS (related + recently viewed) — same markup as shop
+               =========================================================== */
+            const TINT_STROKE = { 1: '#1C3329', 2: '#E3CB8E', 3: '#1C3329', 4: '#F5F0E6' };
+            function cardHTML(o) {
+                return `
+      <div class="product-card">
+        <a class="pd-card-link" href="product.html?id=${o.id}" aria-label="${esc(o.name)}">
+          <div class="product-art tint-${o.tint}">
+            ${o.tag ? `<span class="product-tag">${esc(o.tag)}</span>` : ''}
+            <svg viewBox="0 0 80 100" fill="none" stroke="${TINT_STROKE[o.tint]}"><path d="M40 10c-10 6-16 16-16 28 0 14 7 25 16 31 9-6 16-17 16-31 0-12-6-22-16-28Z" stroke-width="1"/></svg>
+          </div>
+          <div class="product-info">
+            <div><h3>${esc(o.name)}</h3><span class="region">${esc(cat.regionLabel(o.region))}</span></div>
+            <span class="product-price">${money(o.price)}</span>
+          </div>
+        </a>
+        <button type="button" class="add-cart" data-id="${o.id}">${cat.needsSize(o) ? 'Select Size' : 'Add to Cart'}</button>
+      </div>`;
+            }
+            $('#pdRelated').innerHTML = cat.related(p, 4).map(cardHTML).join('');
+
+            const RECENT_KEY = 'sutra_recent_v1';
+            const recent = Sutra.store.read(RECENT_KEY, []).filter(id => id !== p.id);
+            const recentItems = recent.map(id => cat.byId(id)).filter(Boolean).slice(0, 4);
+            if (recentItems.length) {
+                $('#pdRecent').innerHTML = recentItems.map(cardHTML).join('');
+                $('#pdRecentSection').hidden = false;
+            }
+            Sutra.store.write(RECENT_KEY, [p.id].concat(recent).slice(0, 8));
+
+            /* ===========================================================
+               STICKY BAR (appears when the main buy box scrolls away)
+               =========================================================== */
+            $('#pdStickyName').textContent = p.name;
+            const sticky = $('#pdSticky');
+            const visible = { buy: true, footer: false };
+            function syncSticky() {
+                const show = !visible.buy && !visible.footer;
+                sticky.classList.toggle('is-visible', show);
+                sticky.setAttribute('aria-hidden', String(!show));
+                $('#pdStickyAdd').tabIndex = show ? 0 : -1;
+            }
+            if ('IntersectionObserver' in window) {
+                new IntersectionObserver(([en]) => { visible.buy = en.isIntersecting || en.boundingClientRect.top > 0; syncSticky(); }).observe($('#pdBuy'));
+                const footerEl = $('#footer');
+                new IntersectionObserver(([en]) => { visible.footer = en.isIntersecting; syncSticky(); }).observe(footerEl);
+            }
+
+            /* ===========================================================
+               STRUCTURED DATA (SEO)
+               =========================================================== */
+            function updateSchema() {
+                const { avg, n } = ratingSummary();
+                const data = {
+                    '@context': 'https://schema.org', '@type': 'Product',
+                    name: p.name, description: p.description, sku: p.sku,
+                    category: cat.categoryLabel(p.category),
+                    brand: { '@type': 'Brand', name: 'Sutra Textiles India' },
+                    color: p.colors.map(c => c.name).join(', '),
+                    offers: {
+                        '@type': 'Offer', priceCurrency: 'INR', price: p.price, url: window.location.href,
+                        availability: p.stock === 'in-stock' ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder'
+                    },
+                    aggregateRating: { '@type': 'AggregateRating', ratingValue: avg.toFixed(1), reviewCount: n }
+                };
+                let tag = document.getElementById('pdSchema');
+                if (!tag) { tag = document.createElement('script'); tag.type = 'application/ld+json'; tag.id = 'pdSchema'; document.head.appendChild(tag); }
+                tag.textContent = JSON.stringify(data);
+            }
+
+            /* ---------- Init ---------- */
+            renderGallery();
+            updateBuyState();
+            renderRatingRow();
+            renderReviews();
+        })();
+    </script>
+
+</body>
+
+</html>

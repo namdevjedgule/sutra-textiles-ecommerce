@@ -1,0 +1,62 @@
+<footer th:fragment="footer" class="site-footer">
+  <div class="container footer-main">
+
+    <div class="footer-col footer-brand">
+      <a th:href="@{/}" class="brand-mark" aria-label="Sutra Textiles India, home">
+        <img 
+          th:src="@{/image/sutra-logo.png}" 
+          alt="Sutra Textiles - Every Thread Tells a Story" 
+          class="brand-logo"
+        >
+      </a>
+      <p class="footer-sectors">TEXTILES &middot; MANUFACTURING &middot; FASHION &middot; RETAIL</p>
+      <p>Traditional ethnic wear, manufactured in-house in Bhilwara, Rajasthan — honest quality at a fair price, for every state in India.</p>
+      <div class="footer-social">
+        <a th:href="@{/instagram}" aria-label="Instagram" class="social-badge">IG</a>
+        <a th:href="@{/facebook}" aria-label="Facebook" class="social-badge">f</a>
+        <a th:href="@{/pinterest}" aria-label="Pinterest" class="social-badge">P</a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a th:href="@{/shop}">New Arrivals</a></li>
+        <li><a th:href="@{/shop?cat=sarees}">Sarees</a></li>
+        <li><a th:href="@{/shop?cat=lehengas}">Lehengas</a></li>
+        <li><a th:href="@{/shop?cat=salwar-suits}">Salwar Suits</a></li>
+        <li><a th:href="@{/shop?cat=regional}">Regional Wear</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Customer Care</h4>
+      <ul>
+        <li><a th:href="@{/faq}">FAQ</a></li>
+        <li><a th:href="@{/policy}">Shipping &amp; Delivery</a></li>
+        <li><a th:href="@{/policy}">Returns &amp; Exchange</a></li>
+        <li><a th:href="@{/contact}">Contact Us</a></li>
+        <li><a th:href="@{/account}">Track Order</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Visit Us</h4>
+      <address>
+        317, 10 Biz Park, Mhada Colony,<br>
+        Sanjay Park, Pune,<br>
+        Maharashtra 411014<br><br>
+        +91 79877 25348
+      </address>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <span>© <span id="year"></span> Sutra Textiles India. All rights reserved.</span>
+    <div class="legal-links">
+      <a th:href="@{/privacy-policy}">Privacy Policy</a>
+      <a th:href="@{/terms}">Terms &amp; Conditions</a>
+    </div>
+  </div>
+</footer>

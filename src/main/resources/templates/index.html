@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sutra Textiles India — Traditional Ethnic Wear, Handcrafted in Bhilwara</title>
+  <meta name="description"
+    content="Sutra Textiles India brings handcrafted traditional ethnic wear from every state, made in our own Bhilwara, Rajasthan facility — honest pricing, genuine quality.">
+  <link rel="icon" type="image/x-icon" th:href="@{/favicon_io/favicon.ico}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+  <div id="navbar" th:replace="~{fragments/navbar :: navbar}"></div>
+  <div id="navSpacer"></div>
+
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-copy">
+        <span class="eyebrow">MADE IN BHILWARA, RAJASTHAN</span>
+        <h1>Traditional silhouettes, <em>worn&nbsp;today.</em></h1>
+        <p class="lede">From Rajasthani bandhani to Bengali tant, South Indian silks to Punjabi phulkari, we
+          manufacture every piece ourselves, so you get genuine craft at a price that makes sense.</p>
+        <div class="hero-cta">
+          <a th:href="@{/shop}" class="btn btn-primary">Shop New Arrivals</a>
+          <a th:href="@{/about}" class="btn btn-outline">Our Craft</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="arch-frame">
+          <div class="arch-frame-inner">
+            <img th:src="@{/image/hero-images/hero-image.webp}" alt="Traditional Indian saree collection"
+              class="hero-frame-image">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="trust-strip">
+    <div class="container trust-row">
+      <div class="trust-item">
+        <h4>100% In-House Manufacturing</h4>
+        <p>Every piece made at our own facility in Bhilwara, Rajasthan.</p>
+      </div>
+      <div class="trust-item">
+        <h4>Honest, Transparent Pricing</h4>
+        <p>No middlemen markup, genuine fabric and craft at a fair price.</p>
+      </div>
+      <div class="trust-item">
+        <h4>Wear From Every State</h4>
+        <p>A curated spread of regional ethnic wear from across India.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-categories">
+    <div class="container">
+      <div class="section-head">
+        <h2>Shop by Category</h2>
+        <p>Four ways into the Sutra wardrobe, pick your occasion, we'll handle the craft.</p>
+      </div>
+      <div class="category-grid">
+
+        <a th:href="@{/shop(category='sarees')}" class="category-card">
+          <div class="category-art tint-1">
+            <svg viewBox="0 0 80 100" fill="none">
+              <path d="M40 6c-11 7-18 18-18 32 0 16 8 28 18 35 10-7 18-19 18-35 0-14-7-25-18-32Z" stroke="currentColor"
+                stroke-width="1" />
+              <path d="M40 30v48" stroke="currentColor" stroke-width="1" />
+            </svg>
+          </div>
+          <h3>Sarees</h3>
+          <span>Silk, cotton &amp; handloom</span>
+        </a>
+
+        <a th:href="@{/shop(category='lehengas')}" class="category-card">
+          <div class="category-art tint-2">
+            <svg viewBox="0 0 80 100" fill="none">
+              <path d="M40 6c-11 7-18 18-18 32 0 16 8 28 18 35 10-7 18-19 18-35 0-14-7-25-18-32Z" stroke="currentColor"
+                stroke-width="1" />
+              <path d="M40 30v48" stroke="currentColor" stroke-width="1" />
+            </svg>
+          </div>
+          <h3>Lehengas</h3>
+          <span>Bridal &amp; festive</span>
+        </a>
+
+        <a th:href="@{/shop(category='salwar-suits')}" class="category-card">
+          <div class="category-art tint-3">
+            <svg viewBox="0 0 80 100" fill="none">
+              <path d="M40 6c-11 7-18 18-18 32 0 16 8 28 18 35 10-7 18-19 18-35 0-14-7-25-18-32Z" stroke="currentColor"
+                stroke-width="1" />
+              <path d="M40 30v48" stroke="currentColor" stroke-width="1" />
+            </svg>
+          </div>
+          <h3>Salwar Suits</h3>
+          <span>Everyday &amp; occasion</span>
+        </a>
+
+        <a th:href="@{/shop(category='regional')}" class="category-card">
+          <div class="category-art tint-4">
+            <svg viewBox="0 0 80 100" fill="none">
+              <path d="M40 6c-11 7-18 18-18 32 0 16 8 28 18 35 10-7 18-19 18-35 0-14-7-25-18-32Z" stroke="currentColor"
+                stroke-width="1" />
+              <path d="M40 30v48" stroke="currentColor" stroke-width="1" />
+            </svg>
+          </div>
+          <h3>Regional Wear</h3>
+          <span>From every state</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section-bestsellers">
+    <div class="container">
+      <div class="section-head">
+        <h2>Loved This Season</h2>
+        <p>The pieces our customers keep coming back for.</p>
+      </div>
+      <div class="product-grid">
+        <div class="product-card" th:each="product : ${featuredProducts}">
+          <div class="product-art" th:classappend="${' ' + product.tintClass}">
+            <span class="product-tag" th:if="${!#strings.isEmpty(product.tag)}" th:text="${product.tag}">
+              Bestseller
+            </span>
+            <svg viewBox="0 0 80 100" fill="none" stroke="#1C3329">
+              <path d="M40 10c-10 6-16 16-16 28 0 14 7 25 16 31 9-6 16-17 16-31 0-12-6-22-16-28Z" stroke-width="1" />
+            </svg>
+          </div>
+          <div class="product-info">
+            <div>
+              <h3 th:text="${product.name}">
+                Bandhani Silk Saree
+              </h3>
+              <span class="region" th:text="${product.region}">
+                Rajasthan
+              </span>
+            </div>
+            <span class="product-price"
+              th:text="${'₹' + #numbers.formatDecimal(product.price, 1, 'COMMA', 2, 'POINT')}">
+              ₹3,450.00
+            </span>
+          </div>
+          <a class="add-cart" th:href="@{/shop}" th:attr="aria-label=${'View ' + product.name}">
+            View Product
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-story">
+    <div class="container story">
+      <div class="story-visual">
+        <div class="arch-frame">
+          <div class="arch-frame-inner">
+            <svg viewBox="0 0 120 150" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M60 10c-16 10-26 26-26 46 0 24 12 42 26 52 14-10 26-28 26-52 0-20-10-36-26-46Z"
+                stroke="currentColor" stroke-width="1" />
+              <path d="M60 46v66" stroke="currentColor" stroke-width="1" />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="story-copy">
+        <span class="eyebrow">WHO WE ARE</span>
+        <h2>Woven in Bhilwara, worn across India.</h2>
+        <p>Sutra Textiles India runs its own manufacturing unit in Bhilwara, Rajasthan — which means we control quality,
+          sourcing and pricing at every step, instead of leaving it to a chain of middlemen.</p>
+        <p>We work with boutiques, weavers and designers across the country to bring authentic regional wear — from
+          Bengal to Gujarat, Kashmir to Kerala — to customers who want the real thing without the markup.</p>
+        <blockquote>"Good products deserve a larger market."</blockquote>
+        <a th:href="@{/about}" class="btn-text">Read our story</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-regions">
+    <div class="container">
+      <div class="section-head">
+        <h2>One Country, Every Weave</h2>
+        <p>Wherever you're from, there's a Sutra piece that feels like home.</p>
+      </div>
+      <div class="region-row">
+        <a th:href="@{/shop?region=rajasthan}" class="region-chip">Rajasthani</a>
+        <a th:href="@{/shop?region=bengal}" class="region-chip">Bengali</a>
+        <a th:href="@{/shop?region=south-india}" class="region-chip">South Indian</a>
+        <a th:href="@{/shop?region=punjab}" class="region-chip">Punjabi</a>
+        <a th:href="@{/shop?region=gujarat}" class="region-chip">Gujarati</a>
+        <a th:href="@{/shop?region=kashmir}" class="region-chip">Kashmiri</a>
+        <a th:href="@{/shop?region=maharashtra}" class="region-chip">Maharashtrian</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-testimonials">
+    <div class="container">
+      <div class="section-head" style="text-align:center">
+        <h2>From Our Customers</h2>
+      </div>
+      <div class="testimonial-wrap">
+        <div class="testimonial-track" id="testimonialTrack">
+          <div class="testimonial-slide is-active">
+            <p class="quote">"The bandhani saree felt handwoven, not factory-made. Easily the best quality I've found
+              online for the price."</p>
+            <p class="who">— Ritika S., Pune</p>
+          </div>
+          <div class="testimonial-slide">
+            <p class="quote">"Finally found genuine Kanjeevaram without the Chennai boutique markup. Sutra shipped it
+              beautifully packed too."</p>
+            <p class="who">— Meera K., Hyderabad</p>
+          </div>
+          <div class="testimonial-slide">
+            <p class="quote">"I ordered a phulkari kurti not expecting much, and the stitching and fabric weight
+              genuinely surprised me."</p>
+            <p class="who">— Harleen B., Delhi</p>
+          </div>
+        </div>
+        <div class="testimonial-nav" id="testimonialNav">
+          <button class="testimonial-dot is-active" aria-label="Testimonial 1"></button>
+          <button class="testimonial-dot" aria-label="Testimonial 2"></button>
+          <button class="testimonial-dot" aria-label="Testimonial 3"></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-newsletter">
+    <div class="container">
+      <div class="newsletter">
+        <h2>Be First to New Arrivals</h2>
+        <p>New regional drops, restocks and festive edits — straight to your inbox, no spam.</p>
+        <form class="newsletter-form" id="newsletterForm">
+          <input type="email" id="newsletterEmail" placeholder="you@email.com" required aria-label="Email address">
+          <button type="submit" class="btn btn-primary">Subscribe</button>
+        </form>
+        <p class="newsletter-note" id="newsletterNote">We'll only email you about new collections and offers.</p>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer" th:replace="~{fragments/footer :: footer}"></div>
+
+  <script th:src="@{/js/script.js}"></script>
+</body>
+
+</html>

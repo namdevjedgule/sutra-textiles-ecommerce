@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Policies — Sutra Textiles India</title>
+    <meta name="description" id="metaDesc"
+        content="Privacy, terms, shipping and returns policies of Sutra Textiles India.">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon_io/favicon.ico}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Work+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css" th:href="@{/css/style.css}">
+
+    <style>
+        [hidden] {
+            display: none !important;
+        }
+
+        /* ---------- Reading progress ---------- */
+        .pl-progress {
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: var(--nav-h, 0px);
+            height: 3px;
+            z-index: 90;
+            background: transparent;
+            pointer-events: none;
+        }
+
+        .pl-progress span {
+            display: block;
+            height: 100%;
+            width: 0;
+            background: var(--gold);
+            transition: width .1s linear;
+        }
+
+        /* ---------- Hero ---------- */
+        .pl-hero {
+            background: var(--green);
+            color: var(--ivory);
+            padding-block: clamp(2.4rem, 5.5vw, 3.8rem);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pl-hero-mark {
+            position: absolute;
+            right: clamp(-60px, -2vw, 0px);
+            bottom: -80px;
+            width: 320px;
+            color: var(--gold-light);
+            opacity: .08;
+            pointer-events: none;
+        }
+
+        .pl-crumbs {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            font-size: .8rem;
+            color: #b9c4b6;
+            margin-bottom: .9rem;
+        }
+
+        .pl-crumbs a:hover {
+            color: var(--gold-light);
+        }
+
+        .pl-hero .eyebrow {
+            color: var(--gold-light);
+        }
+
+        .pl-hero h1 {
+            color: var(--ivory);
+            margin-bottom: .6rem;
+        }
+
+        .pl-hero p {
+            color: #d7ded6;
+            max-width: 60ch;
+            position: relative;
+        }
+
+        .pl-meta {
+            margin-top: 1rem;
+            font-size: .84rem;
+            color: #b9c4b6;
+            position: relative;
+        }
+
+        .pl-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .6rem;
+            margin-top: 1.6rem;
+            position: relative;
+        }
+
+        .pl-tab {
+            padding: .5rem 1.1rem;
+            border: 1px solid rgba(227, 203, 142, .45);
+            border-radius: 999px;
+            font-size: .84rem;
+            color: var(--gold-light);
+            transition: background .2s var(--ease);
+        }
+
+        .pl-tab:hover {
+            background: rgba(227, 203, 142, .12);
+        }
+
+        .pl-tab[aria-current="page"] {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: var(--green-deep);
+            font-weight: 500;
+        }
+
+        /* ---------- Layout ---------- */
+        .pl-main {
+            padding-block: clamp(2rem, 4vw, 3.5rem) clamp(2.5rem, 5vw, 4rem);
+        }
+
+        .pl-review {
+            padding: .9rem 1.2rem;
+            margin-bottom: 1.8rem;
+            border: 1px dashed var(--terracotta);
+            background: rgba(181, 83, 60, .07);
+            border-radius: var(--radius);
+            font-size: .86rem;
+            line-height: 1.6;
+        }
+
+        .pl-review code {
+            font-size: .8rem;
+            background: rgba(0, 0, 0, .06);
+            padding: .05rem .35rem;
+            border-radius: 3px;
+        }
+
+        .pl-grid {
+            display: grid;
+            grid-template-columns: 250px minmax(0, 1fr);
+            gap: clamp(1.5rem, 4vw, 4rem);
+            align-items: start;
+        }
+
+        /* ---------- Table of contents ---------- */
+        .pl-toc {
+            position: sticky;
+            top: calc(var(--nav-h, 100px) + 1.2rem);
+            background: var(--ivory-soft);
+            border: 1px solid var(--grey);
+            border-radius: var(--radius);
+            padding: 1.1rem 1rem;
+            max-height: calc(100vh - var(--nav-h, 100px) - 2.4rem);
+            overflow-y: auto;
+        }
+
+        .pl-toc h2 {
+            font-family: var(--font-body);
+            font-size: .72rem;
+            letter-spacing: .12em;
+            color: var(--olive);
+            font-weight: 500;
+            text-transform: uppercase;
+            padding: .2rem .7rem .7rem;
+        }
+
+        .pl-toc a {
+            display: flex;
+            gap: .7rem;
+            padding: .5rem .7rem;
+            font-size: .87rem;
+            color: var(--charcoal);
+            border-left: 2px solid transparent;
+            line-height: 1.4;
+            transition: background .2s var(--ease), border-color .2s var(--ease);
+        }
+
+        .pl-toc a:hover {
+            background: rgba(201, 162, 75, .1);
+        }
+
+        .pl-toc a.is-active {
+            border-left-color: var(--gold);
+            background: rgba(201, 162, 75, .14);
+            color: var(--green);
+            font-weight: 500;
+        }
+
+        .pl-toc a span {
+            color: var(--gold);
+            min-width: 1.4em;
+            font-family: var(--font-display);
+        }
+
+        .pl-toc-tools {
+            display: flex;
+            gap: 1.2rem;
+            padding: .8rem .7rem .2rem;
+            margin-top: .5rem;
+            border-top: 1px solid var(--grey);
+        }
+
+        .pl-link-btn {
+            font-size: .82rem;
+            color: var(--olive);
+            border-bottom: 1px solid transparent;
+            padding-bottom: 1px;
+        }
+
+        .pl-link-btn:hover {
+            color: var(--green);
+            border-color: var(--gold);
+        }
+
+        /* ---------- Article ---------- */
+        .pl-article {
+            min-width: 0;
+            max-width: 780px;
+        }
+
+        .pl-glance {
+            background: var(--ivory-soft);
+            border: 1px solid var(--grey);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.7rem;
+            margin-bottom: 2.4rem;
+            position: relative;
+        }
+
+        .pl-glance::before {
+            content: "";
+            position: absolute;
+            inset: 6px;
+            border: 1px dashed #d2c8ab;
+            pointer-events: none;
+            border-radius: 1px;
+        }
+
+        .pl-glance h2 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .pl-glance dl {
+            display: grid;
+            gap: .9rem;
+            position: relative;
+        }
+
+        .pl-glance dl>div {
+            display: grid;
+            grid-template-columns: 170px minmax(0, 1fr);
+            gap: 1rem;
+        }
+
+        .pl-glance dt {
+            font-size: .74rem;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--olive);
+            padding-top: .15rem;
+        }
+
+        .pl-glance dd {
+            font-size: .94rem;
+            color: var(--charcoal);
+            line-height: 1.55;
+        }
+
+        .pl-sec {
+            padding-block: 1.8rem;
+            border-top: 1px solid var(--grey);
+            scroll-margin-top: calc(var(--nav-h, 100px) + 1rem);
+        }
+
+        .pl-sec:first-of-type {
+            border-top: none;
+            padding-top: 0;
+        }
+
+        .pl-sec h2 {
+            display: flex;
+            align-items: baseline;
+            gap: .9rem;
+            font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+            margin-bottom: 1rem;
+        }
+
+        .pl-num {
+            position: relative;
+            display: inline-grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            flex-shrink: 0;
+            font-family: var(--font-body);
+            font-size: .8rem;
+            font-weight: 500;
+            color: var(--green);
+            transform: translateY(.25rem);
+        }
+
+        .pl-num::before {
+            content: "";
+            position: absolute;
+            inset: 5px;
+            border: 1px solid var(--gold);
+            transform: rotate(45deg);
+        }
+
+        .pl-num b {
+            position: relative;
+            font-weight: 500;
+        }
+
+        .pl-anchor {
+            margin-left: auto;
+            font-size: .8rem;
+            color: var(--olive);
+            opacity: 0;
+            transition: opacity .2s var(--ease);
+        }
+
+        .pl-sec:hover .pl-anchor,
+        .pl-anchor:focus-visible {
+            opacity: 1;
+        }
+
+        .pl-sec p {
+            font-size: .97rem;
+            color: #34382f;
+            margin-bottom: .9rem;
+            max-width: 70ch;
+            line-height: 1.7;
+        }
+
+        .pl-sec ul,
+        .pl-sec ol {
+            display: grid;
+            gap: .5rem;
+            margin: 0 0 1rem;
+            max-width: 70ch;
+        }
+
+        .pl-sec li {
+            position: relative;
+            padding-left: 1.2rem;
+            font-size: .97rem;
+            color: #34382f;
+            line-height: 1.65;
+        }
+
+        .pl-sec ul li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: .72em;
+            width: 5px;
+            height: 5px;
+            background: var(--gold);
+            transform: rotate(45deg);
+        }
+
+        .pl-sec ol {
+            counter-reset: n;
+        }
+
+        .pl-sec ol li {
+            counter-increment: n;
+            padding-left: 1.7rem;
+        }
+
+        .pl-sec ol li::before {
+            content: counter(n) ".";
+            position: absolute;
+            left: 0;
+            color: var(--gold);
+            font-weight: 500;
+        }
+
+        .pl-sec a {
+            color: var(--green);
+            border-bottom: 1px solid var(--gold);
+        }
+
+        .pl-sec h3 {
+            font-family: var(--font-body);
+            font-size: .98rem;
+            font-weight: 500;
+            color: var(--green);
+            margin: 1.2rem 0 .5rem;
+        }
+
+        .pl-note {
+            padding: .9rem 1.1rem;
+            margin: 1rem 0;
+            border-left: 3px solid var(--gold);
+            background: rgba(201, 162, 75, .1);
+            font-size: .92rem;
+            color: #34382f;
+            max-width: 70ch;
+        }
+
+        .pl-contact {
+            padding: 1.2rem 1.4rem;
+            margin-top: .4rem;
+            background: var(--ivory-soft);
+            border: 1px solid var(--grey);
+            border-radius: var(--radius);
+            font-size: .93rem;
+            line-height: 1.7;
+            max-width: 70ch;
+        }
+
+        .pl-contact strong {
+            font-weight: 500;
+            color: var(--green);
+        }
+
+        /* unfilled business details */
+        .pl {
+            background: rgba(201, 162, 75, .28);
+            border: 1px dashed var(--terracotta);
+            color: #7a2f1d;
+            padding: 0 .3em;
+            border-radius: 3px;
+            font-size: .92em;
+        }
+
+        /* ---------- Bottom ---------- */
+        .pl-end {
+            background: var(--ivory-soft);
+            border-top: 1px solid var(--grey);
+        }
+
+        .pl-end-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.2rem;
+        }
+
+        .pl-card {
+            display: block;
+            padding: 1.5rem;
+            background: var(--ivory);
+            border: 1px solid var(--grey);
+            border-radius: var(--radius);
+            transition: border-color .25s var(--ease), transform .25s var(--ease);
+        }
+
+        .pl-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-3px);
+        }
+
+        .pl-card small {
+            display: block;
+            font-size: .72rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--olive);
+            margin-bottom: .3rem;
+        }
+
+        .pl-card strong {
+            display: block;
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            color: var(--green);
+            font-weight: 600;
+            margin-bottom: .3rem;
+        }
+
+        .pl-card span {
+            font-size: .88rem;
+            color: var(--olive);
+        }
+
+        .pl-top {
+            position: fixed;
+            right: 1.2rem;
+            bottom: 1.4rem;
+            z-index: 80;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--green);
+            color: var(--gold-light);
+            display: grid;
+            place-items: center;
+            box-shadow: 0 8px 20px rgba(20, 38, 32, .25);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(8px);
+            transition: opacity .25s var(--ease), transform .25s var(--ease);
+        }
+
+        .pl-top.is-visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: none;
+        }
+
+        .pl-top svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 960px) {
+            .pl-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pl-toc {
+                position: static;
+                max-height: none;
+            }
+
+            .pl-toc-list {
+                display: none;
+            }
+
+            .pl-toc.is-open .pl-toc-list {
+                display: block;
+            }
+
+            .pl-toc h2 {
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                padding-bottom: .2rem;
+            }
+
+            .pl-toc h2::after {
+                content: "+";
+                font-size: 1.2rem;
+                color: var(--gold);
+                letter-spacing: 0;
+            }
+
+            .pl-toc.is-open h2::after {
+                content: "\2212";
+            }
+
+            .pl-end-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .pl-glance dl>div {
+                grid-template-columns: 1fr;
+                gap: .2rem;
+            }
+        }
+
+        /* ---------- Print ---------- */
+        @media print {
+
+            #navbar,
+            #navSpacer,
+            #footer,
+            .pl-toc,
+            .pl-progress,
+            .pl-top,
+            .pl-end,
+            .pl-tabs,
+            .pl-review,
+            .pl-anchor {
+                display: none !important;
+            }
+
+            body {
+                background: #fff;
+            }
+
+            .pl-hero {
+                background: #fff;
+                color: #000;
+                padding-block: .5rem;
+            }
+
+            .pl-hero h1,
+            .pl-hero p,
+            .pl-hero .eyebrow,
+            .pl-meta,
+            .pl-crumbs {
+                color: #000;
+            }
+
+            .pl-hero-mark {
+                display: none;
+            }
+
+            .pl-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pl-glance {
+                border-color: #999;
+                background: #fff;
+            }
+
+            .pl-sec {
+                break-inside: avoid-page;
+            }
+        }
+    </style>
+</head>
+
+<body th:attr="data-doc=${doc}">
+
+    <div id="navbar" th:replace="~{fragments/navbar :: navbar}"></div>
+    <div id="navSpacer"></div>
+
+    <div class="pl-progress" aria-hidden="true"><span id="plBar"></span></div>
+
+    <main>
+
+        <!-- ===================== HERO ===================== -->
+        <section class="pl-hero">
+            <svg class="pl-hero-mark" viewBox="0 0 120 150" fill="none" stroke="currentColor" stroke-width="1"
+                aria-hidden="true">
+                <path d="M60 10c-16 10-26 26-26 46 0 24 12 42 26 52 14-10 26-28 26-52 0-20-10-36-26-46Z" />
+                <path d="M60 46v66" />
+                <path d="M60 64c-7 3-15 1-15 1s2.5-9 9-12.5c3.6-2 8-1 8-1" />
+                <path d="M60 80c7 3 15 1 15 1s-2.5-9-9-12.5c-3.6-2-8-1-8-1" />
+            </svg>
+            <div class="container">
+                <nav class="pl-crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a><span
+                        aria-hidden="true">/</span><span id="plCrumb" aria-current="page">Policies</span></nav>
+                <span class="eyebrow">OUR POLICIES</span>
+                <h1 id="plTitle">Policies</h1>
+                <p id="plIntro"></p>
+                <p class="pl-meta" id="plMeta"></p>
+                <nav class="pl-tabs" id="plTabs" aria-label="Policies"></nav>
+            </div>
+        </section>
+
+        <!-- ===================== DOCUMENT ===================== -->
+        <section class="pl-main">
+            <div class="container">
+                <div class="pl-review" id="plReview" hidden></div>
+
+                <div class="pl-grid">
+                    <aside class="pl-toc" id="plToc" aria-label="On this page">
+                        <h2 id="plTocHead" tabindex="0" role="button" aria-expanded="false" aria-controls="plTocList">On
+                            this page</h2>
+                        <nav class="pl-toc-list" id="plTocList"></nav>
+                        <div class="pl-toc-tools"><button type="button" class="pl-link-btn"
+                                id="plPrint">Print</button><button type="button" class="pl-link-btn" id="plCopy">Copy
+                                link</button></div>
+                    </aside>
+
+                    <article class="pl-article" id="plArticle"></article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================== QUESTIONS? ===================== -->
+        <section class="pl-end">
+            <div class="container">
+                <div class="section-head">
+                    <span class="eyebrow">QUESTIONS?</span>
+                    <h2>Talk to us</h2>
+                    <p>If anything here is unclear, we&rsquo;re happy to explain.</p>
+                </div>
+                <div class="pl-end-grid">
+                    <a class="pl-card" href="tel:+917987725348"><small>Call us</small><strong>+91 79877
+                            25348</strong><span>Tap to call our team</span></a>
+                    <a class="pl-card" href="contact.html"><small>Write to us</small><strong>Send a
+                            message</strong><span>Tell us how we can help</span></a>
+                    <a class="pl-card" href="faq.html"><small>Help &amp; FAQ</small><strong>Quick
+                            answers</strong><span>Browse common questions</span></a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <button type="button" class="pl-top" id="plTop" aria-label="Back to top"><svg viewBox="0 0 24 24">
+            <path d="M12 19V5M5 12l7-7 7 7" />
+        </svg></button>
+
+    <div id="footer" th:replace="~{fragments/footer :: footer}"></div>
+
+    <!-- Base script (href/src = static preview, th: = Spring Boot) -->
+    <script src="js/products.js" th:src="@{/js/products.js}"></script>
+    <script src="js/script.js" th:src="@{/js/script.js}"></script>
+
+    <!-- ===================== PAGE-SPECIFIC JS (Policies) ===================== -->
+    <script th:inline="none">
+        (function () {
+            'use strict';
+
+            const $ = (sel, root = document) => root.querySelector(sel);
+            const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+            const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+            /* ===========================================================
+               CONFIG — YOUR BUSINESS DETAILS
+               Fill these in. Anything left as null shows as a highlighted
+               [Add: …] placeholder inside the text so nothing is missed.
+          
+               IMPORTANT: this text is a DRAFT written in plain language to
+               match how the website works. It is not legal advice. Have a
+               qualified lawyer review it before you publish.
+               =========================================================== */
+            const REVIEW_MODE = true;   // shows the draft banner; set to false only after review
+
+            const CFG = {
+                brand: 'Sutra Textiles India',
+                phone: '+91 79877 25348',
+                address: '317, 10 Biz Park, Mhada Colony, Sanjay Park, Pune, Maharashtra 411014',
+                freeShipping: '\u20B92,999',            // matches the announcement bar
+                lastUpdated: '22 October 2026',
+
+                legalEntity: null,        // e.g. 'Sutra Textiles India (a proprietorship / LLP / Pvt Ltd)'
+                gstin: null,
+                supportEmail: null,
+                grievanceName: null,      // Grievance Officer (required for Indian e-commerce)
+                grievanceEmail: null,
+                grievanceHours: null,     // e.g. 'Monday to Saturday, 10 am to 6 pm'
+                jurisdiction: null,       // city whose courts will hear disputes, e.g. 'Pune'
+                retention: null,          // how long you keep order / account records
+                analytics: null,          // analytics or advertising tools you use
+
+                dispatchInStock: null,    // e.g. '1\u20132 business days'
+                dispatchMTO: null,        // e.g. '7\u201310 business days'
+                shippingFee: null,        // charge for orders below the free-shipping amount
+                carriers: null,           // your courier partners
+
+                returnWindow: null,       // e.g. '7 days from delivery'
+                refundTime: null,         // e.g. 'within 7\u201310 working days of us receiving the item'
+                returnShipping: null,     // who pays return shipping and when
+                nonReturnable: null,      // what cannot be returned
+                cancelWindow: null        // e.g. 'before your order is dispatched'
+            };
+            const LABELS = {
+                legalEntity: 'Add: registered legal name and type of business', gstin: 'Add: GSTIN', supportEmail: 'Add: support email',
+                grievanceName: 'Add: Grievance Officer name', grievanceEmail: 'Add: Grievance Officer email', grievanceHours: 'Add: Grievance Officer contact hours',
+                jurisdiction: 'Add: city of jurisdiction', retention: 'Add: how long you keep records', analytics: 'Add: analytics tools you use, or delete this sentence',
+                dispatchInStock: 'Add: dispatch time for ready-stock pieces', dispatchMTO: 'Add: dispatch time for made-to-order pieces',
+                shippingFee: 'Add: shipping charge below the free-shipping amount', carriers: 'Add: courier partners',
+                returnWindow: 'Add: return window', refundTime: 'Add: refund timeline', returnShipping: 'Add: who pays return shipping',
+                nonReturnable: 'Add: items that cannot be returned', cancelWindow: 'Add: cancellation cut-off'
+            };
+
+            let unfilled = new Set();
+            const v = (k) => {
+                if (CFG[k]) return esc(CFG[k]);
+                unfilled.add(k);
+                return `<span class="pl" data-key="${k}" title="Fill this in at the top of the script">[${esc(LABELS[k] || k)}]</span>`;
+            };
+            const email = (k) => (CFG[k] ? `<a href="mailto:${esc(CFG[k])}">${esc(CFG[k])}</a>` : v(k));
+            const BRAND = esc(CFG.brand), PHONE = esc(CFG.phone), ADDRESS = esc(CFG.address), FREE = esc(CFG.freeShipping);
+
+            const contactBlock = () => `<div class="pl-contact"><strong>${BRAND}</strong><br>${ADDRESS}<br>Phone: <a href="tel:+917987725348">${PHONE}</a><br>Email: ${email('supportEmail')}<br>Or use our <a href="contact.html">contact form</a>.</div>`;
+            const grievanceBlock = () => `<div class="pl-contact"><strong>Grievance Officer</strong><br>Name: ${v('grievanceName')}<br>Email: ${email('grievanceEmail')}<br>Phone: <a href="tel:+917987725348">${PHONE}</a><br>Available: ${v('grievanceHours')}<br>Address: ${ADDRESS}</div>`;
+
+            /* ===========================================================
+               DOCUMENTS
+               =========================================================== */
+            const DOCS = {
+                privacy: {
+                    file: 'privacy-policy.html', short: 'Privacy Policy', title: 'Privacy Policy',
+                    intro: 'How we collect, use and protect your personal information when you shop with us.',
+                    desc: 'How Sutra Textiles India collects, uses, shares and protects your personal information.',
+                    glance: () => [
+                        ['What we collect', 'Details you give us (name, contact, address, orders), and basic information about how you use the website.'],
+                        ['Payments', 'Online payments are handled by our payment gateway. We do not store your card details.'],
+                        ['What we do with it', 'Process and deliver your orders, support you, and (if you agree) send you news and offers.'],
+                        ['Your choices', 'You can ask us to access, correct or delete your information, and you can unsubscribe at any time.']
+                    ],
+                    sections: () => [
+                        { id: 'about', t: 'About this policy', h: `<p>This policy explains how ${v('legalEntity')} (&ldquo;${BRAND}&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;) handles your personal information when you visit our website, create an account, place an order or contact us.</p><p>By using our website you confirm that you have read this policy. If you don&rsquo;t agree with it, please don&rsquo;t use the website.</p>` },
+                        { id: 'collect', t: 'Information we collect', h: `<h3>Information you give us</h3><ul><li><strong>Account details</strong> &mdash; name, email address, mobile number and password.</li><li><strong>Order details</strong> &mdash; the items you order, delivery address, contact details and any order note you add.</li><li><strong>Messages</strong> &mdash; what you send us through the contact form, WhatsApp or by phone.</li><li><strong>Reviews</strong> &mdash; your name, city and the review you write, which may be shown on our website.</li><li><strong>Newsletter</strong> &mdash; your email address, if you subscribe.</li></ul><h3>Information collected automatically</h3><ul><li>Technical details such as your browser, device type, pages visited and approximate location from your pincode.</li><li>Information kept in your browser (see &ldquo;Cookies and local storage&rdquo; below).</li></ul><p>Payment details (card, UPI or net banking information) are entered with our payment gateway. We receive confirmation of your payment but do not store your full card details.</p>` },
+                        { id: 'use', t: 'How we use your information', h: `<ul><li>To create and manage your account and process, deliver and support your orders.</li><li>To take payments and prevent fraud.</li><li>To answer your questions and resolve problems.</li><li>To send order updates by email, SMS or WhatsApp.</li><li>To send news, new arrivals and offers &mdash; only if you have agreed, and you can opt out at any time.</li><li>To improve our website, products and service.</li><li>To meet our legal and tax obligations.</li></ul>` },
+                        { id: 'cookies', t: 'Cookies and local storage', h: `<p>We store small pieces of information in your browser so the website works properly &mdash; for example the items in your cart, your wishlist, your sign-in session and your saved delivery pincode.</p><p>${CFG.analytics ? 'We also use ' + esc(CFG.analytics) + ' to understand how the website is used.' : 'We may also use analytics tools to understand how the website is used: ' + v('analytics')}</p><p>You can clear or block this storage in your browser settings, but parts of the website (such as the cart) may stop working.</p>` },
+                        { id: 'sharing', t: 'Who we share information with', h: `<p>We don&rsquo;t sell your personal information. We share it only where needed:</p><ul><li><strong>Delivery partners</strong> (${v('carriers')}) &mdash; your name, address and phone number, so they can deliver your order.</li><li><strong>Payment gateway</strong> &mdash; to process your payment.</li><li><strong>Service providers</strong> who help us run the website, send emails or messages, or provide support, under appropriate confidentiality terms.</li><li><strong>Authorities</strong> &mdash; where the law requires, or to protect our rights and safety.</li></ul><p>Some features load content from other providers, such as fonts, and a map that is only loaded if you choose to show it. These providers may receive technical information such as your IP address.</p>` },
+                        { id: 'retention', t: 'How long we keep it', h: `<p>We keep your information for as long as we need it to provide our service and meet legal, tax and accounting requirements. Order and account records are kept for ${v('retention')}. After that we delete or anonymise them.</p>` },
+                        { id: 'security', t: 'How we protect it', h: `<p>We use reasonable security measures to protect your information, including encrypted connections and restricted access. No website can be completely secure, so please keep your password private and contact us immediately if you suspect misuse of your account.</p>` },
+                        { id: 'rights', t: 'Your choices and rights', h: `<p>You can:</p><ul><li>ask for a copy of the information we hold about you;</li><li>ask us to correct anything that is wrong;</li><li>ask us to delete your information, unless we must keep it by law;</li><li>withdraw your consent, for example to marketing messages, at any time; and</li><li>update your details yourself under <a href="account.html#profile">My Account</a>.</li></ul><p>To use any of these rights, contact us using the details at the end of this policy. We may need to confirm your identity first.</p>` },
+                        { id: 'children', t: 'Children', h: `<p>Our website is meant for adults. We do not knowingly collect personal information from children. If you are a parent or guardian and believe a child has given us information, please contact us and we will delete it.</p>` },
+                        { id: 'links', t: 'Links to other websites', h: `<p>Our website may link to other websites. We are not responsible for their content or privacy practices, so please read their policies.</p>` },
+                        { id: 'changes', t: 'Changes to this policy', h: `<p>We may update this policy from time to time. The date at the top shows when it was last changed. If we make important changes we will tell you on the website or by email.</p>` },
+                        { id: 'contact', t: 'Contact and grievance officer', h: `<p>For questions about this policy or to exercise your rights, contact us:</p>${contactBlock()}<p style="margin-top:1rem">If you have a complaint about how your information is handled, please contact our Grievance Officer:</p>${grievanceBlock()}` }
+                    ]
+                },
+
+                terms: {
+                    file: 'terms.html', short: 'Terms & Conditions', title: 'Terms & Conditions',
+                    intro: 'The terms that apply when you browse, order from or otherwise use our website.',
+                    desc: 'The terms and conditions for using the Sutra Textiles India website and buying our products.',
+                    glance: () => [
+                        ['Who we are', `${BRAND}, a textile and fashion business with its own manufacturing unit in Bhilwara, Rajasthan.`],
+                        ['Prices', 'All prices are in Indian rupees and include applicable taxes. Shipping is shown at checkout.'],
+                        ['Your order', 'An order is confirmed when we accept it. We may cancel an order if a piece is unavailable or a price was shown in error.'],
+                        ['Returns & shipping', 'Covered by our Returns & Exchange and Shipping & Delivery policies, which form part of these terms.']
+                    ],
+                    sections: () => [
+                        { id: 'use', t: 'Using our website', h: `<p>These terms apply to your use of our website and to any order you place with ${v('legalEntity')} (&ldquo;${BRAND}&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;). By using the website or placing an order you agree to them, together with our <a href="privacy-policy.html">Privacy Policy</a>, <a href="shipping-policy.html">Shipping &amp; Delivery Policy</a> and <a href="returns-policy.html">Returns &amp; Exchange Policy</a>.</p><p>You must be at least 18 years old, or use the website with the involvement of a parent or guardian, to place an order.</p>` },
+                        { id: 'account', t: 'Your account', h: `<p>You can check out as a guest or create an account. If you create an account, please give accurate information, keep your password confidential and tell us at once if you think someone else has used it. You are responsible for activity under your account.</p>` },
+                        { id: 'products', t: 'Products and descriptions', h: `<p>Our pieces are made in-house and many are inspired by regional textile traditions. We take care to describe products and show colours accurately, but screens differ and slight variations in shade, weave and finish are natural.</p><p>Some pieces are made to order. These are marked on the product page and take longer to dispatch.</p>` },
+                        { id: 'prices', t: 'Prices and taxes', h: `<p>All prices are in Indian rupees (&#8377;) and include applicable taxes unless stated otherwise. Shipping charges, if any, are shown before you pay. Our GSTIN is ${v('gstin')}.</p><p>We try to keep prices accurate. If a price is shown incorrectly, we may cancel the order and refund any amount you have paid.</p>` },
+                        { id: 'orders', t: 'Orders and acceptance', h: `<p>Placing an order is an offer to buy. We accept it when we confirm it to you. We may decline or cancel an order, for example if a piece is out of stock, if there is a pricing error, or if we suspect fraud. If we cancel an order after you have paid, we will refund you in full.</p>` },
+                        { id: 'payments', t: 'Payments', h: `<p>You can pay using the methods shown at checkout. Online payments are processed by our payment gateway, and your payment details are not stored on our website. If a payment fails but money is deducted, it is normally returned by your bank or payment provider; contact us if it is not.</p>` },
+                        { id: 'offers', t: 'Coupons and offers', h: `<p>Coupon codes and offers are valid only as stated, may have a minimum order value or expiry date, and cannot be exchanged for cash. We may withdraw an offer at any time, but this will not affect orders already placed.</p>` },
+                        { id: 'delivery', t: 'Shipping, returns and exchange', h: `<p>How we deliver is explained in our <a href="shipping-policy.html">Shipping &amp; Delivery Policy</a>. Returns, exchanges and refunds are explained in our <a href="returns-policy.html">Returns &amp; Exchange Policy</a>. Both are part of these terms.</p>` },
+                        { id: 'content', t: 'Reviews and content you submit', h: `<p>When you post a review or send us content, you confirm it is your own, honest and lawful. You give us a non-exclusive, free right to display it on our website and in our marketing. We may remove content that is abusive, misleading or unlawful.</p>` },
+                        { id: 'ip', t: 'Intellectual property', h: `<p>The designs, photographs, text, logo and other content on this website belong to ${BRAND} or its licensors and are protected by law. You may view and print pages for your personal use, but you may not copy, reproduce or use them commercially without our written permission.</p>` },
+                        { id: 'conduct', t: 'Acceptable use', h: `<p>Please don&rsquo;t misuse the website. For example, don&rsquo;t try to gain unauthorised access, interfere with its operation, use it to send spam or harmful code, or place orders with false information.</p>` },
+                        { id: 'liability', t: 'Our responsibility', h: `<p>We aim to keep the website available and accurate, but we cannot promise it will always be uninterrupted or error-free. To the extent the law allows, we are not liable for indirect or consequential losses. Nothing in these terms limits any right you have under applicable consumer protection law, or any liability that cannot be excluded by law.</p>` },
+                        { id: 'law', t: 'Governing law and disputes', h: `<p>These terms are governed by the laws of India. If a dispute cannot be resolved by talking to us first, the courts at ${v('jurisdiction')} will have jurisdiction, subject to any rights you have under consumer protection law.</p>` },
+                        { id: 'changes', t: 'Changes to these terms', h: `<p>We may update these terms from time to time. The date at the top shows the latest version. Changes apply to orders placed after they are published.</p>` },
+                        { id: 'contact', t: 'Contact and grievance officer', h: `<p>Questions about these terms? Contact us:</p>${contactBlock()}<p style="margin-top:1rem">For complaints, please contact our Grievance Officer:</p>${grievanceBlock()}` }
+                    ]
+                },
+
+                shipping: {
+                    file: 'shipping-policy.html', short: 'Shipping & Delivery', title: 'Shipping & Delivery Policy',
+                    intro: 'Where we deliver, how long it takes and what it costs.',
+                    desc: 'Shipping and delivery information for Sutra Textiles India orders: coverage, dispatch times, charges and tracking.',
+                    glance: () => [
+                        ['Where we deliver', 'Across India. Enter your pincode on a product page, in your cart or at checkout to see your estimated delivery date.'],
+                        ['Shipping charge', `Free on orders above ${FREE}. Below that: ${v('shippingFee')}, shown at checkout before you pay.`],
+                        ['Dispatch', `Ready-stock pieces: ${v('dispatchInStock')}. Made-to-order pieces: ${v('dispatchMTO')}.`],
+                        ['Tracking', 'See your order status any time under My Account \u2192 Orders.']
+                    ],
+                    sections: () => [
+                        { id: 'where', t: 'Where we deliver', h: `<p>We deliver across India. Some remote pincodes may take longer or may not be serviceable; if we can&rsquo;t deliver to your pincode we will tell you before you pay or contact you straight after your order. We do not currently deliver outside India.</p>` },
+                        { id: 'dispatch', t: 'Dispatch times', h: `<p>Dispatch time is the time we take to prepare and hand your order to the courier.</p><ul><li><strong>Ready-stock pieces:</strong> ${v('dispatchInStock')}.</li><li><strong>Made-to-order pieces:</strong> ${v('dispatchMTO')}. These are marked <em>Made to order</em> on the product page.</li></ul><p>If your order has several pieces, we may ship them together or separately; the estimate shown at checkout is based on the piece that takes longest.</p>` },
+                        { id: 'estimates', t: 'Delivery estimates', h: `<p>The estimated delivery window you see on the product page, in your cart and at checkout adds the dispatch time to the usual transit time for your pincode. It is an estimate, not a guarantee, and it may change due to the reasons in &ldquo;Delays&rdquo; below.</p>` },
+                        { id: 'charges', t: 'Shipping charges', h: `<p>Shipping is <strong>free on orders above ${FREE}</strong>. For orders below this amount a shipping charge of ${v('shippingFee')} applies. The exact charge is always shown at checkout before you pay.</p>` },
+                        { id: 'tracking', t: 'Tracking your order', h: `<p>You can follow your order under <a href="account.html#orders">My Account &rarr; Orders</a>. We deliver through our courier partners (${v('carriers')}). Once your order is dispatched we will share tracking details by email or message.</p>` },
+                        { id: 'address', t: 'Delivery and address accuracy', h: `<p>Please check your address, pincode and phone number carefully before placing your order. The courier may call you to confirm delivery. If delivery fails because the address or phone number is wrong or incomplete, or no one is available to receive the order, the courier may return it to us and we will contact you to arrange re-delivery, which may carry an extra charge.</p>` },
+                        { id: 'delays', t: 'Delays', h: `<p>Delivery can be delayed by things outside our control, such as weather, strikes, festivals and peak seasons, or courier or local restrictions. We will do our best to keep you informed. Please contact us if your order has not arrived by the end of the estimated window.</p>` },
+                        { id: 'damaged', t: 'Damaged or wrong items', h: `<p>Please check your parcel when it arrives. If it looks damaged, or you receive the wrong item, contact us as soon as possible with photos and your order number, and see our <a href="returns-policy.html">Returns &amp; Exchange Policy</a>.</p>` },
+                        { id: 'contact', t: 'Contact us', h: `<p>Questions about your delivery? Contact us:</p>${contactBlock()}` }
+                    ]
+                },
+
+                returns: {
+                    file: 'returns-policy.html', short: 'Returns & Exchange', title: 'Returns & Exchange Policy',
+                    intro: 'What you can return or exchange, how to do it and how refunds work.',
+                    desc: 'Returns, exchanges and refunds at Sutra Textiles India: eligibility, how to start a return and refund timelines.',
+                    glance: () => [
+                        ['Return window', `${v('returnWindow')}.`],
+                        ['Condition', 'Items should be unused, unwashed and in their original condition with tags and packaging.'],
+                        ['Not returnable', `${v('nonReturnable')}.`],
+                        ['Refunds', `Refunded ${v('refundTime')}, to your original payment method.`],
+                        ['Start a return', 'Find your order number in My Account, then contact us.']
+                    ],
+                    sections: () => [
+                        { id: 'promise', t: 'Our promise', h: `<p>We make our pieces with care and want you to be happy with them. If something isn&rsquo;t right, this policy explains how we put it right.</p>` },
+                        { id: 'eligible', t: 'What can be returned or exchanged', h: `<p>You can request a return or exchange within <strong>${v('returnWindow')}</strong>. To be eligible, the item must be:</p><ul><li>unused, unwashed and unaltered;</li><li>in its original condition, with tags and packaging; and</li><li>accompanied by your order number.</li></ul>` },
+                        { id: 'not', t: 'What cannot be returned', h: `<p>For hygiene and practical reasons, the following cannot be returned or exchanged: ${v('nonReturnable')}.</p><div class="pl-note">Pieces that have been stitched, altered or customised to your request may not be returnable, unless they arrive damaged or incorrect.</div>` },
+                        { id: 'start', t: 'How to start a return or exchange', h: `<ol><li>Find your order number under <a href="account.html#orders">My Account &rarr; Orders</a>.</li><li><a href="contact.html?topic=returns">Contact us</a> with your order number, the item and whether you want a return, exchange or refund. Photos help if the item is damaged.</li><li>We will confirm whether your request is eligible and explain the next step.</li></ol>` },
+                        { id: 'sending', t: 'Sending the item back', h: `<p>${v('returnShipping')}. Please pack the item securely in its original packaging. Please don&rsquo;t send anything back before we have confirmed your request.</p>` },
+                        { id: 'inspection', t: 'Inspection', h: `<p>When we receive the item we check that it meets the conditions above. If it doesn&rsquo;t, we may decline the return and send the item back to you.</p>` },
+                        { id: 'refunds', t: 'Refunds', h: `<p>Once your return is approved, we refund the amount you paid for the item ${v('refundTime')}. Refunds go to your original payment method; for cash on delivery orders we will ask for your bank or UPI details. Your bank may take extra time to show the credit.</p><p>If a coupon was used on your order, the refund is for the amount actually paid for the returned item.</p>` },
+                        { id: 'exchanges', t: 'Exchanges', h: `<p>We are happy to exchange for a different size or colour, subject to availability. If your preferred size or colour isn&rsquo;t available, we will offer a refund instead.</p>` },
+                        { id: 'faulty', t: 'Damaged, defective or wrong item', h: `<p>If your item arrives damaged, has a defect, or is not what you ordered, please <a href="contact.html?topic=returns">contact us</a> as soon as you can with photos and your order number. We will arrange a replacement or refund, and cover the cost of sending the item back.</p>` },
+                        { id: 'cancel', t: 'Cancelling an order', h: `<p>You can ask to cancel an order ${v('cancelWindow')}. Please call <a href="tel:+917987725348">${PHONE}</a> or <a href="contact.html?topic=order">message us</a> with your order number. Once an order has been dispatched it can&rsquo;t be cancelled, but you may be able to return it under this policy.</p>` },
+                        { id: 'contact', t: 'Contact us', h: `<p>Need help with a return or refund? Contact us:</p>${contactBlock()}` }
+                    ]
+                }
+            };
+
+            /* ===========================================================
+               WHICH DOCUMENT?  (controller's data-doc → ?doc= → address → default)
+               ONE template serves all four pages. In Spring Boot, map
+               /privacy-policy, /terms, /shipping-policy and /returns-policy to
+               this template and add the model attribute "doc" (privacy | terms |
+               shipping | returns).
+               =========================================================== */
+            function detectDoc() {
+                const fromBody = (document.body.dataset.doc || '').toLowerCase();      // set by the Spring controller (model attribute "doc")
+                if (DOCS[fromBody]) return fromBody;
+                const q = (new URLSearchParams(window.location.search).get('doc') || '').toLowerCase();
+                if (DOCS[q]) return q;
+                const path = window.location.pathname.toLowerCase();
+                if (/privacy/.test(path)) return 'privacy';
+                if (/terms/.test(path)) return 'terms';
+                if (/shipping/.test(path)) return 'shipping';
+                if (/return/.test(path)) return 'returns';
+                return 'privacy';
+            }
+            const docId = detectDoc();
+            const doc = DOCS[docId];
+            const viaParam = /(^|\/)policy\.html$/i.test(window.location.pathname);   // links use ?doc= only when previewing this template directly
+            const hasExt = /\.html$/i.test(window.location.pathname);                // /terms.html  vs  /terms
+            const hrefFor = (id) => (viaParam ? 'policy.html?doc=' + id : (hasExt ? DOCS[id].file : DOCS[id].file.replace(/\.html$/, '')));
+
+            /* ===========================================================
+               RENDER
+               =========================================================== */
+            document.title = `${doc.title} \u2014 ${CFG.brand}`;
+            $('#metaDesc').setAttribute('content', doc.desc);
+            $('#plTitle').textContent = doc.title;
+            $('#plCrumb').textContent = doc.short;
+            $('#plIntro').textContent = doc.intro;
+            $('#plMeta').textContent = `${REVIEW_MODE ? 'Draft \u00B7 ' : ''}Last updated: ${CFG.lastUpdated}`;
+            $('#plTabs').innerHTML = Object.keys(DOCS).map(id =>
+                `<a class="pl-tab" href="${hrefFor(id)}"${id === docId ? ' aria-current="page"' : ''}>${esc(DOCS[id].short)}</a>`).join('');
+
+            const sections = doc.sections();
+            const glance = doc.glance();
+            $('#plArticle').innerHTML =
+                `<div class="pl-glance"><h2>At a glance</h2><dl>${glance.map(g => `<div><dt>${esc(g[0])}</dt><dd>${g[1]}</dd></div>`).join('')}</dl></div>` +
+                sections.map((s, i) => `<section class="pl-sec" id="s-${s.id}" aria-labelledby="h-${s.id}">
+      <h2 id="h-${s.id}"><span class="pl-num" aria-hidden="true"><b>${i + 1}</b></span>${esc(s.t)}<a class="pl-anchor" href="#s-${s.id}" aria-label="Link to ${esc(s.t)}">#</a></h2>${s.h}</section>`).join('');
+
+            $('#plTocList').innerHTML = sections.map((s, i) => `<a href="#s-${s.id}" data-id="${s.id}"><span>${i + 1}</span>${esc(s.t)}</a>`).join('');
+
+            /* ---------- draft banner ---------- */
+            if (REVIEW_MODE) {
+                const b = $('#plReview');
+                b.hidden = false;
+                b.innerHTML = `<strong>Draft for review &mdash; not legal advice.</strong> This text describes how the website works, but it must be reviewed by a qualified lawyer before you publish it. ` +
+                    (unfilled.size
+                        ? `<strong>${unfilled.size}</strong> business detail${unfilled.size === 1 ? ' is' : 's are'} still missing (highlighted <span class="pl">[Add: …]</span>). Fill them in the <code>CFG</code> block at the top of this file. `
+                        : 'All business details on this page are filled in. ') +
+                    `When you are done, set <code>REVIEW_MODE = false</code>.`;
+            }
+
+            /* ===========================================================
+               INTERACTIONS: progress bar, scroll-spy, back to top, tools
+               =========================================================== */
+            const bar = $('#plBar'), topBtn = $('#plTop');
+            function onScroll() {
+                const h = document.documentElement;
+                const max = h.scrollHeight - window.innerHeight;
+                bar.style.width = (max > 0 ? Math.min(100, Math.round((window.scrollY / max) * 100)) : 0) + '%';
+                topBtn.classList.toggle('is-visible', window.scrollY > 700);
+            }
+            window.addEventListener('scroll', onScroll, { passive: true });
+            onScroll();
+            topBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
+
+            const links = $$('#plTocList a');
+            function setActive(id) {
+                links.forEach(a => {
+                    const on = a.dataset.id === id;
+                    a.classList.toggle('is-active', on);
+                    if (on) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');
+                });
+            }
+            if ('IntersectionObserver' in window) {
+                const io = new IntersectionObserver((entries) => {
+                    const visible = entries.filter(e => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+                    if (visible.length) setActive(visible[0].target.id.replace('s-', ''));
+                }, { rootMargin: '-15% 0px -70% 0px' });
+                $$('.pl-sec').forEach(s => io.observe(s));
+            }
+            setActive(sections[0].id);
+            $('#plTocList').addEventListener('click', (e) => { const a = e.target.closest('a'); if (a) setActive(a.dataset.id); });
+
+            // mobile: collapsible contents
+            const toc = $('#plToc'), tocHead = $('#plTocHead');
+            function toggleToc() { const o = toc.classList.toggle('is-open'); tocHead.setAttribute('aria-expanded', String(o)); }
+            tocHead.addEventListener('click', toggleToc);
+            tocHead.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleToc(); } });
+
+            $('#plPrint').addEventListener('click', () => window.print());
+            $('#plCopy').addEventListener('click', async () => {
+                try { await navigator.clipboard.writeText(window.location.href.split('#')[0]); Sutra.toast('Link copied to clipboard'); }
+                catch (e) { Sutra.toast(window.location.href.split('#')[0], { duration: 7000 }); }
+            });
+
+            // open the right section if the page is loaded with #s-…
+            if (/^#s-[\w-]+$/.test(window.location.hash)) {
+                const t = document.getElementById(window.location.hash.slice(1));
+                if (t) { setActive(window.location.hash.slice(3)); t.scrollIntoView(); }
+            }
+        })();
+    </script>
+
+</body>
+
+</html>

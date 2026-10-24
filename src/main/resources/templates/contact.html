@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us — Sutra Textiles India</title>
+    <meta name="description"
+        content="Get in touch with Sutra Textiles India — call, message us on WhatsApp, send an enquiry or visit us in Pune. Help with orders, sizing, shipping and returns.">
+ <link rel="icon" type="image/x-icon" th:href="@{/favicon_io/favicon.ico}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Work+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css" th:href="@{/css/style.css}">
+
+    <style>
+        [hidden] {
+            display: none !important;
+        }
+
+        .cn-hero {
+            background: var(--green);
+            color: var(--ivory);
+            padding-block: clamp(2.5rem, 6vw, 4.2rem);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cn-hero-mark {
+            position: absolute;
+            right: clamp(-60px, -2vw, 0px);
+            bottom: -80px;
+            width: 340px;
+            color: var(--gold-light);
+            opacity: .08;
+            pointer-events: none;
+        }
+
+        .cn-crumbs {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            font-size: .8rem;
+            color: #b9c4b6;
+            margin-bottom: .9rem;
+        }
+
+        .cn-crumbs a:hover {
+            color: var(--gold-light);
+        }
+
+        .cn-hero .eyebrow {
+            color: var(--gold-light);
+        }
+
+        .cn-hero h1 {
+            color: var(--ivory);
+            margin-bottom: .8rem;
+        }
+
+        .cn-hero h1 em {
+            font-style: italic;
+            color: var(--gold-light);
+        }
+
+        .cn-hero p {
+            color: #d7ded6;
+            font-size: 1.05rem;
+            max-width: 80ch;
+            position: relative;
+        }
+
+        /* ---------- Quick contact cards ---------- */
+        .cn-quick {
+            margin-top: clamp(-2.6rem, -4vw, -1.8rem);
+            position: relative;
+            z-index: 2;
+            padding-bottom: 0;
+        }
+
+        .cn-quick-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.2rem;
+        }
+
+        .cn-q {
+            display: flex;
+            align-items: center;
+            gap: 1.1rem;
+            padding: 1.4rem 1.5rem;
+            background: var(--ivory-soft);
+            border: 1px solid var(--grey);
+            border-radius: var(--radius);
+            box-shadow: 0 10px 28px rgba(20, 38, 32, .08);
+            transition: border-color .25s var(--ease), transform .25s var(--ease);
+        }
+
+        a.cn-q:hover {
+            border-color: var(--gold);
+            transform: translateY(-3px);
+        }
+
+        .cn-q-ico {
+            width: 52px;
+            aspect-ratio: 3 / 4;
+            padding: 4px;
+            border: 1px solid rgba(201, 162, 75, .7);
+            border-radius: 50% 50% 3px 3px / 30% 30% 3px 3px;
+            flex-shrink: 0;
+        }
+
+        .cn-q-ico span {
+            display: grid;
+            place-items: center;
+            width: 100%;
+            height: 100%;
+            border-radius: 50% 50% 2px 2px / 29% 29% 2px 2px;
+            background: var(--green);
+            color: var(--gold-light);
+        }
+
+        .cn-q-ico svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .cn-q small {
+            display: block;
+            font-size: .72rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--olive);
+        }
+
+        .cn-q strong {
+            display: block;
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            color: var(--green);
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        .cn-q span.cn-q-note {
+            display: block;
+            font-size: .82rem;
+            color: var(--olive);
+            margin-top: .1rem;
+        }
+
+        /* ---------- Main grid ---------- */
+        .cn-main {
+            padding-block: clamp(2.5rem, 5vw, 4rem);
+        }
+
+        .cn-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr);
+            gap: clamp(1.5rem, 4vw, 3.5rem);
+            align-items: start;
+        }
+
+        .cn-card {
+            background: var(--ivory-soft);
+            border: 1px solid var(--grey);
+            border-radius: var(--radius);
+            padding: clamp(1.4rem, 3.5vw, 2.4rem);
+        }
+
+        .cn-card h2 {
+            font-size: clamp(1.5rem, 2.6vw, 2rem);
+            margin-bottom: .5rem;
+        }
+
+        .cn-lead {
+            font-size: .95rem;
+            color: var(--olive);
+            margin-bottom: 1.6rem;
+            max-width: 52ch;
+        }
+
+        /* ---------- Form ---------- */
+        .cn-chip-ask {
+            display: inline-flex;
+            align-items: center;
+            gap: .6rem;
+            padding: .6rem 1rem;
+            margin-bottom: 1.4rem;
+            border: 1px solid var(--gold);
+            background: rgba(201, 162, 75, .1);
+            border-radius: var(--radius);
+            font-size: .88rem;
+        }
+
+        .cn-chip-ask a {
+            color: var(--green);
+            border-bottom: 1px solid var(--gold);
+        }
+
+        .cn-field {
+            display: flex;
+            flex-direction: column;
+            gap: .4rem;
+            margin-bottom: 1.1rem;
+            min-width: 0;
+        }
+
+        .cn-field>label {
+            font-size: .84rem;
+            color: var(--olive);
+        }
+
+        .cn-field>label .opt {
+            opacity: .75;
+        }
+
+        .cn-input {
+            width: 100%;
+            padding: .8rem 1rem;
+            border: 1px solid var(--grey);
+            background: var(--ivory);
+            color: var(--charcoal);
+            border-radius: var(--radius);
+            font: inherit;
+            transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
+        }
+
+        .cn-input:focus {
+            outline: none;
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(201, 162, 75, .28);
+        }
+
+        .cn-input[aria-invalid="true"] {
+            border-color: var(--terracotta);
+        }
+
+        textarea.cn-input {
+            min-height: 150px;
+            resize: vertical;
+            line-height: 1.55;
+        }
+
+        .cn-error {
+            font-size: .8rem;
+            color: var(--terracotta);
+            min-height: 1.1em;
+        }
+
+        .cn-row2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 1.2rem;
+        }
+
+        .cn-prefix {
+            display: flex;
+        }
+
+        .cn-prefix span {
+            display: flex;
+            align-items: center;
+            padding: 0 .9rem;
+            border: 1px solid var(--grey);
+            border-right: none;
+            background: var(--ivory-soft);
+            color: var(--olive);
+            border-radius: var(--radius) 0 0 var(--radius);
+            font-size: .92rem;
+        }
+
+        .cn-prefix .cn-input {
+            border-radius: 0 var(--radius) var(--radius) 0;
+        }
+
+        .cn-count {
+            font-size: .76rem;
+            color: var(--olive);
+            text-align: right;
+        }
+
+        .cn-hp {
+            position: absolute;
+            left: -9999px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+
+        .cn-actions {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem 1.5rem;
+            margin-top: .4rem;
+        }
+
+        .cn-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 52px;
+            padding: 0 2.2rem;
+            border-radius: var(--radius);
+            background: var(--gold);
+            color: var(--green-deep);
+            font-weight: 500;
+            letter-spacing: .05em;
+            font-size: .92rem;
+            transition: background .25s var(--ease), color .25s var(--ease);
+        }
+
+        .cn-btn:hover:not(:disabled) {
+            background: var(--gold-light);
+        }
+
+        .cn-btn:disabled {
+            background: var(--grey);
+            color: #8f8b7e;
+            cursor: not-allowed;
+        }
+
+        .cn-btn.is-ghost {
+            background: transparent;
+            border: 1px solid var(--green);
+            color: var(--green);
+        }
+
+        .cn-btn.is-ghost:hover {
+            background: var(--green);
+            color: var(--ivory);
+        }
+
+        .cn-note {
+            font-size: .8rem;
+            color: var(--olive);
+            max-width: 40ch;
+        }
+
+        .cn-note a {
+            color: var(--green);
+            border-bottom: 1px solid var(--gold);
+        }
+
+        /* ---------- Success ---------- */
+        .cn-done {
+            text-align: center;
+            padding: clamp(1rem, 3vw, 2rem) 0;
+        }
+
+        .cn-seal {
+            width: 110px;
+            aspect-ratio: 3 / 4;
+            margin: 0 auto 1.6rem;
+            padding: 8px;
+            border: 1px solid rgba(201, 162, 75, .7);
+            border-radius: 50% 50% 6px 6px / 34% 34% 6px 6px;
+        }
+
+        .cn-seal span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            border-radius: 50% 50% 3px 3px / 33% 33% 3px 3px;
+            background: linear-gradient(160deg, #24402f, #142620);
+            color: var(--gold-light);
+        }
+
+        .cn-seal svg {
+            width: 50%;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .cn-seal .tick {
+            stroke-dasharray: 40;
+            stroke-dashoffset: 40;
+            animation: cn-draw .8s var(--ease) .2s forwards;
+        }
+
+        @keyframes cn-draw {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        .cn-done h2 {
+            margin-bottom: .6rem;
+        }
+
+        .cn-done p {
+            margin: 0 auto 1.2rem;
+            color: var(--olive);
+        }
+
+        .cn-ref {
+            display: inline-block;
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            letter-spacing: .06em;
+            color: var(--green);
+            padding: .4rem 1rem;
+            border: 1px dashed var(--gold);
+            border-radius: var(--radius);
+            margin-bottom: 1.4rem;
+        }
+
+        .cn-done:focus {
+            outline: none;
+        }
+
+        /* ---------- Side panel ---------- */
+        .cn-side {
+            display: grid;
+            gap: 1.4rem;
+            position: sticky;
+            top: calc(var(--nav-h, 100px) + 1rem);
+        }
+
+        .cn-info {
+            position: relative;
+            background: var(--ivory-soft);
+            border: 1px solid var(--grey);
+            border-radius: var(--radius);
+            padding: 1.8rem 1.7rem;
+        }
+
+        .cn-info::before {
+            content: "";
+            position: absolute;
+            inset: 6px;
+            border: 1px dashed #d2c8ab;
+            pointer-events: none;
+            border-radius: 1px;
+        }
+
+        .cn-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .cn-info dl {
+            display: grid;
+            gap: 1.1rem;
+        }
+
+        .cn-info dt {
+            font-size: .72rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--olive);
+            margin-bottom: .2rem;
+        }
+
+        .cn-info dd {
+            font-size: .94rem;
+            line-height: 1.6;
+            color: var(--charcoal);
+        }
+
+        .cn-info a {
+            color: var(--green);
+            border-bottom: 1px solid var(--gold);
+        }
+
+        .cn-help {
+            background: var(--green);
+            color: var(--ivory);
+            border-radius: var(--radius);
+            padding: 1.6rem 1.7rem;
+        }
+
+        .cn-help h3 {
+            color: var(--ivory);
+            font-size: 1.2rem;
+            margin-bottom: .8rem;
+        }
+
+        .cn-help ul {
+            display: grid;
+            gap: .55rem;
+        }
+
+        .cn-help a {
+            color: var(--gold-light);
+            font-size: .92rem;
+            border-bottom: 1px solid transparent;
+        }
+
+        .cn-help a:hover {
+            border-color: var(--gold-light);
+        }
+
+        /* ---------- Map ---------- */
+        .cn-map-section {
+            padding-top: 0;
+            padding-bottom: clamp(3rem, 6vw, 5rem);
+        }
+
+        .cn-map {
+            position: relative;
+            height: clamp(300px, 42vw, 420px);
+            border: 1px solid var(--grey);
+            border-radius: var(--radius);
+            overflow: hidden;
+            background: linear-gradient(160deg, #24402f, #142620);
+        }
+
+        .cn-map iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .cn-map-ph {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--ivory);
+        }
+
+        .cn-map-ph svg {
+            width: 64px;
+            color: var(--gold-light);
+            opacity: .85;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.1;
+        }
+
+        .cn-map-ph p {
+            color: #d7ded6;
+            font-size: .92rem;
+            max-width: 40ch;
+        }
+
+        .cn-map-btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .8rem;
+            justify-content: center;
+        }
+
+        .cn-map-ph .cn-btn.is-ghost {
+            border-color: var(--gold-light);
+            color: var(--gold-light);
+        }
+
+        .cn-map-ph .cn-btn.is-ghost:hover {
+            background: rgba(227, 203, 142, .12);
+            color: var(--ivory);
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 960px) {
+            .cn-quick-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cn-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cn-side {
+                position: static;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .cn-row2 {
+                grid-template-columns: 1fr;
+            }
+
+            .cn-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="navbar" th:replace="~{fragments/navbar :: navbar}"></div>
+  <div id="navSpacer"></div>
+
+    <main>
+
+        <!-- ===================== HERO ===================== -->
+        <section class="cn-hero">
+            <svg class="cn-hero-mark" viewBox="0 0 120 150" fill="none" stroke="currentColor" stroke-width="1"
+                aria-hidden="true">
+                <path d="M60 10c-16 10-26 26-26 46 0 24 12 42 26 52 14-10 26-28 26-52 0-20-10-36-26-46Z" />
+                <path d="M60 46v66" />
+                <path d="M60 64c-7 3-15 1-15 1s2.5-9 9-12.5c3.6-2 8-1 8-1" />
+                <path d="M60 80c7 3 15 1 15 1s-2.5-9-9-12.5c-3.6-2-8-1-8-1" />
+            </svg>
+            <div class="container">
+                <nav class="cn-crumbs" aria-label="Breadcrumb"><a th:href="@{/}">Home</a><span
+                        aria-hidden="true">/</span><span aria-current="page">Contact</span></nav>
+                <span class="eyebrow">CONTACT US</span>
+                <h1>We&rsquo;d love to <em>hear from you.</em></h1>
+                <p>From order enquiries to fabric details, we're here to help you find what you're looking for.</p>
+            </div>
+        </section>
+
+        <!-- ===================== QUICK CONTACT ===================== -->
+        <section class="cn-quick">
+            <div class="container cn-quick-grid">
+                <a class="cn-q" id="cnCall" href="tel:+917987725348">
+                    <span class="cn-q-ico"><span><svg viewBox="0 0 24 24">
+                                <path
+                                    d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z" />
+                            </svg></span></span>
+                    <span><small>Call us</small><strong>+91 79877 25348</strong><span class="cn-q-note">Tap to
+                            call</span></span>
+                </a>
+                <a class="cn-q" id="cnWhatsapp" href="https://wa.me/917987725348" target="_blank" rel="noopener">
+                    <span class="cn-q-ico"><span><svg viewBox="0 0 24 24">
+                                <path d="M4 5h16v11H9l-5 4Z" />
+                                <path d="M8 9.5h8M8 12.5h5" />
+                            </svg></span></span>
+                    <span><small>WhatsApp</small><strong>Message us</strong><span class="cn-q-note">Chat with our
+                            team</span></span>
+                </a>
+                <a class="cn-q" id="cnVisit" href="#cnMapSection">
+                    <span class="cn-q-ico"><span><svg viewBox="0 0 24 24">
+                                <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z" />
+                                <circle cx="12" cy="10" r="2.3" />
+                            </svg></span></span>
+                    <span><small>Visit us</small><strong>Sanjay Park, Pune</strong><span class="cn-q-note">See the
+                            map</span></span>
+                </a>
+            </div>
+        </section>
+
+        <!-- ===================== FORM + DETAILS ===================== -->
+        <section class="cn-main">
+            <div class="container cn-grid">
+
+                <div class="cn-card" id="cnCard">
+
+                    <!-- Form -->
+                    <div id="cnFormWrap">
+                        <h2>Send us a message</h2>
+                        <p class="cn-lead">Fill in the form and we&rsquo;ll get back to you as soon as we can. For
+                            anything urgent about an order, please call or WhatsApp.</p>
+
+                        <div class="cn-chip-ask" id="cnAsk" hidden></div>
+
+                        <form id="cnForm" novalidate>
+                            <div class="cn-row2">
+                                <div class="cn-field">
+                                    <label for="cnName">Your name</label>
+                                    <input class="cn-input" id="cnName" autocomplete="name" aria-describedby="errName">
+                                    <div class="cn-error" id="errName" role="alert"></div>
+                                </div>
+                                <div class="cn-field">
+                                    <label for="cnEmail">Email address</label>
+                                    <input class="cn-input" type="email" id="cnEmail" autocomplete="email"
+                                        inputmode="email" aria-describedby="errEmail">
+                                    <div class="cn-error" id="errEmail" role="alert"></div>
+                                </div>
+                            </div>
+                            <div class="cn-row2">
+                                <div class="cn-field">
+                                    <label for="cnPhone">Mobile <span class="opt">(optional)</span></label>
+                                    <div class="cn-prefix"><span>+91</span><input class="cn-input" id="cnPhone"
+                                            type="tel" inputmode="numeric" maxlength="10" autocomplete="tel-national"
+                                            aria-describedby="errPhone"></div>
+                                    <div class="cn-error" id="errPhone" role="alert"></div>
+                                </div>
+                                <div class="cn-field">
+                                    <label for="cnTopic">What is this about?</label>
+                                    <select class="cn-input" id="cnTopic" aria-describedby="errTopic"></select>
+                                    <div class="cn-error" id="errTopic" role="alert"></div>
+                                </div>
+                            </div>
+                            <div class="cn-field" id="cnOrderField" hidden>
+                                <label for="cnOrder">Order number <span class="opt">(optional)</span></label>
+                                <input class="cn-input" id="cnOrder" list="cnOrderList"
+                                    placeholder="e.g. STI-261017-4821" autocomplete="off" aria-describedby="errOrder">
+                                <datalist id="cnOrderList"></datalist>
+                                <div class="cn-error" id="errOrder" role="alert"></div>
+                            </div>
+                            <div class="cn-field">
+                                <label for="cnMessage">Your message</label>
+                                <textarea class="cn-input" id="cnMessage" maxlength="1000"
+                                    aria-describedby="errMessage cnCount"></textarea>
+                                <div class="cn-count" id="cnCount"><span id="cnCharCount">0</span> / 1000</div>
+                                <div class="cn-error" id="errMessage" role="alert"></div>
+                            </div>
+                            <!-- spam trap: real visitors never see or fill this -->
+                            <div class="cn-hp" aria-hidden="true"><label>Website <input type="text" id="cnWebsite"
+                                        tabindex="-1" autocomplete="off"></label></div>
+
+                            <div class="cn-actions">
+                                <button type="submit" class="cn-btn" id="cnSend">Send Message</button>
+                                <p class="cn-note">By sending this you agree to our <a href="privacy-policy.html"
+                                        target="_blank" rel="noopener">Privacy Policy</a>.</p>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Success -->
+                    <div class="cn-done" id="cnDone" tabindex="-1" hidden>
+                        <div class="cn-seal" aria-hidden="true"><span><svg viewBox="0 0 48 48">
+                                    <path class="tick" d="M13 25l7 7 15-16" />
+                                </svg></span></div>
+                        <h2 id="cnDoneTitle">Thank you</h2>
+                        <p id="cnDoneText"></p>
+                        <div class="cn-ref" id="cnRef"></div>
+                        <div class="cn-actions" style="justify-content:center">
+                            <a href="shop.html" class="cn-btn">Continue Shopping</a>
+                            <button type="button" class="cn-btn is-ghost" id="cnAgain">Send Another Message</button>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="cn-side" aria-label="Contact details">
+                    <div class="cn-info">
+                        <h3>Find us</h3>
+                        <dl>
+                            <div>
+                                <dt>Address</dt>
+                                <dd>Sutra Textiles India<br>317, 10 Biz Park, Mhada Colony,<br>Sanjay Park,
+                                    Pune,<br>Maharashtra 411014</dd>
+                            </div>
+                            <div>
+                                <dt>Phone</dt>
+                                <dd><a href="tel:+917987725348">+91 79877 25348</a></dd>
+                            </div>
+                            <div>
+                                <dt>Made in</dt>
+                                <dd>Our own manufacturing unit in Bhilwara, Rajasthan</dd>
+                            </div>
+                        </dl>
+                    </div>
+                    <div class="cn-help">
+                        <h3>Looking for a quick answer?</h3>
+                        <ul>
+                            <li><a href="faq.html">Frequently asked questions</a></li>
+                            <li><a href="shipping-policy.html">Shipping &amp; delivery</a></li>
+                            <li><a href="returns-policy.html">Returns &amp; exchange</a></li>
+                            <li><a href="account.html#orders">Track my order</a></li>
+                        </ul>
+                    </div>
+                </aside>
+
+            </div>
+        </section>
+
+        <!-- ===================== MAP ===================== -->
+        <section class="cn-map-section" id="cnMapSection">
+            <div class="container">
+                <div class="cn-map" id="cnMap">
+                    <div class="cn-map-ph" id="cnMapPh">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z" />
+                            <circle cx="12" cy="10" r="2.3" />
+                        </svg>
+                        <p>317, 10 Biz Park, Mhada Colony, Sanjay Park, Pune &mdash; Maharashtra 411014</p>
+                        <div class="cn-map-btns">
+                            <button type="button" class="cn-btn" id="cnMapLoad">Show Map</button>
+                            <a class="cn-btn is-ghost" id="cnDirections" href="#" target="_blank" rel="noopener">Get
+                                Directions</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="footer" th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="js/products.js" th:src="@{/js/products.js}"></script>
+    <script src="js/script.js" th:src="@{/js/script.js}"></script>
+
+    <script th:inline="none">
+        (function () {
+            'use strict';
+
+            const cat = Sutra.catalog;
+            const $ = (sel, root = document) => root.querySelector(sel);
+            const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+            const digits = (s) => String(s).replace(/\D/g, '');
+
+            /* ---------- Config ---------- */
+            const ADDRESS = '317, 10 Biz Park, Mhada Colony, Sanjay Park, Pune, Maharashtra 411014';
+            const WHATSAPP_NUMBER = '917987725348';     // confirm this number is on WhatsApp; set SHOW_WHATSAPP=false to hide
+            const SHOW_WHATSAPP = true;
+            const MESSAGES_KEY = 'sutra_messages_v1';   // demo only — the real form should POST to your backend
+
+            const TOPICS = [
+                { id: '', label: 'Select a topic' },
+                { id: 'order', label: 'Help with an order', order: true },
+                { id: 'product', label: 'Question about a product' },
+                { id: 'sizing', label: 'Sizing & customisation' },
+                { id: 'shipping', label: 'Shipping & delivery', order: true },
+                { id: 'returns', label: 'Returns & exchange', order: true },
+                { id: 'feedback', label: 'Feedback' },
+                { id: 'other', label: 'Something else' }
+            ];
+
+            const params = new URLSearchParams(window.location.search);
+            const product = cat.byId(params.get('product'));
+            const orderParam = (params.get('order') || '').trim().toUpperCase();
+
+            /* ---------- Quick contact links ---------- */
+            const waText = product ? `Hi Sutra Textiles India, I have a question about the ${product.name}.` : 'Hi Sutra Textiles India, I need some help.';
+            const wa = $('#cnWhatsapp');
+            if (SHOW_WHATSAPP) wa.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(waText)}`; else wa.hidden = true;
+            $('#cnDirections').href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(ADDRESS);
+            $('.cn-quick-grid').style.gridTemplateColumns = SHOW_WHATSAPP ? '' : 'repeat(2, 1fr)';
+
+            /* ---------- Map: loads only when asked (no third-party request until then) ---------- */
+            $('#cnMapLoad').addEventListener('click', () => {
+                const frame = document.createElement('iframe');
+                frame.title = 'Map showing Sutra Textiles India, Sanjay Park, Pune';
+                frame.loading = 'lazy';
+                frame.referrerPolicy = 'no-referrer-when-downgrade';
+                frame.allowFullscreen = true;
+                frame.src = 'https://www.google.com/maps?q=' + encodeURIComponent(ADDRESS) + '&output=embed';
+                $('#cnMapPh').remove();
+                $('#cnMap').appendChild(frame);
+            });
+
+            /* ---------- Form setup ---------- */
+            const el = {
+                form: $('#cnForm'), name: $('#cnName'), email: $('#cnEmail'), phone: $('#cnPhone'), topic: $('#cnTopic'),
+                orderField: $('#cnOrderField'), order: $('#cnOrder'), orderList: $('#cnOrderList'), message: $('#cnMessage'),
+                count: $('#cnCharCount'), send: $('#cnSend')
+            };
+            el.topic.innerHTML = TOPICS.map(t => `<option value="${t.id}">${esc(t.label)}</option>`).join('');
+
+            function setError(inputId, errId, msg) {
+                const inp = $('#' + inputId), err = $('#' + errId);
+                if (err) err.textContent = msg || '';
+                if (inp) { if (msg) inp.setAttribute('aria-invalid', 'true'); else inp.removeAttribute('aria-invalid'); }
+                return !msg;
+            }
+            const validEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+
+            function currentUser() {
+                try {
+                    const s = JSON.parse(sessionStorage.getItem('sutra_session_v1') || localStorage.getItem('sutra_session_v1') || 'null');
+                    return s && s.email ? (Sutra.store.read('sutra_users_v1', {})[s.email] || null) : null;
+                } catch (e) { return null; }
+            }
+            const user = currentUser();
+            if (user) { el.name.value = user.name || ''; el.email.value = user.email || ''; el.phone.value = user.phone || ''; }
+
+            /* topic + optional order number */
+            function syncOrderField() {
+                const t = TOPICS.find(x => x.id === el.topic.value);
+                el.orderField.hidden = !((t && t.order) || el.order.value || orderParam);
+            }
+            el.topic.addEventListener('change', syncOrderField);
+
+            function refreshOrderSuggestions() {
+                const typed = el.email.value.trim().toLowerCase();
+                const all = Sutra.store.read('sutra_orders_v1', []);
+                const mine = (Array.isArray(all) ? all : []).filter(o => o && o.email && [typed, user && user.email].includes(String(o.email).toLowerCase()));
+                el.orderList.innerHTML = mine.map(o => `<option value="${esc(o.id)}">`).join('');
+            }
+            el.email.addEventListener('input', refreshOrderSuggestions);
+
+            /* prefill from the link (?product= / ?order= / ?topic=) */
+            const askBox = $('#cnAsk');
+            if (product) {
+                el.topic.value = 'product';
+                askBox.hidden = false;
+                askBox.innerHTML = `Asking about <a href="product.html?id=${product.id}">${esc(product.name)}</a>`;
+                el.message.value = `Hi, I have a question about the ${product.name} (${product.sku}).\n\n`;
+                el.count.textContent = el.message.value.length;
+            }
+            if (orderParam) { el.order.value = orderParam; el.topic.value = el.topic.value || 'order'; }
+            const topicParam = params.get('topic');
+            if (!el.topic.value && TOPICS.some(t => t.id && t.id === topicParam)) el.topic.value = topicParam;
+            syncOrderField();
+            refreshOrderSuggestions();
+
+            /* input hygiene */
+            el.phone.addEventListener('input', (e) => { e.target.value = digits(e.target.value).slice(0, 10); });
+            el.message.addEventListener('input', () => { el.count.textContent = el.message.value.length; });
+            el.form.addEventListener('input', (e) => { if (e.target.hasAttribute('aria-invalid')) e.target.removeAttribute('aria-invalid'); });
+
+            /* ---------- Submit ---------- */
+            function refId() {
+                const d = new Date(), pad = (n) => String(n).padStart(2, '0');
+                return 'MSG-' + String(d.getFullYear()).slice(2) + pad(d.getMonth() + 1) + pad(d.getDate()) + '-' + String(Math.floor(1000 + Math.random() * 9000));
+            }
+
+            // Demo transport. Replace with: fetch('/api/contact', { method: 'POST', headers: {...}, body: JSON.stringify(payload) })
+            function sendMessage(payload) {
+                return new Promise(resolve => setTimeout(() => {
+                    const list = Sutra.store.read(MESSAGES_KEY, []);
+                    Sutra.store.write(MESSAGES_KEY, [payload].concat(Array.isArray(list) ? list : []).slice(0, 20));
+                    resolve({ ok: true });
+                }, 700));
+            }
+
+            el.form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (el.send.disabled) return;
+
+                const name = el.name.value.trim(), email = el.email.value.trim(), phone = digits(el.phone.value);
+                const topic = el.topic.value, order = el.order.value.trim().toUpperCase(), message = el.message.value.trim();
+                const ok = [
+                    setError('cnName', 'errName', name.length >= 2 ? '' : 'Please enter your name.'),
+                    setError('cnEmail', 'errEmail', validEmail(email) ? '' : 'Please enter a valid email address.'),
+                    setError('cnPhone', 'errPhone', !phone || /^[6-9]\d{9}$/.test(phone) ? '' : 'Enter a valid 10-digit mobile number.'),
+                    setError('cnTopic', 'errTopic', topic ? '' : 'Please choose a topic.'),
+                    setError('cnOrder', 'errOrder', !order || /^STI-\d{6}-\d{4}$/.test(order) ? '' : 'Order numbers look like STI-261017-4821.'),
+                    setError('cnMessage', 'errMessage', message.length >= 10 ? '' : 'Please write at least 10 characters so we can help.')
+                ].every(Boolean);
+                if (!ok) { const bad = $('[aria-invalid="true"]', el.form); if (bad) bad.focus(); return; }
+
+                const payload = {
+                    ref: refId(), createdAt: Date.now(), name, email, phone, topic,
+                    topicLabel: (TOPICS.find(t => t.id === topic) || {}).label, order: order || null,
+                    productId: product ? product.id : null, message
+                };
+
+                el.send.disabled = true; el.send.textContent = 'Sending\u2026';
+                const spam = $('#cnWebsite').value.trim() !== '';     // honeypot filled => a bot; pretend success, send nothing
+                if (!spam) await sendMessage(payload); else await new Promise(r => setTimeout(r, 400));
+
+                $('#cnFormWrap').hidden = true;
+                $('#cnDone').hidden = false;
+                $('#cnDoneTitle').textContent = `Thank you, ${name.split(/\s+/)[0]}`;
+                $('#cnDoneText').textContent = `We\u2019ve received your message and our team will reply to ${email}. For anything urgent, please call or WhatsApp us.`;
+                $('#cnRef').textContent = payload.ref;
+                $('#cnDone').focus();
+                el.send.disabled = false; el.send.textContent = 'Send Message';
+            });
+
+            $('#cnAgain').addEventListener('click', () => {
+                el.message.value = ''; el.count.textContent = '0'; el.topic.value = ''; el.order.value = '';
+                askBox.hidden = true; syncOrderField();
+                $('#cnDone').hidden = true;
+                $('#cnFormWrap').hidden = false;
+                el.message.focus();
+            });
+        })();
+    </script>
+
+</body>
+
+</html>

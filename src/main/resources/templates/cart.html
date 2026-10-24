@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart — Sutra Textiles India</title>
+    <meta name="description"
+        content="Review your Sutra Textiles India cart — traditional ethnic wear made in-house in Bhilwara, Rajasthan.">
+    <meta name="robots" content="noindex">
+ <link rel="icon" type="image/x-icon" th:href="@{/favicon_io/favicon.ico}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Work+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css" th:href="@{/css/style.css}">
+
+    <style>
+        [hidden] {
+            display: none !important;
+        }
+
+        .ct-hero {
+            background: var(--green);
+            color: var(--ivory);
+            padding-block: clamp(2rem, 5vw, 3rem);
+        }
+
+        .ct-crumbs {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            font-size: .8rem;
+            color: #b9c4b6;
+            margin-bottom: .9rem;
+        }
+
+        .ct-crumbs a:hover {
+            color: var(--gold-light);
+        }
+
+        .ct-hero h1 {
+            color: var(--ivory);
+            margin-bottom: .35rem;
+        }
+
+        .ct-hero p {
+            color: #c9d1c6;
+            font-size: .98rem;
+        }
+
+        .ct-main {
+            padding-block: clamp(2rem, 4vw, 3rem) clamp(3rem, 6vw, 5rem);
+        }
+
+        /* ---------- Checkout progress ---------- */
+        .ct-steps {
+            display: flex;
+            max-width: 640px;
+            margin: 0 auto 2.4rem;
+        }
+
+        .ct-steps li {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .6rem;
+            font-size: .76rem;
+            letter-spacing: .08em;
+            color: var(--olive);
+            text-transform: uppercase;
+        }
+
+        .ct-steps li::before {
+            content: "";
+            width: 12px;
+            height: 12px;
+            border: 1px solid #bfb597;
+            background: var(--ivory);
+            transform: rotate(45deg);
+            position: relative;
+            z-index: 1;
+        }
+
+        .ct-steps li:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            top: 5.5px;
+            left: calc(50% + 14px);
+            width: calc(100% - 28px);
+            height: 1px;
+            background: var(--grey);
+        }
+
+        .ct-steps li[aria-current="step"] {
+            color: var(--green);
+            font-weight: 500;
+        }
+
+        .ct-steps li[aria-current="step"]::before {
+            background: var(--gold);
+            border-color: var(--gold);
+        }
+
+        /* ---------- Layout ---------- */
+        .ct-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 390px;
+            gap: clamp(1.5rem, 3.5vw, 3rem);
+            align-items: start;
+        }
+
+        /* ---------- Free shipping progress ---------- */
+        .ct-ship {
+            padding: 1rem 1.2rem;
+            border: 1px solid var(--grey);
+            background: var(--ivory-soft);
+            border-radius: var(--radius);
+            margin-bottom: 1.4rem;
+            font-size: .9rem;
+            color: var(--green);
+        }
+
+        .ct-ship strong {
+            font-weight: 500;
+        }
+
+        .ct-track {
+            height: 6px;
+            background: var(--grey);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: .7rem;
+        }
+
+        .ct-fill {
+            display: block;
+            height: 100%;
+            background: var(--gold);
+            border-radius: 3px;
+            transition: width .5s var(--ease);
+        }
+
+        .ct-ship.is-done {
+            border-color: var(--gold);
+        }
+
+        .ct-notices {
+            margin-bottom: 1rem;
+        }
+
+        .ct-notice {
+            padding: .8rem 1rem;
+            background: rgba(201, 162, 75, .14);
+            border-left: 3px solid var(--gold);
+            font-size: .86rem;
+            margin-bottom: .5rem;
+        }
+
+        /* ---------- List ---------- */
+        .ct-list-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding-bottom: .9rem;
+            border-bottom: 1px solid var(--grey);
+        }
+
+        .ct-list-head h2 {
+            font-size: 1.35rem;
+        }
+
+        .ct-link-btn {
+            font-size: .84rem;
+            color: var(--olive);
+            border-bottom: 1px solid transparent;
+            padding-bottom: 1px;
+        }
+
+        .ct-link-btn:hover {
+            color: var(--terracotta);
+            border-color: var(--terracotta);
+        }
+
+        .ct-item {
+            display: grid;
+            grid-template-columns: 112px minmax(0, 1fr) auto;
+            gap: 1rem 1.4rem;
+            padding: 1.6rem 0;
+            border-bottom: 1px solid var(--grey);
+        }
+
+        .ct-item.is-gone {
+            opacity: .85;
+        }
+
+        .ct-thumb {
+            display: block;
+            width: 112px;
+            aspect-ratio: 4 / 5;
+            padding: 5px;
+            border: 1px solid rgba(201, 162, 75, .65);
+            border-radius: 50% 50% 4px 4px / 26% 26% 4px 4px;
+        }
+
+        .ct-thumb-in {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 50% 50% 2px 2px / 25% 25% 2px 2px;
+            overflow: hidden;
+            background: var(--ivory-soft);
+        }
+
+        .ct-thumb-in svg,
+        .ct-thumb-in img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .ct-info {
+            min-width: 0;
+        }
+
+        .ct-eyebrow {
+            font-size: .72rem;
+            letter-spacing: .12em;
+            color: var(--olive);
+            text-transform: uppercase;
+        }
+
+        .ct-name {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            color: var(--green);
+            line-height: 1.25;
+            margin: .25rem 0 .7rem;
+        }
+
+        .ct-name a:hover {
+            text-decoration: underline;
+            text-decoration-color: var(--gold);
+            text-underline-offset: 3px;
+        }
+
+        .ct-vars {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .6rem 1rem;
+            align-items: center;
+        }
+
+        .ct-var {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            font-size: .82rem;
+            color: var(--olive);
+        }
+
+        .ct-select {
+            border: 1px solid var(--grey);
+            background: var(--ivory-soft);
+            color: var(--charcoal);
+            padding: .38rem .6rem;
+            border-radius: var(--radius);
+            font-size: .84rem;
+            font-family: inherit;
+        }
+
+        .ct-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--sw);
+            border: 1px solid rgba(0, 0, 0, .18);
+            flex-shrink: 0;
+        }
+
+        .ct-static {
+            font-size: .84rem;
+            color: var(--olive);
+        }
+
+        .ct-flag {
+            margin-top: .7rem;
+            font-size: .82rem;
+            color: var(--terracotta);
+        }
+
+        .ct-flag.is-info {
+            color: #8a6a1f;
+        }
+
+        .ct-flag.is-ok {
+            color: var(--olive);
+        }
+
+        .ct-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .4rem 1.3rem;
+            margin-top: .9rem;
+        }
+
+        .ct-buy {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: .9rem;
+        }
+
+        .ct-qty {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid var(--grey);
+            background: var(--ivory-soft);
+            border-radius: var(--radius);
+        }
+
+        .ct-qty button {
+            width: 38px;
+            height: 40px;
+            font-size: 1.15rem;
+            color: var(--green);
+        }
+
+        .ct-qty button:disabled {
+            opacity: .35;
+            cursor: not-allowed;
+        }
+
+        .ct-qty output {
+            min-width: 28px;
+            text-align: center;
+            font-size: .92rem;
+            font-weight: 500;
+        }
+
+        .ct-price {
+            text-align: right;
+        }
+
+        .ct-price strong {
+            display: block;
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        .ct-price s {
+            font-size: .82rem;
+            color: var(--olive);
+            margin-right: .4rem;
+        }
+
+        .ct-price small {
+            display: block;
+            font-size: .76rem;
+            color: var(--olive);
+            margin-top: .15rem;
+        }
+
+        .ct-note {
+            margin-top: 1.6rem;
+            border: 1px solid var(--grey);
+            background: var(--ivory-soft);
+            border-radius: var(--radius);
+        }
+
+        .ct-note summary {
+            list-style: none;
+            cursor: pointer;
+            padding: 1rem 1.2rem;
+            font-size: .92rem;
+            color: var(--green);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .ct-note summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .ct-note summary::after {
+            content: "+";
+            color: var(--gold);
+            font-size: 1.2rem;
+            line-height: 1;
+            transition: transform .25s var(--ease);
+        }
+
+        .ct-note[open] summary::after {
+            transform: rotate(45deg);
+        }
+
+        .ct-note textarea {
+            display: block;
+            width: calc(100% - 2.4rem);
+            margin: 0 1.2rem .4rem;
+            min-height: 90px;
+            resize: vertical;
+            padding: .75rem 1rem;
+            border: 1px solid var(--grey);
+            background: var(--ivory);
+            border-radius: var(--radius);
+            font: inherit;
+            color: var(--charcoal);
+        }
+
+        .ct-note .ct-count {
+            display: block;
+            text-align: right;
+            font-size: .74rem;
+            color: var(--olive);
+            margin: 0 1.2rem 1rem;
+        }
+
+        .ct-continue {
+            display: inline-block;
+            margin-top: 1.6rem;
+        }
+
+        /* ---------- Summary ---------- */
+        .ct-summary-wrap {
+            position: sticky;
+            top: calc(var(--nav-h, 100px) + 1rem);
+        }
+
+        .ct-summary {
+            position: relative;
+            background: var(--ivory-soft);
+            border: 1px solid var(--grey);
+            border-radius: var(--radius);
+            padding: 1.8rem 1.7rem;
+        }
+
+        .ct-summary::before {
+            content: "";
+            position: absolute;
+            inset: 6px;
+            border: 1px dashed #d2c8ab;
+            pointer-events: none;
+            border-radius: 1px;
+        }
+
+        .ct-sum-title {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .ct-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            font-size: .92rem;
+            padding: .4rem 0;
+        }
+
+        .ct-row .is-save {
+            color: var(--olive);
+        }
+
+        .ct-row.total {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            color: var(--green);
+            border-top: 1px solid var(--grey);
+            margin-top: .7rem;
+            padding-top: 1rem;
+        }
+
+        .ct-saved {
+            margin-top: .5rem;
+            font-size: .84rem;
+            color: var(--olive);
+        }
+
+        .ct-tax {
+            font-size: .76rem;
+            color: var(--olive);
+            margin-top: .3rem;
+        }
+
+        .ct-coupon {
+            margin-top: 1.3rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--grey);
+        }
+
+        .ct-coupon label {
+            display: block;
+            font-size: .82rem;
+            letter-spacing: .06em;
+            color: var(--olive);
+            margin-bottom: .5rem;
+        }
+
+        .ct-coupon-form {
+            display: flex;
+            gap: .5rem;
+        }
+
+        .ct-coupon-form input {
+            flex: 1;
+            min-width: 0;
+            padding: .7rem .9rem;
+            border: 1px solid var(--grey);
+            background: var(--ivory);
+            border-radius: var(--radius);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: var(--charcoal);
+        }
+
+        .ct-coupon-form button {
+            padding: 0 1.1rem;
+            border: 1px solid var(--green);
+            color: var(--green);
+            border-radius: var(--radius);
+            font-size: .84rem;
+        }
+
+        .ct-coupon-form button:hover {
+            background: var(--green);
+            color: var(--ivory);
+        }
+
+        .ct-coupon-msg {
+            font-size: .82rem;
+            margin-top: .5rem;
+            min-height: 1.1em;
+        }
+
+        .ct-coupon-msg.is-err {
+            color: var(--terracotta);
+        }
+
+        .ct-applied {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: .8rem;
+            padding: .7rem .9rem;
+            border: 1px solid var(--gold);
+            background: rgba(201, 162, 75, .1);
+            border-radius: var(--radius);
+            font-size: .86rem;
+        }
+
+        .ct-applied strong {
+            letter-spacing: .06em;
+            font-weight: 500;
+        }
+
+        .ct-checkout {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: 56px;
+            margin-top: 1.4rem;
+            background: var(--gold);
+            color: var(--green-deep);
+            font-weight: 500;
+            letter-spacing: .05em;
+            font-size: .95rem;
+            border-radius: var(--radius);
+            transition: background .25s var(--ease);
+        }
+
+        .ct-checkout:hover {
+            background: var(--gold-light);
+        }
+
+        button.ct-checkout:disabled {
+            background: var(--grey);
+            color: #8f8b7e;
+            cursor: not-allowed;
+        }
+
+        .ct-block-msg {
+            margin-top: .7rem;
+            font-size: .82rem;
+            color: var(--terracotta);
+        }
+
+        .ct-eta {
+            margin-top: 1.3rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--grey);
+        }
+
+        .ct-eta h3 {
+            font-family: var(--font-body);
+            font-size: .82rem;
+            letter-spacing: .06em;
+            font-weight: 500;
+            margin-bottom: .6rem;
+        }
+
+        .ct-pin {
+            display: flex;
+            gap: .5rem;
+        }
+
+        .ct-pin input {
+            flex: 1;
+            min-width: 0;
+            padding: .65rem .9rem;
+            border: 1px solid var(--grey);
+            background: var(--ivory);
+            border-radius: var(--radius);
+            color: var(--charcoal);
+        }
+
+        .ct-pin button {
+            padding: 0 1.1rem;
+            border: 1px solid var(--green);
+            color: var(--green);
+            border-radius: var(--radius);
+            font-size: .84rem;
+        }
+
+        .ct-pin button:hover {
+            background: var(--green);
+            color: var(--ivory);
+        }
+
+        .ct-pin-result {
+            margin-top: .6rem;
+            font-size: .84rem;
+        }
+
+        .ct-pin-result.is-ok {
+            color: var(--green);
+        }
+
+        .ct-pin-result.is-err {
+            color: var(--terracotta);
+        }
+
+        .ct-trust {
+            display: grid;
+            gap: .7rem;
+            margin-top: 1.3rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--grey);
+        }
+
+        .ct-trust li {
+            display: flex;
+            align-items: center;
+            gap: .7rem;
+            font-size: .82rem;
+            color: var(--olive);
+        }
+
+        .ct-trust svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            fill: none;
+            stroke: var(--green);
+            stroke-width: 1.5;
+        }
+
+        /* ---------- Empty state ---------- */
+        .ct-empty {
+            text-align: center;
+            padding: clamp(2rem, 6vw, 4rem) 1rem clamp(1rem, 3vw, 2rem);
+        }
+
+        .ct-empty-arch {
+            width: 150px;
+            aspect-ratio: 3 / 4;
+            margin: 0 auto 1.8rem;
+            padding: 10px;
+            border: 1px solid rgba(201, 162, 75, .65);
+            border-radius: 50% 50% 6px 6px / 34% 34% 6px 6px;
+        }
+
+        .ct-empty-arch span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            border-radius: 50% 50% 3px 3px / 33% 33% 3px 3px;
+            background: linear-gradient(160deg, #24402f, #142620);
+            color: var(--gold-light);
+        }
+
+        .ct-empty-arch svg {
+            width: 52%;
+        }
+
+        .ct-empty h2 {
+            margin-bottom: .6rem;
+        }
+
+        .ct-empty p {
+            margin: 0 auto 1.6rem;
+            color: var(--olive);
+        }
+
+        .ct-empty-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: .8rem;
+        }
+
+        .ct-chips {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: .6rem;
+            margin-top: 1.6rem;
+        }
+
+        .ct-chip {
+            padding: .5rem 1.1rem;
+            border: 1px solid var(--grey);
+            border-radius: 999px;
+            font-size: .84rem;
+            color: var(--green);
+            background: var(--ivory-soft);
+            transition: border-color .2s var(--ease);
+        }
+
+        .ct-chip:hover {
+            border-color: var(--gold);
+        }
+
+        /* ---------- Recommendations ---------- */
+        .ct-recs {
+            background: var(--ivory-soft);
+            border-top: 1px solid var(--grey);
+        }
+
+        .ct-card-link {
+            display: block;
+        }
+
+        .ct-card-link:hover .product-art {
+            transform: translateY(-3px);
+        }
+
+        .product-art {
+            transition: transform .35s var(--ease);
+        }
+
+        /* ---------- Undo bar ---------- */
+        .ct-undo {
+            position: fixed;
+            left: 50%;
+            bottom: 1.5rem;
+            transform: translate(-50%, 20px);
+            z-index: 2200;
+            opacity: 0;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            padding: .85rem 1.2rem;
+            background: var(--green-deep);
+            color: var(--ivory);
+            border-left: 3px solid var(--gold);
+            border-radius: 2px;
+            box-shadow: 0 12px 32px rgba(20, 38, 32, .25);
+            font-size: .88rem;
+            max-width: calc(100vw - 1.5rem);
+            transition: opacity .25s var(--ease), transform .25s var(--ease);
+        }
+
+        .ct-undo.is-in {
+            opacity: 1;
+            transform: translate(-50%, 0);
+            pointer-events: auto;
+        }
+
+        .ct-undo button {
+            color: var(--gold-light);
+            border-bottom: 1px solid currentColor;
+            font-size: .84rem;
+        }
+
+        /* ---------- Mobile checkout bar ---------- */
+        .ct-sticky {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 900;
+            display: none;
+            background: var(--ivory-soft);
+            border-top: 1px solid var(--grey);
+            box-shadow: 0 -8px 24px rgba(20, 38, 32, .08);
+            transform: translateY(110%);
+            transition: transform .3s var(--ease);
+        }
+
+        .ct-sticky.is-visible {
+            transform: none;
+        }
+
+        .ct-sticky-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding-block: .8rem;
+        }
+
+        .ct-sticky small {
+            display: block;
+            font-size: .76rem;
+            color: var(--olive);
+        }
+
+        .ct-sticky strong {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            color: var(--green);
+        }
+
+        .ct-sticky .ct-checkout {
+            margin: 0;
+            width: auto;
+            padding: 0 1.8rem;
+            min-height: 48px;
+            white-space: nowrap;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 960px) {
+            .ct-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ct-summary-wrap {
+                position: static;
+            }
+
+            .ct-sticky {
+                display: block;
+            }
+
+            .ct-undo {
+                bottom: 5.4rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .ct-item {
+                grid-template-columns: 88px minmax(0, 1fr);
+            }
+
+            .ct-thumb {
+                width: 88px;
+            }
+
+            .ct-buy {
+                grid-column: 1 / -1;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .ct-price {
+                text-align: right;
+            }
+
+            .ct-steps li {
+                font-size: .62rem;
+                letter-spacing: .04em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="navbar" th:replace="~{fragments/navbar :: navbar}"></div>
+  <div id="navSpacer"></div>
+
+    <main>
+
+        <!-- ===================== PAGE HEADER ===================== -->
+        <section class="ct-hero">
+            <div class="container">
+                <nav class="ct-crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a><span
+                        aria-hidden="true">/</span><span aria-current="page">Cart</span></nav>
+                <h1>Your Cart</h1>
+                <p id="ctCount">&nbsp;</p>
+            </div>
+        </section>
+
+        <section class="ct-main">
+            <div class="container">
+
+                <ol class="ct-steps" aria-label="Checkout progress">
+                    <li aria-current="step">Cart</li>
+                    <li>Details</li>
+                    <li>Payment</li>
+                    <li>Confirmation</li>
+                </ol>
+
+                <!-- ===== Empty state ===== -->
+                <div class="ct-empty" id="ctEmpty" hidden>
+                    <div class="ct-empty-arch" aria-hidden="true">
+                        <span>
+                            <svg viewBox="0 0 120 150" fill="none" stroke="currentColor" stroke-width="1.2"
+                                stroke-linecap="round">
+                                <path
+                                    d="M60 10c-16 10-26 26-26 46 0 24 12 42 26 52 14-10 26-28 26-52 0-20-10-36-26-46Z" />
+                                <path d="M60 46v66" />
+                                <path d="M60 64c-7 3-15 1-15 1s2.5-9 9-12.5c3.6-2 8-1 8-1" />
+                                <path d="M60 80c7 3 15 1 15 1s-2.5-9-9-12.5c-3.6-2-8-1-8-1" />
+                            </svg>
+                        </span>
+                    </div>
+                    <h2>Your cart is empty</h2>
+                    <p>Every thread tells a story &mdash; find the one you&rsquo;d like to wear.</p>
+                    <div class="ct-empty-actions">
+                        <a href="shop.html" class="btn btn-primary">Shop New Arrivals</a>
+                        <a href="wishlist.html" class="btn btn-ghost" id="ctWishLink">View Wishlist</a>
+                    </div>
+                    <div class="ct-chips">
+                        <a class="ct-chip" href="shop.html?cat=sarees">Sarees</a>
+                        <a class="ct-chip" href="shop.html?cat=lehengas">Lehengas</a>
+                        <a class="ct-chip" href="shop.html?cat=salwar-suits">Salwar Suits</a>
+                        <a class="ct-chip" href="shop.html?cat=regional">Regional Wear</a>
+                    </div>
+                </div>
+
+                <!-- ===== Cart with items ===== -->
+                <div class="ct-grid" id="ctFilled" hidden>
+                    <div>
+                        <div class="ct-ship" id="ctShip" aria-live="polite"></div>
+                        <div class="ct-notices" id="ctNotices" role="status"></div>
+
+                        <div class="ct-list-head">
+                            <h2>Items in your cart</h2>
+                            <button type="button" class="ct-link-btn" id="ctClear">Clear cart</button>
+                        </div>
+                        <div id="ctList"></div>
+
+                        <details class="ct-note">
+                            <summary>Add an order note (optional)</summary>
+                            <textarea id="ctNote" maxlength="300"
+                                placeholder="Anything we should know? e.g. blouse stitching preference, gifting message"
+                                aria-label="Order note"></textarea>
+                            <span class="ct-count"><span id="ctNoteCount">0</span> / 300</span>
+                        </details>
+
+                        <a href="shop.html" class="btn btn-ghost ct-continue">Continue Shopping</a>
+                    </div>
+
+                    <aside class="ct-summary-wrap" aria-label="Order summary">
+                        <div class="ct-summary" id="ctSummary"></div>
+                    </aside>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ===================== RECOMMENDATIONS ===================== -->
+        <section class="ct-recs" id="ctRecsSection">
+            <div class="container">
+                <div class="section-head">
+                    <span class="eyebrow">HANDPICKED FOR YOU</span>
+                    <h2 id="ctRecsTitle">Complete Your Look</h2>
+                </div>
+                <div class="product-grid" id="ctRecs"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===================== MOBILE CHECKOUT BAR ===================== -->
+    <div class="ct-sticky" id="ctSticky" aria-hidden="true">
+        <div class="container ct-sticky-inner">
+            <div><small id="ctStickyLabel">Total</small><strong id="ctStickyTotal"></strong></div>
+            <span id="ctStickyCta"></span>
+        </div>
+    </div>
+
+    <!-- ===================== UNDO BAR ===================== -->
+    <div class="ct-undo" id="ctUndo" role="status" aria-live="polite">
+        <span id="ctUndoMsg"></span>
+        <button type="button" id="ctUndoBtn">Undo</button>
+    </div>
+
+    <div id="footer" th:replace="~{fragments/footer :: footer}"></div>
+
+    <!-- Shared catalogue + base script (href/src = static preview, th: = Spring Boot) -->
+    <script src="js/products.js" th:src="@{/js/products.js}"></script>
+    <script src="js/script.js" th:src="@{/js/script.js}"></script>
+
+    <!-- ===================== PAGE-SPECIFIC JS (Cart) ===================== -->
+    <script th:inline="none">
+        (function () {
+            'use strict';
+
+            const cat = Sutra.catalog;
+            const money = cat.money;
+            const $ = (sel, root = document) => root.querySelector(sel);
+            const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+            const esc = (s) => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+            /* ---------- Config (replace with Spring Boot values later) ---------- */
+            const FREE_SHIP = 2999;           // matches the announcement bar
+            const COUPONS = {                 // DEMO codes only — validate on the server in production
+                SUTRA10: { type: 'percent', value: 10, max: 1000, min: 1999, label: '10% off, up to ' + money(1000) },
+                WELCOME250: { type: 'flat', value: 250, min: 2499, label: money(250) + ' off' }
+            };
+            const COUPON_KEY = 'sutra_coupon_v1';
+            const NOTE_KEY = 'sutra_order_note_v1';
+            const PIN_KEY = 'sutra_pin_v1';
+            const TRANSIT = { '1': [2, 4], '2': [2, 4], '3': [1, 2], '4': [2, 4], '5': [3, 5], '6': [3, 5], '7': [3, 6], '8': [3, 5] };
+
+            let suspend = false;     // pause re-render while batching cart writes
+            let notices = [];
+            let focusTarget = null;
+            let undoTimer = null;
+
+            const hexToRgb = (h) => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
+            const toHex = (r, g, b) => '#' + [r, g, b].map(v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')).join('');
+            const mix = (a, b, t) => { const x = hexToRgb(a), y = hexToRgb(b); return toHex(x[0] + (y[0] - x[0]) * t, x[1] + (y[1] - x[1]) * t, x[2] + (y[2] - x[2]) * t); };
+            const luminance = (hex) => {
+                const c = hexToRgb(hex).map(v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); });
+                return .2126 * c[0] + .7152 * c[1] + .0722 * c[2];
+            };
+            let uid = 0;
+            function artSvg(hex, category) {
+                const id = 'ct' + (++uid);
+                const dark = luminance(hex) < .32;
+                const bgA = mix(hex, '#ffffff', dark ? .14 : .38), bgB = mix(hex, '#000000', dark ? .38 : .16);
+                const line = dark ? '#E3CB8E' : '#1C3329';
+                const soft = dark ? 'rgba(227,203,142,.13)' : 'rgba(28,51,41,.09)';
+                const g = `fill="${soft}" stroke="${line}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"`;
+                let body;
+                if (category === 'sarees') {
+                    let pleats = '';
+                    for (let i = 0; i < 8; i++) pleats += `M${152 + i * 13} 214L${140 + i * 17} 458`;
+                    body = `<g ${g}><path d="M130 90H270L292 450Q200 478 108 450Z"/><path d="${pleats}" fill="none" stroke-opacity=".7"/>
+        <path d="M130 90C190 140 260 130 300 70L316 118C262 196 176 210 118 164Z" fill="${line}" fill-opacity=".2"/>
+        <path d="M108 450Q200 478 292 450M112 430Q200 456 288 430" fill="none"/></g>`;
+                } else if (category === 'lehengas') {
+                    body = `<g ${g}><path d="M168 96H232L246 170Q200 196 154 170Z"/><path d="M150 214H250L252 232H148Z"/>
+        <path d="M148 232H252L336 452Q200 486 64 452Z"/>
+        <path d="M120 330Q200 350 280 330M96 392Q200 414 304 392M70 440Q200 474 330 440" fill="none"/>
+        <path d="M232 100C300 140 330 260 300 330" fill="none"/></g>`;
+                } else {
+                    const longKurta = category === 'regional', hem = longKurta ? 380 : 340;
+                    body = `<g ${g}><path d="M146 100H254L${longKurta ? 274 : 282} ${hem}H${longKurta ? 126 : 118}Z"/>
+        <path d="M178 100Q200 132 222 100" fill="none"/>
+        <path d="M146 100 102 190 126 204 150 150M254 100 298 190 274 204 250 150"/>
+        ${longKurta ? `<path d="M150 ${hem}L146 470M250 ${hem}L254 470" fill="none"/>` : `<path d="M124 ${hem}H276L316 470H218L200 396 182 470H84Z"/>`}
+        <path d="M232 104C320 150 340 280 296 400" fill="none"/></g>`;
+                }
+                return `<svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${bgA}"/><stop offset="1" stop-color="${bgB}"/></linearGradient></defs>
+      <rect width="400" height="500" fill="url(#${id})"/>${body}</svg>`;
+            }
+            function thumbHTML(p, color) {
+                const set = p.images && (p.images[color.name] || p.images.default);
+                return set && set.length
+                    ? `<img src="${esc(set[0])}" alt="" loading="lazy">`
+                    : artSvg(color.hex, p.category);
+            }
+
+            /* ===========================================================
+               CART DATA
+               =========================================================== */
+            function describe(it) {
+                const p = cat.byId(it.id);
+                const key = Sutra.cart.lineKey(it);
+                if (!p) return { it, key, p: null, gone: true };
+                const sizeObj = p.sizes.find(s => s.label === it.size) || null;
+                const tracked = p.stock === 'in-stock' && !!sizeObj;
+                const left = tracked ? sizeObj.qty : null;
+                return {
+                    it, key, p, sizeObj, tracked, left,
+                    color: p.colors.find(c => c.name === it.color) || p.colors[0],
+                    needsSizeChoice: cat.needsSize(p) && !sizeObj,
+                    oos: tracked && left === 0,
+                    over: tracked && left > 0 && it.qty > left,
+                    low: tracked && left > 0 && left <= 3,
+                    max: tracked && left > 0 ? Math.min(Sutra.cart.MAX_QTY, left) : Sutra.cart.MAX_QTY
+                };
+            }
+            const isBlocked = (l) => l.gone || l.oos || l.needsSizeChoice;
+
+            function normalize() {
+                let changed = false;
+                suspend = true;
+                Sutra.cart.items().map(describe).forEach(l => {
+                    if (l.over) {
+                        Sutra.cart.setQty(l.key, l.left);
+                        notices.push(`${l.p.name}: only ${l.left} available in size ${l.it.size} \u2014 quantity updated.`);
+                        changed = true;
+                    }
+                });
+                suspend = false;
+                return changed;
+            }
+
+            function evalCoupon(code, subtotal) {
+                const c = COUPONS[code];
+                if (!c) return { ok: false, msg: 'That code isn\u2019t valid.' };
+                if (subtotal < c.min) return { ok: false, msg: `Add ${money(c.min - subtotal)} more to use ${code}.` };
+                const raw = c.type === 'percent' ? Math.min(c.max, Math.floor(subtotal * c.value / 100)) : c.value;
+                return { ok: true, amount: Math.min(raw, subtotal) };
+            }
+
+            function computeTotals(lines) {
+                const valid = lines.filter(l => !isBlocked(l));
+                let mrp = 0, sub = 0, qty = 0;
+                valid.forEach(l => { mrp += l.p.mrp * l.it.qty; sub += l.p.price * l.it.qty; qty += l.it.qty; });
+                let coupon = null, couponNote = '';
+                const code = Sutra.store.read(COUPON_KEY, '');
+                if (code) {
+                    const r = evalCoupon(code, sub);
+                    if (r.ok) coupon = { code, amount: r.amount };
+                    else { Sutra.store.write(COUPON_KEY, ''); couponNote = `${code} was removed. ${r.msg}`; }
+                }
+                const freeShip = sub >= FREE_SHIP;
+                return {
+                    valid, qty, mrp, sub, coupon, couponNote, freeShip,
+                    mrpDiscount: mrp - sub,
+                    total: sub - (coupon ? coupon.amount : 0)
+                };
+            }
+
+            /* ---------- Batched writes ---------- */
+            function replaceAll(items) {
+                suspend = true;
+                Sutra.cart.clear();
+                items.forEach(i => Sutra.cart.addItem(i));
+                suspend = false;
+                render();
+            }
+            function changeVariant(key, patch) {
+                const list = Sutra.cart.items();
+                const idx = list.findIndex(i => Sutra.cart.lineKey(i) === key);
+                if (idx < 0) return key;
+                list[idx] = Object.assign({}, list[idx], patch);
+                const merged = [];
+                list.forEach(i => {
+                    const k = Sutra.cart.lineKey(i);
+                    const ex = merged.find(m => Sutra.cart.lineKey(m) === k);
+                    if (ex) ex.qty = Math.min(Sutra.cart.MAX_QTY, ex.qty + i.qty); else merged.push(Object.assign({}, i));
+                });
+                replaceAll(merged);
+                return Sutra.cart.lineKey(list[idx]);
+            }
+
+            /* ---------- Undo ---------- */
+            function showUndo(message, snapshot) {
+                $('#ctUndoMsg').textContent = message;
+                const bar = $('#ctUndo');
+                bar.classList.add('is-in');
+                clearTimeout(undoTimer);
+                undoTimer = setTimeout(hideUndo, 7000);
+                $('#ctUndoBtn').onclick = () => { hideUndo(); replaceAll(snapshot); };
+            }
+            function hideUndo() { $('#ctUndo').classList.remove('is-in'); }
+
+            /* ===========================================================
+               RENDER
+               =========================================================== */
+            const listEl = $('#ctList'), summaryEl = $('#ctSummary');
+
+            function lineHTML(l) {
+                const k = esc(l.key);
+                if (l.gone) {
+                    return `<article class="ct-item is-gone" data-key="${k}">
+        <span class="ct-thumb" aria-hidden="true"><span class="ct-thumb-in"></span></span>
+        <div class="ct-info"><div class="ct-name">This item is no longer available</div>
+          <p class="ct-flag">It can\u2019t be purchased any more. Please remove it to continue.</p>
+          <div class="ct-actions"><button type="button" class="ct-link-btn" data-act="remove">Remove</button></div></div>
+        <div class="ct-buy"></div></article>`;
+                }
+                const { p, it, color } = l;
+                const sizeControl = cat.needsSize(p)
+                    ? `<label class="ct-var"><span>Size</span><select class="ct-select" data-act="size" aria-label="Size for ${esc(p.name)}">
+          ${l.sizeObj ? '' : '<option value="" selected disabled>Select</option>'}
+          ${p.sizes.map(s => {
+                        const out = p.stock === 'in-stock' && s.qty === 0;
+                        return `<option value="${esc(s.label)}"${s.label === it.size ? ' selected' : ''}${out && s.label !== it.size ? ' disabled' : ''}>${esc(s.label)}${out ? ' (out of stock)' : ''}</option>`;
+                    }).join('')}</select></label>`
+                    : `<span class="ct-static">Size: ${esc(p.sizes[0].label)}</span>`;
+                const colorControl = `<label class="ct-var"><span class="ct-dot" style="--sw:${color.hex}"></span>
+      <select class="ct-select" data-act="color" aria-label="Colour for ${esc(p.name)}">
+        ${p.colors.map(c => `<option value="${esc(c.name)}"${c.name === color.name ? ' selected' : ''}>${esc(c.name)}</option>`).join('')}
+      </select></label>`;
+
+                let flag = '';
+                if (l.oos) flag = `<p class="ct-flag">Out of stock in size ${esc(it.size)} \u2014 choose another size or remove.</p>`;
+                else if (l.needsSizeChoice) flag = '<p class="ct-flag">Please select a size.</p>';
+                else if (l.low) flag = `<p class="ct-flag">Only ${l.left} left in this size.</p>`;
+                else if (p.stock === 'made-to-order') flag = `<p class="ct-flag is-info">Made to order \u00B7 dispatches in ${p.dispatchDays[0]}\u2013${p.dispatchDays[1]} days</p>`;
+                else flag = `<p class="ct-flag is-ok">In stock</p>`;
+
+                const lineTotal = p.price * it.qty;
+                const showQtyNote = l.tracked && l.left > 0 && it.qty >= l.max && l.max < Sutra.cart.MAX_QTY;
+                return `<article class="ct-item" data-key="${k}">
+      <a class="ct-thumb" href="product.html?id=${p.id}" aria-label="View ${esc(p.name)}"><span class="ct-thumb-in">${thumbHTML(p, color)}</span></a>
+      <div class="ct-info">
+        <div class="ct-eyebrow">${esc(cat.regionLabel(p.region))} \u00B7 ${esc(cat.categoryLabel(p.category))}</div>
+        <h3 class="ct-name"><a href="product.html?id=${p.id}">${esc(p.name)}</a></h3>
+        <div class="ct-vars">${sizeControl}${colorControl}</div>
+        ${flag}
+        <div class="ct-actions">
+          <button type="button" class="ct-link-btn" data-act="remove">Remove</button>
+          <button type="button" class="ct-link-btn" data-act="wish">Move to wishlist</button>
+        </div>
+      </div>
+      <div class="ct-buy">
+        <div class="ct-qty" role="group" aria-label="Quantity for ${esc(p.name)}">
+          <button type="button" data-act="dec" aria-label="Decrease quantity"${it.qty <= 1 ? ' disabled' : ''}>&minus;</button>
+          <output aria-live="polite">${it.qty}</output>
+          <button type="button" data-act="inc" aria-label="Increase quantity"${(it.qty >= l.max || l.oos) ? ' disabled' : ''}>+</button>
+        </div>
+        <div class="ct-price">
+          <strong>${money(lineTotal)}</strong>
+          ${p.mrp > p.price ? `<small><s>${money(p.mrp * it.qty)}</s>${cat.discount(p)}% off</small>` : ''}
+          ${it.qty > 1 ? `<small>${money(p.price)} each</small>` : ''}
+          ${showQtyNote ? `<small>Max ${l.max} available</small>` : ''}
+        </div>
+      </div>
+    </article>`;
+            }
+
+            function renderShip(t) {
+                const el = $('#ctShip');
+                const pct = Math.min(100, Math.round(t.sub / FREE_SHIP * 100));
+                el.classList.toggle('is-done', t.freeShip);
+                el.innerHTML = (t.freeShip
+                    ? `<strong>You&rsquo;ve unlocked free shipping</strong> on this order.`
+                    : `Add <strong>${money(FREE_SHIP - t.sub)}</strong> more to get <strong>free shipping</strong>.`) +
+                    `<div class="ct-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}" aria-label="Progress to free shipping"><span class="ct-fill" style="width:${pct}%"></span></div>`;
+            }
+
+            function renderSummary(lines, t) {
+                const blockers = lines.filter(isBlocked).length;
+                const saved = t.mrpDiscount + (t.coupon ? t.coupon.amount : 0);
+                const couponBlock = t.coupon
+                    ? `<div class="ct-applied"><span><strong>${esc(t.coupon.code)}</strong> applied</span><button type="button" class="ct-link-btn" id="ctCouponRemove">Remove</button></div>
+         <p class="ct-coupon-msg" id="ctCouponMsg" role="status"></p>`
+                    : `<form class="ct-coupon-form" id="ctCouponForm" novalidate>
+           <input type="text" id="ctCouponInput" placeholder="Enter code" autocomplete="off" maxlength="20" aria-label="Coupon code">
+           <button type="submit">Apply</button>
+         </form>
+         <p class="ct-coupon-msg${t.couponNote ? ' is-err' : ''}" id="ctCouponMsg" role="status">${esc(t.couponNote)}</p>`;
+
+                const cta = blockers
+                    ? `<button type="button" class="ct-checkout" disabled>Proceed to Checkout</button>
+         <p class="ct-block-msg" role="alert">Please fix or remove the highlighted items to continue.</p>`
+                    : `<a href="checkout.html" class="ct-checkout">Proceed to Checkout</a>`;
+
+                summaryEl.innerHTML = `
+      <h2 class="ct-sum-title">Order Summary</h2>
+      <div class="ct-row"><span>Price (${t.qty} item${t.qty === 1 ? '' : 's'})</span><span>${money(t.mrp)}</span></div>
+      ${t.mrpDiscount > 0 ? `<div class="ct-row"><span>Discount</span><span class="is-save">\u2212${money(t.mrpDiscount)}</span></div>` : ''}
+      ${t.coupon ? `<div class="ct-row"><span>Coupon (${esc(t.coupon.code)})</span><span class="is-save">\u2212${money(t.coupon.amount)}</span></div>` : ''}
+      <div class="ct-row"><span>Shipping</span><span>${t.freeShip ? 'Free' : 'Calculated at checkout'}</span></div>
+      <div class="ct-row total"><span>${t.freeShip ? 'Total' : 'Estimated total'}</span><span id="ctTotal">${money(t.total)}</span></div>
+      <p class="ct-tax">Inclusive of all taxes${t.freeShip ? '' : '. Shipping is added at checkout.'}</p>
+      ${saved > 0 ? `<p class="ct-saved">You&rsquo;re saving <strong>${money(saved)}</strong> on this order.</p>` : ''}
+
+      <div class="ct-coupon"><label for="ctCouponInput">HAVE A COUPON?</label>${couponBlock}</div>
+      ${cta}
+
+      <div class="ct-eta">
+        <h3>ESTIMATED DELIVERY</h3>
+        <form class="ct-pin" id="ctPinForm" novalidate>
+          <input type="text" id="ctPin" inputmode="numeric" maxlength="6" placeholder="Enter 6-digit pincode" aria-label="Delivery pincode" autocomplete="postal-code">
+          <button type="submit">Check</button>
+        </form>
+        <p class="ct-pin-result" id="ctPinResult" role="status"></p>
+      </div>
+
+      <ul class="ct-trust">
+        <li><svg viewBox="0 0 24 24"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg>Made in-house in Bhilwara, Rajasthan</li>
+        <li><svg viewBox="0 0 24 24"><path d="M2 7h12v9H2zM14 10h4l3 3v3h-7M6.5 18.5a1.5 1.5 0 1 0 0 .01M17.5 18.5a1.5 1.5 0 1 0 0 .01"/></svg>Free shipping above ${money(FREE_SHIP)}</li>
+        <li><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 4v5h-5M20 12a8 8 0 0 1-14 5.3L4 15M4 20v-5h5"/></svg>Easy returns &amp; exchange</li>
+      </ul>`;
+
+                // mobile bar
+                $('#ctStickyLabel').textContent = t.freeShip ? 'Total' : 'Estimated total';
+                $('#ctStickyTotal').textContent = money(t.total);
+                $('#ctStickyCta').innerHTML = blockers
+                    ? '<button type="button" class="ct-checkout" disabled>Checkout</button>'
+                    : '<a href="checkout.html" class="ct-checkout">Checkout</a>';
+
+                const savedPin = Sutra.store.read(PIN_KEY, '');
+                if (savedPin) { $('#ctPin').value = savedPin; checkPin(savedPin, t); }
+            }
+
+            function render() {
+                if (normalize()) { render(); return; }
+
+                const lines = Sutra.cart.items().map(describe);
+                const count = lines.reduce((n, l) => n + l.it.qty, 0);
+                document.title = `${count ? `Cart (${count}) \u2014 ` : 'Your Cart \u2014 '}Sutra Textiles India`;
+
+                const empty = lines.length === 0;
+                $('#ctEmpty').hidden = !empty;
+                $('#ctFilled').hidden = empty;
+                $('#ctSticky').hidden = empty;
+                const wc = Sutra.wishlist.ids().length;
+                $('#ctWishLink').textContent = wc ? `View Wishlist (${wc})` : 'View Wishlist';
+                $('#ctCount').textContent = empty ? 'Nothing here yet.' : `${count} item${count === 1 ? '' : 's'} in your cart`;
+                renderRecs(lines);
+                if (empty) return;
+
+                const t = computeTotals(lines);
+                renderShip(t);
+                $('#ctNotices').innerHTML = notices.map(n => `<div class="ct-notice">${esc(n)}</div>`).join('');
+                listEl.innerHTML = lines.map(lineHTML).join('');
+                renderSummary(lines, t);
+
+                if (focusTarget) {
+                    const el = $$('[data-act]', listEl).find(x => x.dataset.act === focusTarget.act && x.closest('[data-key]').dataset.key === focusTarget.key);
+                    if (el && !el.disabled) el.focus({ preventScroll: true });
+                    focusTarget = null;
+                }
+            }
+
+            /* ===========================================================
+               LIST INTERACTIONS (event delegation)
+               =========================================================== */
+            listEl.addEventListener('click', (e) => {
+                const btn = e.target.closest('[data-act]');
+                if (!btn || btn.tagName === 'SELECT') return;
+                const key = btn.closest('[data-key]').dataset.key;
+                const line = Sutra.cart.items().find(i => Sutra.cart.lineKey(i) === key);
+                const act = btn.dataset.act;
+                notices = [];
+                focusTarget = { key, act };
+
+                if (act === 'inc' && line) Sutra.cart.setQty(key, line.qty + 1);
+                else if (act === 'dec' && line) Sutra.cart.setQty(key, line.qty - 1);
+                else if (act === 'remove') {
+                    const snapshot = Sutra.cart.items();
+                    const p = line && cat.byId(line.id);
+                    focusTarget = null;
+                    Sutra.cart.remove(key);
+                    showUndo(`${p ? p.name : 'Item'} removed from your cart`, snapshot);
+                } else if (act === 'wish' && line) {
+                    const p = cat.byId(line.id);
+                    if (!Sutra.wishlist.has(line.id)) Sutra.wishlist.toggle(line.id);
+                    focusTarget = null;
+                    Sutra.cart.remove(key);
+                    Sutra.toast(`${p ? p.name : 'Item'} moved to your wishlist`, { actionText: 'View Wishlist', href: 'wishlist.html' });
+                }
+            });
+
+            listEl.addEventListener('change', (e) => {
+                const sel = e.target.closest('select[data-act]');
+                if (!sel) return;
+                const key = sel.closest('[data-key]').dataset.key;
+                notices = [];
+                const newKey = changeVariant(key, sel.dataset.act === 'size' ? { size: sel.value } : { color: sel.value });
+                focusTarget = { key: newKey, act: sel.dataset.act };
+                render();
+            });
+
+            $('#ctClear').addEventListener('click', () => {
+                if (!window.confirm('Remove all items from your cart?')) return;
+                const snapshot = Sutra.cart.items();
+                notices = [];
+                Sutra.cart.clear();
+                showUndo('Your cart was cleared', snapshot);
+            });
+
+            /* ---------- Order note ---------- */
+            const note = $('#ctNote');
+            note.value = Sutra.store.read(NOTE_KEY, '');
+            $('#ctNoteCount').textContent = note.value.length;
+            if (note.value) $('.ct-note').open = true;
+            note.addEventListener('input', () => {
+                $('#ctNoteCount').textContent = note.value.length;
+                Sutra.store.write(NOTE_KEY, note.value.slice(0, 300));
+            });
+
+            /* ===========================================================
+               SUMMARY INTERACTIONS
+               =========================================================== */
+            summaryEl.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (e.target.id === 'ctCouponForm') {
+                    const code = $('#ctCouponInput').value.trim().toUpperCase();
+                    const msg = $('#ctCouponMsg');
+                    if (!code) { msg.className = 'ct-coupon-msg is-err'; msg.textContent = 'Please enter a coupon code.'; return; }
+                    const t = computeTotals(Sutra.cart.items().map(describe));
+                    const r = evalCoupon(code, t.sub);
+                    if (!r.ok) { msg.className = 'ct-coupon-msg is-err'; msg.textContent = r.msg; return; }
+                    Sutra.store.write(COUPON_KEY, code);
+                    Sutra.toast(`${code} applied \u2014 you saved ${money(r.amount)}`);
+                    render();
+                } else if (e.target.id === 'ctPinForm') {
+                    const t = computeTotals(Sutra.cart.items().map(describe));
+                    checkPin($('#ctPin').value.trim(), t);
+                }
+            });
+            summaryEl.addEventListener('click', (e) => {
+                if (e.target.id === 'ctCouponRemove') { Sutra.store.write(COUPON_KEY, ''); render(); }
+            });
+            summaryEl.addEventListener('input', (e) => {
+                if (e.target.id === 'ctPin') e.target.value = e.target.value.replace(/\D/g, '');
+            });
+
+            const fmtDay = (d) => new Intl.DateTimeFormat('en-IN', { weekday: 'short', day: 'numeric', month: 'short' }).format(d);
+            function checkPin(pin, t) {
+                const res = $('#ctPinResult');
+                if (!res) return;
+                if (!/^[1-9][0-9]{5}$/.test(pin)) { res.className = 'ct-pin-result is-err'; res.textContent = 'Please enter a valid 6-digit pincode.'; return; }
+                const transit = TRANSIT[pin[0]];
+                if (!transit) { res.className = 'ct-pin-result is-err'; res.textContent = 'We\u2019ll confirm delivery for this pincode \u2014 please contact us.'; return; }
+                const items = t.valid.length ? t.valid : [];
+                const dMin = Math.max(0, ...items.map(l => l.p.dispatchDays[0]));
+                const dMax = Math.max(0, ...items.map(l => l.p.dispatchDays[1]));
+                const from = new Date(), to = new Date();
+                from.setDate(from.getDate() + dMin + transit[0]);
+                to.setDate(to.getDate() + dMax + transit[1]);
+                const mto = items.some(l => l.p.stock === 'made-to-order');
+                res.className = 'ct-pin-result is-ok';
+                res.innerHTML = `Delivery to <strong>${esc(pin)}</strong> by <strong>${fmtDay(from)} \u2013 ${fmtDay(to)}</strong>.${mto ? ' Includes made-to-order pieces, so the date reflects the longest dispatch time.' : ''}`;
+                Sutra.store.write(PIN_KEY, pin);
+            }
+
+            /* ===========================================================
+               RECOMMENDATIONS (global .add-cart[data-id] handler lives in script.js)
+               =========================================================== */
+            const TINT_STROKE = { 1: '#1C3329', 2: '#E3CB8E', 3: '#1C3329', 4: '#F5F0E6' };
+            function cardHTML(o) {
+                return `<div class="product-card">
+      <a class="ct-card-link" href="product.html?id=${o.id}" aria-label="${esc(o.name)}">
+        <div class="product-art tint-${o.tint}">
+          ${o.tag ? `<span class="product-tag">${esc(o.tag)}</span>` : ''}
+          <svg viewBox="0 0 80 100" fill="none" stroke="${TINT_STROKE[o.tint]}"><path d="M40 10c-10 6-16 16-16 28 0 14 7 25 16 31 9-6 16-17 16-31 0-12-6-22-16-28Z" stroke-width="1"/></svg>
+        </div>
+        <div class="product-info">
+          <div><h3>${esc(o.name)}</h3><span class="region">${esc(cat.regionLabel(o.region))}</span></div>
+          <span class="product-price">${money(o.price)}</span>
+        </div>
+      </a>
+      <button type="button" class="add-cart" data-id="${o.id}">${cat.needsSize(o) ? 'Select Size' : 'Add to Cart'}</button>
+    </div>`;
+            }
+            function renderRecs(lines) {
+                const inCart = new Set(lines.filter(l => l.p).map(l => l.p.id));
+                let picks;
+                if (lines.length) {
+                    const cats = new Set(lines.filter(l => l.p).map(l => l.p.category));
+                    const regs = new Set(lines.filter(l => l.p).map(l => l.p.region));
+                    const score = (o) => (cats.has(o.category) ? 2 : 0) + (regs.has(o.region) ? 1 : 0) + (o.tag === 'Bestseller' ? .5 : 0);
+                    picks = cat.all.filter(o => !inCart.has(o.id)).sort((a, b) => score(b) - score(a) || a.id - b.id);
+                    $('#ctRecsTitle').textContent = 'Complete Your Look';
+                } else {
+                    picks = cat.all.slice().sort((a, b) => (b.tag === 'Bestseller') - (a.tag === 'Bestseller') || a.id - b.id);
+                    $('#ctRecsTitle').textContent = 'Start With Our Bestsellers';
+                }
+                $('#ctRecs').innerHTML = picks.slice(0, 4).map(cardHTML).join('');
+            }
+
+            const sticky = $('#ctSticky');
+            const seen = { summary: true, footer: false };
+            function syncSticky() {
+                const show = !seen.summary && !seen.footer && !sticky.hidden;
+                sticky.classList.toggle('is-visible', show);
+                sticky.setAttribute('aria-hidden', String(!show));
+            }
+            if ('IntersectionObserver' in window) {
+                new IntersectionObserver(([en]) => { seen.summary = en.isIntersecting; syncSticky(); }).observe($('.ct-summary-wrap'));
+                new IntersectionObserver(([en]) => { seen.footer = en.isIntersecting; syncSticky(); }).observe($('#footer'));
+            }
+
+            window.addEventListener('sutra:cart', () => { if (!suspend) render(); });
+            window.addEventListener('storage', () => render());
+
+            render();
+        })();
+    </script>
+
+</body>
+
+</html>

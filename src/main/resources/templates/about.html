@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us — Sutra Textiles India</title>
+  <meta name="description"
+    content="Sutra Textiles India is a textile and fashion enterprise with its own manufacturing unit in Bhilwara, Rajasthan — bringing traditional ethnic wear from every state to a wider market.">
+  <link rel="icon" type="image/x-icon" th:href="@{/favicon_io/favicon.ico}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+
+  <style>
+    [hidden] {
+      display: none !important;
+    }
+
+    .about-hero {
+      background: var(--green);
+      color: var(--ivory);
+      padding-block: clamp(2.5rem, 6vw, 4.2rem);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .about-hero-mark {
+      position: absolute;
+      right: clamp(-60px, -2vw, 0px);
+      bottom: -80px;
+      width: 340px;
+      color: var(--gold-light);
+      opacity: .08;
+      pointer-events: none;
+    }
+
+    .about-crumbs {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .8rem;
+      color: #b9c4b6;
+      margin-bottom: .9rem;
+    }
+
+    .about-crumbs a:hover {
+      color: var(--gold-light);
+    }
+
+    .about-hero .eyebrow {
+      color: var(--gold-light);
+    }
+
+    .about-hero h1 {
+      color: var(--ivory);
+      margin-bottom: .8rem;
+    }
+
+    .about-hero h1 em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .about-hero p {
+      color: #d7ded6;
+      font-size: 1.05rem;
+      max-width: 80ch;
+      position: relative;
+    }
+
+    /* ---- Alternating split sections (reuses .story from common css) ---- */
+    .about-split:nth-of-type(even) .story {
+      grid-template-columns: 1.15fr 0.85fr;
+    }
+
+    .about-split:nth-of-type(even) .story-visual {
+      order: 2;
+    }
+
+    .about-split .story-visual .arch-frame-inner {
+      background: linear-gradient(160deg, #d9c9a8 0%, #e7ded0 100%);
+    }
+
+    .about-split .story-visual .arch-frame-inner svg {
+      color: var(--green);
+    }
+
+    .about-split:nth-of-type(even) .story-visual .arch-frame-inner {
+      background: linear-gradient(160deg, #25402f, #1c3329);
+    }
+
+    .about-split:nth-of-type(even) .story-visual .arch-frame-inner svg {
+      color: var(--gold-light);
+    }
+
+    @media (max-width: 860px) {
+      .about-split:nth-of-type(even) .story {
+        grid-template-columns: 1fr;
+      }
+
+      .about-split:nth-of-type(even) .story-visual {
+        order: -1;
+      }
+    }
+
+    /* ---- Stats band ---- */
+    .stats-band {
+      background: var(--ivory-soft);
+      border-block: 1px solid var(--grey);
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      text-align: center;
+      padding-block: clamp(2.5rem, 5vw, 3.5rem);
+    }
+
+    .stat-item {
+      padding: 0 1rem;
+      border-left: 1px solid var(--grey);
+    }
+
+    .stat-item:first-child {
+      border-left: none;
+    }
+
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: clamp(2.6rem, 6vw, 3.6rem);
+      color: var(--green);
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .stat-label {
+      margin-top: 0.6rem;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      color: var(--olive);
+    }
+
+    @media (max-width: 720px) {
+      .stats-row {
+        grid-template-columns: 1fr;
+        gap: 1.6rem;
+      }
+
+      .stat-item {
+        border-left: none;
+        border-top: 1px solid var(--grey);
+        padding-top: 1.6rem;
+      }
+
+      .stat-item:first-child {
+        border-top: none;
+        padding-top: 0;
+      }
+    }
+
+    /* ---- Pull quote band ---- */
+    .quote-band {
+      background: var(--green-deep);
+      color: var(--ivory);
+      text-align: center;
+      padding-block: clamp(3rem, 7vw, 5rem);
+    }
+
+    .quote-band blockquote {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(1.5rem, 3.4vw, 2.3rem);
+      max-width: 18ch;
+      margin: 0 auto;
+      line-height: 1.3;
+    }
+
+    .quote-band cite {
+      display: block;
+      font-style: normal;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      color: var(--gold-light);
+      margin-top: 1.4rem;
+    }
+
+    /* ---- Craft process ---- */
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--gap);
+      counter-reset: step;
+      position: relative;
+    }
+
+    .process-step {
+      position: relative;
+      padding-top: 0.5rem;
+    }
+
+    .process-step::before {
+      counter-increment: step;
+      content: counter(step, decimal-leading-zero);
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 0.9rem;
+    }
+
+    .process-step h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .process-step p {
+      font-size: 0.9rem;
+      color: #4b5048;
+    }
+
+    .process-step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 0.65rem;
+      left: 2.6rem;
+      width: calc(100% - 1.5rem);
+      height: 1px;
+      background: var(--grey);
+    }
+
+    @media (max-width: 920px) {
+      .process-grid {
+        grid-template-columns: 1fr 1fr;
+        row-gap: 2.5rem;
+      }
+
+      .process-step:not(:last-child)::after {
+        display: none;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .process-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ---- Network cards ---- */
+    .section-network {
+      background: var(--ivory-soft);
+      border-block: 1px solid var(--grey);
+    }
+
+    .network-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--gap);
+    }
+
+    .network-card {
+      background: var(--ivory);
+      border: 1px solid var(--grey);
+      padding: 1.8rem 1.5rem;
+      transition: border-color .25s var(--ease), transform .25s var(--ease);
+    }
+
+    .network-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-3px);
+    }
+
+    .network-card .rule {
+      margin-bottom: 1rem;
+    }
+
+    .network-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .network-card p {
+      font-size: 0.88rem;
+      color: #4b5048;
+    }
+
+    @media (max-width: 920px) {
+      .network-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .network-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ---- Closing CTA ---- */
+    .about-cta {
+      background: var(--green);
+      color: var(--ivory);
+      text-align: center;
+      padding-block: clamp(3.5rem, 7vw, 5.5rem);
+    }
+
+    .about-cta h2 {
+      color: var(--ivory);
+      margin-bottom: 0.6rem;
+    }
+
+    .about-cta p {
+      color: #c9d1c6;
+      max-width: 46ch;
+      margin: 0 auto 2rem;
+    }
+
+    .about-cta .tagline {
+      margin-top: 2.2rem;
+      font-family: var(--font-display);
+      font-style: italic;
+      color: var(--gold-light);
+      font-size: 1.05rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="navbar" th:replace="~{fragments/navbar :: navbar}"></div>
+  <div id="navSpacer"></div>
+
+  <section class="about-hero">
+    <svg class="about-hero-mark" viewBox="0 0 120 150" fill="none" stroke="currentColor" stroke-width="1"
+      aria-hidden="true">
+      <path d="M60 10c-16 10-26 26-26 46 0 24 12 42 26 52 14-10 26-28 26-52 0-20-10-36-26-46Z" />
+      <path d="M60 46v66" />
+      <path d="M60 64c-7 3-15 1-15 1s2.5-9 9-12.5c3.6-2 8-1 8-1" />
+      <path d="M60 80c7 3 15 1 15 1s-2.5-9-9-12.5c-3.6-2-8-1-8-1" />
+    </svg>
+    <div class="container">
+      <nav class="about-crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a><span
+          aria-hidden="true">/</span><span aria-current="page">About Us</span></nav>
+      <span class="eyebrow">ABOUT SUTRA TEXTILES INDIA</span>
+      <h1>Rooted in craft, <em>made for every state.</em></h1>
+      <p>We bring India's rich textile heritage to life through timeless craftsmanship and artistry.</p>
+    </div>
+  </section>
+
+  <section class="about-split">
+    <div class="container story">
+      <div class="story-visual">
+        <div class="arch-frame">
+          <div class="arch-frame-inner">
+            <svg viewBox="0 0 120 150" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M60 10c-16 10-26 26-26 46 0 24 12 42 26 52 14-10 26-28 26-52 0-20-10-36-26-46Z"
+                stroke="currentColor" stroke-width="1" />
+              <path d="M60 46v66" stroke="currentColor" stroke-width="1" />
+              <path d="M60 64c-7 3-15 1-15 1s2.5-9 9-12.5c3.6-2 8-1 8-1" stroke="currentColor" stroke-width="0.9" />
+              <path d="M60 80c7 3 15 1 15 1s-2.5-9-9-12.5c-3.6-2-8-1-8-1" stroke="currentColor" stroke-width="0.9" />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="story-copy">
+        <span class="eyebrow">WHO WE ARE</span>
+        <h2>A textile enterprise, built on control.</h2>
+        <p>Sutra Textiles India is a textile and fashion enterprise focused on creating meaningful opportunities across
+          the Indian fashion and textile ecosystem.</p>
+        <p>We run our own manufacturing unit in Bhilwara, Rajasthan — which means quality, sourcing and pricing stay in
+          our hands at every step, instead of passing through a chain of middlemen before reaching you.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats-band">
+    <div class="container stats-row">
+      <div class="stat-item">
+        <div class="stat-number" data-count-to="100" data-suffix="%">0%</div>
+        <div class="stat-label">IN-HOUSE MANUFACTURING</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">Bhilwara</div>
+        <div class="stat-label">RAJASTHAN FACILITY</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" data-count-to="4" data-suffix="">0</div>
+        <div class="stat-label">SECTOR FOCUS AREAS</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-split">
+    <div class="container story">
+      <div class="story-visual">
+        <div class="arch-frame">
+          <div class="arch-frame-inner">
+            <svg viewBox="0 0 120 150" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M60 10c-16 10-26 26-26 46 0 24 12 42 26 52 14-10 26-28 26-52 0-20-10-36-26-46Z"
+                stroke="currentColor" stroke-width="1" />
+              <path d="M60 46v66" stroke="currentColor" stroke-width="1" />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="story-copy">
+        <span class="eyebrow">WHERE WE'RE HEADED</span>
+        <h2>Our Vision</h2>
+        <p>We're building a strong, connected network of boutiques, designers, retailers and textile businesses —
+          helping quality products reach the audience they deserve.</p>
+        <p>Many boutiques and independent fashion businesses make excellent products but don't always have the market
+          reach, visibility or customer access to realise their full potential.</p>
+        <blockquote>"This is where Sutra Textiles India aims to create value."</blockquote>
+      </div>
+    </div>
+  </section>
+
+  <section class="quote-band">
+    <div class="container">
+      <blockquote>"Good products deserve a larger market."</blockquote>
+      <cite>SUTRA TEXTILES INDIA</cite>
+    </div>
+  </section>
+
+  <section class="section-process">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">HOW IT'S MADE</span>
+        <h2>From Workshop to Wardrobe</h2>
+        <p>Every Sutra piece follows the same path before it reaches you.</p>
+      </div>
+      <div class="process-grid">
+        <div class="process-step">
+          <h3>Sourcing</h3>
+          <p>Fabric and craft techniques sourced from textile traditions across India.</p>
+        </div>
+        <div class="process-step">
+          <h3>In-House Manufacturing</h3>
+          <p>Made at our own facility in Bhilwara, Rajasthan — not outsourced.</p>
+        </div>
+        <div class="process-step">
+          <h3>Quality Check</h3>
+          <p>Every piece checked for fabric, fit and finish before it leaves our facility.</p>
+        </div>
+        <div class="process-step">
+          <h3>Delivered Pan-India</h3>
+          <p>Shipped to customers and partner boutiques across the country.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-network">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">A CONNECTED NETWORK</span>
+        <h2>Who We Work With</h2>
+        <p>Our vision only works if good partners come with it.</p>
+      </div>
+      <div class="network-grid">
+        <div class="network-card">
+          <hr class="rule">
+          <h3>Boutiques</h3>
+          <p>Selected boutiques whose products reach a wider audience through us.</p>
+        </div>
+        <div class="network-card">
+          <hr class="rule">
+          <h3>Designers</h3>
+          <p>Independent designers bringing fresh takes on traditional silhouettes.</p>
+        </div>
+        <div class="network-card">
+          <hr class="rule">
+          <h3>Weavers &amp; Artisans</h3>
+          <p>The hands behind bandhani, phulkari, kanjeevaram and more.</p>
+        </div>
+        <div class="network-card">
+          <hr class="rule">
+          <h3>Retailers</h3>
+          <p>Textile businesses we support with reach, visibility and growth.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-cta">
+    <div class="container">
+      <h2>See the Craft for Yourself</h2>
+      <p>Every piece in our collection is made the same way this page describes — honestly, and in-house.</p>
+      <a href="shop.html" class="btn btn-primary">Shop New Arrivals</a>
+      <p class="tagline">Building Connections. Expanding Markets. Creating Growth.</p>
+    </div>
+  </section>
+
+  <div id="footer" th:replace="~{fragments/footer :: footer}"></div>
+
+  <script th:src="@{/js/script.js}"></script>
+
+  <script>
+    (function () {
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const counters = document.querySelectorAll('[data-count-to]');
+      if (!counters.length) return;
+
+      function animateCounter(el) {
+        const target = parseInt(el.dataset.countTo, 10);
+        const suffix = el.dataset.suffix || '';
+        if (prefersReducedMotion) { el.textContent = target + suffix; return; }
+
+        const duration = 1100;
+        const start = performance.now();
+
+        function tick(now) {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          el.textContent = Math.round(eased * target) + suffix;
+          if (progress < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      }
+
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            animateCounter(entry.target);
+            obs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.6 });
+
+      counters.forEach(el => observer.observe(el));
+    })();
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help &amp; FAQ — Sutra Textiles India</title>
+    <meta name="description"
+        content="Answers to common questions about ordering, payments, shipping, returns, sizing, fabric care and your Sutra Textiles India account.">
+ <link rel="icon" type="image/x-icon" th:href="@{/favicon_io/favicon.ico}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Work+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css" th:href="@{/css/style.css}">
+    <style>
+        [hidden] {
+            display: none !important;
+        }
+
+        /* ---------- Hero + search ---------- */
+        .fq-hero {
+            background: var(--green);
+            color: var(--ivory);
+            padding-block: clamp(2.5rem, 6vw, 4.2rem);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fq-hero-mark {
+            position: absolute;
+            right: clamp(-60px, -2vw, 0px);
+            bottom: -80px;
+            width: 340px;
+            color: var(--gold-light);
+            opacity: .08;
+            pointer-events: none;
+        }
+
+        .fq-crumbs {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            font-size: .8rem;
+            color: #b9c4b6;
+            margin-bottom: .9rem;
+        }
+
+        .fq-crumbs a:hover {
+            color: var(--gold-light);
+        }
+
+        .fq-hero .eyebrow {
+            color: var(--gold-light);
+        }
+
+        .fq-hero h1 {
+            color: var(--ivory);
+            margin-bottom: 1.6rem;
+        }
+
+        .fq-hero h1 em {
+            font-style: italic;
+            color: var(--gold-light);
+        }
+
+        .fq-search {
+            position: relative;
+            max-width: 640px;
+        }
+
+        .fq-search svg {
+            position: absolute;
+            left: 1.1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: var(--olive);
+            stroke-width: 1.7;
+            pointer-events: none;
+        }
+
+        .fq-search input {
+            width: 100%;
+            height: 58px;
+            padding: 0 3.4rem 0 3.2rem;
+            border: 1px solid transparent;
+            border-radius: var(--radius);
+            background: var(--ivory-soft);
+            color: var(--charcoal);
+            font: inherit;
+            font-size: 1rem;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, .18);
+        }
+
+        .fq-search input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201, 162, 75, .4), 0 10px 28px rgba(0, 0, 0, .18);
+        }
+
+        .fq-search input::placeholder {
+            color: #8a8f84;
+        }
+
+        .fq-clear {
+            position: absolute;
+            right: .6rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            color: var(--olive);
+            font-size: 1.4rem;
+            line-height: 1;
+        }
+
+        .fq-clear:hover {
+            background: rgba(20, 38, 32, .08);
+            color: var(--green);
+        }
+
+        .fq-hint {
+            margin-top: .7rem;
+            font-size: .8rem;
+            color: #b9c4b6;
+        }
+
+        .fq-hint kbd {
+            font-family: inherit;
+            padding: .05rem .4rem;
+            border: 1px solid rgba(227, 203, 142, .5);
+            border-radius: 3px;
+            color: var(--gold-light);
+        }
+
+        .fq-popular {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: .6rem;
+            margin-top: 1.3rem;
+        }
+
+        .fq-popular>span {
+            font-size: .8rem;
+            letter-spacing: .08em;
+            color: #b9c4b6;
+            margin-right: .3rem;
+        }
+
+        .fq-pop {
+            padding: .4rem .95rem;
+            border: 1px solid rgba(227, 203, 142, .45);
+            border-radius: 999px;
+            font-size: .82rem;
+            color: var(--gold-light);
+            transition: background .2s var(--ease);
+        }
+
+        .fq-pop:hover {
+            background: rgba(227, 203, 142, .12);
+        }
+
+        /* ---------- Layout ---------- */
+        .fq-main {
+            padding-block: clamp(2rem, 4vw, 3.5rem) clamp(2.5rem, 5vw, 4rem);
+        }
+
+        .fq-review {
+            padding: .9rem 1.2rem;
+            margin-bottom: 1.8rem;
+            border: 1px dashed var(--terracotta);
+            background: rgba(181, 83, 60, .07);
+            border-radius: var(--radius);
+            font-size: .86rem;
+        }
+
+        .fq-grid {
+            display: grid;
+            grid-template-columns: 250px minmax(0, 1fr);
+            gap: clamp(1.5rem, 4vw, 3.5rem);
+            align-items: start;
+        }
+
+        .fq-cats {
+            position: sticky;
+            top: calc(var(--nav-h, 100px) + 1rem);
+            background: var(--ivory-soft);
+            border: 1px solid var(--grey);
+            border-radius: var(--radius);
+            padding: 1rem;
+        }
+
+        .fq-cats h2 {
+            font-family: var(--font-body);
+            font-size: .74rem;
+            letter-spacing: .12em;
+            color: var(--olive);
+            font-weight: 500;
+            text-transform: uppercase;
+            padding: .3rem .8rem .7rem;
+        }
+
+        .fq-cat {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: .6rem;
+            width: 100%;
+            padding: .7rem .8rem;
+            border-radius: var(--radius);
+            font-size: .92rem;
+            color: var(--charcoal);
+            text-align: left;
+            transition: background .2s var(--ease);
+        }
+
+        .fq-cat:hover {
+            background: rgba(201, 162, 75, .12);
+        }
+
+        .fq-cat[aria-pressed="true"] {
+            background: var(--green);
+            color: var(--ivory);
+        }
+
+        .fq-cat .n {
+            font-size: .72rem;
+            min-width: 22px;
+            text-align: center;
+            padding: .1rem .4rem;
+            border-radius: 999px;
+            background: rgba(201, 162, 75, .25);
+            color: var(--green);
+        }
+
+        .fq-cat[aria-pressed="true"] .n {
+            background: rgba(245, 240, 230, .2);
+            color: var(--ivory);
+        }
+
+        /* ---------- Results header ---------- */
+        .fq-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: .6rem 1.5rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .fq-status {
+            font-size: .88rem;
+            color: var(--olive);
+        }
+
+        .fq-status strong {
+            color: var(--green);
+            font-weight: 500;
+        }
+
+        .fq-tools {
+            display: flex;
+            gap: 1.2rem;
+        }
+
+        .fq-link-btn {
+            font-size: .84rem;
+            color: var(--olive);
+            border-bottom: 1px solid transparent;
+            padding-bottom: 1px;
+        }
+
+        .fq-link-btn:hover {
+            color: var(--green);
+            border-color: var(--gold);
+        }
+
+        /* ---------- Accordion ---------- */
+        .fq-group+.fq-group {
+            margin-top: 2.6rem;
+        }
+
+        .fq-group-head {
+            display: flex;
+            align-items: center;
+            gap: .9rem;
+            margin-bottom: .6rem;
+        }
+
+        .fq-group-head h2 {
+            font-size: clamp(1.4rem, 2.4vw, 1.8rem);
+        }
+
+        .fq-group-head::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--grey);
+        }
+
+        .fq-item {
+            border-bottom: 1px solid var(--grey);
+            scroll-margin-top: calc(var(--nav-h, 100px) + 1rem);
+        }
+
+        .fq-item:first-of-type {
+            border-top: 1px solid var(--grey);
+        }
+
+        .fq-item>summary {
+            list-style: none;
+            cursor: pointer;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1.2rem;
+            padding: 1.15rem .2rem;
+            font-family: var(--font-display);
+            font-size: 1.12rem;
+            color: var(--green);
+            line-height: 1.35;
+        }
+
+        .fq-item>summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .fq-item>summary:hover {
+            color: var(--green-deep);
+        }
+
+        .fq-item>summary::after {
+            content: "";
+            flex-shrink: 0;
+            width: 9px;
+            height: 9px;
+            margin-top: .5rem;
+            border: 1px solid var(--gold);
+            transform: rotate(45deg);
+            transition: background .25s var(--ease), transform .25s var(--ease);
+        }
+
+        .fq-item[open]>summary::after {
+            background: var(--gold);
+            transform: rotate(225deg);
+        }
+
+        .fq-q-cat {
+            display: block;
+            font-family: var(--font-body);
+            font-size: .7rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--olive);
+            margin-bottom: .2rem;
+        }
+
+        .fq-body {
+            padding: 0 .2rem 1.4rem;
+            max-width: 70ch;
+        }
+
+        .fq-body p {
+            font-size: .95rem;
+            color: #3a3f37;
+            margin-bottom: .8rem;
+            max-width: none;
+        }
+
+        .fq-body ul {
+            display: grid;
+            gap: .4rem;
+            margin: 0 0 .9rem;
+        }
+
+        .fq-body li {
+            position: relative;
+            padding-left: 1.1rem;
+            font-size: .95rem;
+            color: #3a3f37;
+        }
+
+        .fq-body li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: .62em;
+            width: 5px;
+            height: 5px;
+            background: var(--gold);
+            transform: rotate(45deg);
+        }
+
+        .fq-body a {
+            color: var(--green);
+            border-bottom: 1px solid var(--gold);
+        }
+
+        .fq-body mark,
+        .fq-item>summary mark {
+            background: rgba(201, 162, 75, .35);
+            color: inherit;
+            padding: 0 .1em;
+            border-radius: 2px;
+        }
+
+        .fq-foot {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: .6rem 1.4rem;
+            padding-top: .9rem;
+            border-top: 1px dashed #d4cbb4;
+            font-size: .82rem;
+            color: var(--olive);
+        }
+
+        .fq-vote {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+        }
+
+        .fq-vote button {
+            padding: .25rem .8rem;
+            border: 1px solid var(--grey);
+            border-radius: 999px;
+            font-size: .8rem;
+            color: var(--green);
+            background: var(--ivory-soft);
+            transition: all .2s var(--ease);
+        }
+
+        .fq-vote button:hover {
+            border-color: var(--gold);
+        }
+
+        .fq-vote button[aria-pressed="true"] {
+            background: var(--green);
+            border-color: var(--green);
+            color: var(--ivory);
+        }
+
+        .fq-thanks a {
+            color: var(--green);
+            border-bottom: 1px solid var(--gold);
+        }
+
+        .fq-flag {
+            display: inline-block;
+            margin-bottom: .8rem;
+            padding: .15rem .6rem;
+            border: 1px dashed var(--terracotta);
+            color: var(--terracotta);
+            font-size: .72rem;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            border-radius: 999px;
+        }
+
+        .fq-more {
+            margin-top: 1rem;
+            font-size: .88rem;
+            color: var(--olive);
+        }
+
+        .fq-more a {
+            color: var(--green);
+            border-bottom: 1px solid var(--gold);
+        }
+
+        /* ---------- Empty ---------- */
+        .fq-empty {
+            text-align: center;
+            padding: 3rem 1rem;
+            border: 1px dashed var(--grey);
+            border-radius: var(--radius);
+            background: var(--ivory-soft);
+        }
+
+        .fq-empty h2 {
+            margin-bottom: .5rem;
+            font-size: 1.5rem;
+        }
+
+        .fq-empty p {
+            margin: 0 auto 1.3rem;
+            color: var(--olive);
+        }
+
+        .fq-empty-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: .8rem;
+        }
+
+        .fq-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 48px;
+            padding: 0 1.8rem;
+            border-radius: var(--radius);
+            background: var(--gold);
+            color: var(--green-deep);
+            font-weight: 500;
+            letter-spacing: .05em;
+            font-size: .88rem;
+            transition: background .25s var(--ease), color .25s var(--ease);
+        }
+
+        .fq-btn:hover {
+            background: var(--gold-light);
+        }
+
+        .fq-btn.is-ghost {
+            background: transparent;
+            border: 1px solid var(--green);
+            color: var(--green);
+        }
+
+        .fq-btn.is-ghost:hover {
+            background: var(--green);
+            color: var(--ivory);
+        }
+
+        /* ---------- Still need help ---------- */
+        .fq-help {
+            background: var(--ivory-soft);
+            border-top: 1px solid var(--grey);
+        }
+
+        .fq-help-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.2rem;
+        }
+
+        .fq-card {
+            display: block;
+            padding: 1.5rem;
+            background: var(--ivory);
+            border: 1px solid var(--grey);
+            border-radius: var(--radius);
+            transition: border-color .25s var(--ease), transform .25s var(--ease);
+        }
+
+        .fq-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-3px);
+        }
+
+        .fq-card small {
+            display: block;
+            font-size: .72rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--olive);
+            margin-bottom: .3rem;
+        }
+
+        .fq-card strong {
+            display: block;
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            color: var(--green);
+            font-weight: 600;
+            margin-bottom: .3rem;
+        }
+
+        .fq-card span {
+            font-size: .88rem;
+            color: var(--olive);
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 900px) {
+            .fq-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .fq-cats {
+                position: static;
+                padding: .8rem;
+            }
+
+            .fq-cats h2 {
+                display: none;
+            }
+
+            .fq-cats-list {
+                display: flex;
+                gap: .5rem;
+                overflow-x: auto;
+                padding-bottom: .2rem;
+            }
+
+            .fq-cat {
+                width: auto;
+                white-space: nowrap;
+                border: 1px solid var(--grey);
+                border-radius: 999px;
+            }
+
+            .fq-help-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="navbar" th:replace="~{fragments/navbar :: navbar}"></div>
+    <div id="navSpacer"></div>
+
+    <main>
+
+        <!-- ===================== HERO + SEARCH ===================== -->
+        <section class="fq-hero">
+            <svg class="fq-hero-mark" viewBox="0 0 120 150" fill="none" stroke="currentColor" stroke-width="1"
+                aria-hidden="true">
+                <path d="M60 10c-16 10-26 26-26 46 0 24 12 42 26 52 14-10 26-28 26-52 0-20-10-36-26-46Z" />
+                <path d="M60 46v66" />
+                <path d="M60 64c-7 3-15 1-15 1s2.5-9 9-12.5c3.6-2 8-1 8-1" />
+                <path d="M60 80c7 3 15 1 15 1s-2.5-9-9-12.5c-3.6-2-8-1-8-1" />
+            </svg>
+            <div class="container">
+                <nav class="fq-crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a><span
+                        aria-hidden="true">/</span><span aria-current="page">Help &amp; FAQ</span></nav>
+                <span class="eyebrow">HELP &amp; FAQ</span>
+                <h1>How can we <em>help you?</em></h1>
+                <form class="fq-search" id="fqSearchForm" role="search" onsubmit="return false">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="11" cy="11" r="7" />
+                        <path d="m21 21-4.3-4.3" />
+                    </svg>
+                    <input type="search" id="fqSearch" placeholder="Search orders, shipping, returns, sizing&hellip;"
+                        aria-label="Search help articles" autocomplete="off" spellcheck="false">
+                    <button type="button" class="fq-clear" id="fqClear" aria-label="Clear search"
+                        hidden>&times;</button>
+                </form>
+                <p class="fq-hint">Press <kbd>/</kbd> to search</p>
+                <div class="fq-popular" id="fqPopular"></div>
+            </div>
+        </section>
+
+        <!-- ===================== QUESTIONS ===================== -->
+        <section class="fq-main">
+            <div class="container">
+
+                <div class="fq-review" id="fqReview" hidden></div>
+
+                <div class="fq-grid">
+                    <aside class="fq-cats" aria-label="Topics">
+                        <h2>Topics</h2>
+                        <div class="fq-cats-list" id="fqCats" role="group" aria-label="Filter by topic"></div>
+                    </aside>
+
+                    <div>
+                        <div class="fq-bar">
+                            <p class="fq-status" id="fqStatus" role="status" aria-live="polite"></p>
+                            <div class="fq-tools" id="fqTools">
+                                <button type="button" class="fq-link-btn" id="fqExpand">Expand all</button>
+                                <button type="button" class="fq-link-btn" id="fqCollapse">Collapse all</button>
+                            </div>
+                        </div>
+                        <div id="fqList"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================== STILL NEED HELP ===================== -->
+        <section class="fq-help">
+            <div class="container">
+                <div class="section-head">
+                    <span class="eyebrow">STILL NEED HELP?</span>
+                    <h2>We&rsquo;re here for you</h2>
+                    <p>Can&rsquo;t find what you&rsquo;re looking for? Reach out and our team will help.</p>
+                </div>
+                <div class="fq-help-grid">
+                    <a class="fq-card" href="tel:+917987725348"><small>Call us</small><strong>+91 79877
+                            25348</strong><span>Tap to call our team</span></a>
+                    <a class="fq-card" id="fqWhatsapp"
+                        href="https://wa.me/917987725348?text=Hi%20Sutra%20Textiles%20India%2C%20I%20need%20some%20help."
+                        target="_blank" rel="noopener"><small>WhatsApp</small><strong>Message us</strong><span>Chat with
+                            our team</span></a>
+                    <a class="fq-card" href="contact.html"><small>Write to us</small><strong>Send a
+                            message</strong><span>Tell us how we can help</span></a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="footer" th:replace="~{fragments/footer :: footer}"></div>
+
+    <!-- Base script (href/src = static preview, th: = Spring Boot) -->
+    <script src="js/products.js" th:src="@{/js/products.js}"></script>
+    <script src="js/script.js" th:src="@{/js/script.js}"></script>
+
+    <!-- ===================== PAGE-SPECIFIC JS (FAQ) ===================== -->
+    <script th:inline="none">
+        (function () {
+            'use strict';
+
+            const $ = (sel, root = document) => root.querySelector(sel);
+            const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+            const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+            const escRe = (s) => s.replace(/[.*+?^${}()|\\]/g, '\\$&').replace(/\[/g, '\\[').replace(/\]/g, '\\]');
+
+            /* ===========================================================
+               CONFIG
+               =========================================================== */
+            // While true, answers that still need your confirmation show a "Confirm wording" flag and a banner appears on top.
+            // Set to false before launch (after you have reviewed the flagged answers).
+            const REVIEW_MODE = true;
+            const FREE_SHIP = Sutra.catalog.money(2999);
+            const PHONE = '+91 79877 25348';
+            const VOTES_KEY = 'sutra_faq_votes_v1';
+
+            const CATEGORIES = [
+                { id: 'orders', label: 'Orders & Payments', topic: 'order' },
+                { id: 'shipping', label: 'Shipping & Delivery', topic: 'shipping' },
+                { id: 'returns', label: 'Returns & Exchange', topic: 'returns' },
+                { id: 'sizing', label: 'Sizing & Customisation', topic: 'sizing' },
+                { id: 'products', label: 'Products & Care', topic: 'product' },
+                { id: 'account', label: 'Account & Wishlist', topic: 'other' }
+            ];
+
+            /* ===========================================================
+               CONTENT
+               confirm: true  => the wording depends on a business policy you still need to confirm.
+               tags are extra search words (synonyms).
+               =========================================================== */
+            const FAQS = [
+                /* ---------- Orders & Payments ---------- */
+                {
+                    id: 'place-order', cat: 'orders', q: 'How do I place an order?', tags: 'buy purchase checkout guest',
+                    a: `<p>Choose a piece, pick your colour and size, and tap <strong>Add to Cart</strong>. When you&rsquo;re ready, open your cart, review it and go to checkout. Enter your address, choose how you&rsquo;d like to pay, and place your order.</p><p>You don&rsquo;t need an account to order &mdash; you can check out as a guest.</p>`
+                },
+                {
+                    id: 'payment-methods', cat: 'orders', q: 'Which payment methods do you accept?', tags: 'upi card credit debit net banking netbanking cod cash on delivery pay', confirm: true,
+                    a: `<p>At checkout you can pay with:</p><ul><li>UPI</li><li>Credit or debit card</li><li>Net banking</li><li>Cash on delivery</li></ul><p>The options available are always shown at checkout before you pay.</p>`
+                },
+                {
+                    id: 'payment-safe', cat: 'orders', q: 'Is it safe to pay on your website?', tags: 'secure security safe card details', confirm: true,
+                    a: `<p>Online payments are handled by a payment gateway, and we don&rsquo;t keep your card details on our website. If anything about a payment looks wrong, please <a href="contact.html?topic=order">contact us</a> straight away.</p>`
+                },
+                {
+                    id: 'coupon', cat: 'orders', q: 'How do I use a coupon code?', tags: 'discount promo offer voucher code',
+                    a: `<p>Enter your code in the <strong>coupon</strong> box on the cart or checkout page and tap <strong>Apply</strong>. The discount appears in your order summary straight away.</p><p>Some codes need a minimum order value &mdash; if yours isn&rsquo;t accepted, the message will tell you how much more to add.</p>`
+                },
+                {
+                    id: 'change-order', cat: 'orders', q: 'Can I change or cancel my order?', tags: 'modify edit cancel', confirm: true,
+                    a: `<p>Please <a href="contact.html?topic=order">contact us</a> or call <a href="tel:+917987725348">${PHONE}</a> as soon as possible, quoting your order number. Whether a change is possible depends on how far your order has progressed &mdash; once it has been dispatched it can&rsquo;t be changed.</p>`
+                },
+                {
+                    id: 'track-order', cat: 'orders', q: 'How do I track my order?', tags: 'status where is my order tracking dispatch',
+                    a: `<p>Sign in and open <a href="account.html#orders">My Account &rarr; Orders</a>. Each order shows its current status and the estimated delivery date, and you can open the full details at any time.</p>`
+                },
+                {
+                    id: 'no-confirmation', cat: 'orders', q: 'I didn&rsquo;t receive my order confirmation. What should I do?', tags: 'email confirmation missing spam', confirm: true,
+                    a: `<p>First check your spam or promotions folder. If it isn&rsquo;t there, <a href="contact.html?topic=order">send us a message</a> with the email address you used and we&rsquo;ll look into it. You can also see your order any time under <a href="account.html#orders">My Account</a>.</p>`
+                },
+
+                /* ---------- Shipping & Delivery ---------- */
+                {
+                    id: 'ship-india', cat: 'shipping', q: 'Do you ship across India?', tags: 'delivery pan india pincode serviceable',
+                    a: `<p>Yes &mdash; we deliver across India. Enter your pincode on a product page, in your cart or at checkout to see your estimated delivery date.</p>`
+                },
+                {
+                    id: 'ship-cost', cat: 'shipping', q: 'How much does shipping cost?', tags: 'free shipping delivery charges fee',
+                    a: `<p>Shipping is <strong>free on orders above ${FREE_SHIP}</strong>. For smaller orders, the shipping charge is shown at checkout before you pay &mdash; there are no surprises.</p><p>More detail is in our <a href="shipping-policy.html">Shipping &amp; Delivery Policy</a>.</p>`
+                },
+                {
+                    id: 'delivery-time', cat: 'shipping', q: 'How long will my order take to arrive?', tags: 'delivery time days dispatch eta estimate',
+                    a: `<p>It depends on two things: how soon your piece is dispatched, and how far it has to travel. Ready-stock pieces are dispatched sooner than made-to-order pieces.</p><p>You&rsquo;ll see an estimated delivery window for your pincode on the product page, in the cart and at checkout, and again on your order confirmation.</p>`
+                },
+                {
+                    id: 'made-to-order', cat: 'shipping', q: 'What does &ldquo;made to order&rdquo; mean?', tags: 'custom stitched made on demand dispatch longer',
+                    a: `<p>Some pieces are prepared for you after you order rather than kept ready in stock. These are marked <strong>Made to order</strong> and take longer to dispatch &mdash; the estimated delivery date already includes this.</p>`
+                },
+                {
+                    id: 'ship-abroad', cat: 'shipping', q: 'Do you deliver outside India?', tags: 'international overseas abroad worldwide nri', confirm: true,
+                    a: `<p>At the moment we deliver within India. If you&rsquo;d like to send something overseas, <a href="contact.html?topic=shipping">get in touch</a> and we&rsquo;ll see what we can do.</p>`
+                },
+                {
+                    id: 'change-address', cat: 'shipping', q: 'Can I change my delivery address after ordering?', tags: 'wrong address update edit', confirm: true,
+                    a: `<p>Please <a href="contact.html?topic=shipping">contact us</a> or call <a href="tel:+917987725348">${PHONE}</a> as soon as you can, with your order number and the correct address. We can only update it before your order is dispatched.</p>`
+                },
+
+                /* ---------- Returns & Exchange ---------- */
+                {
+                    id: 'return-policy', cat: 'returns', q: 'What is your return and exchange policy?', tags: 'refund return exchange policy eligible days', confirm: true,
+                    a: `<p>We want you to love what you order. Who can return or exchange, within what time, and how to start is explained in our <a href="returns-policy.html">Returns &amp; Exchange Policy</a> &mdash; please read it before ordering.</p>`
+                },
+                {
+                    id: 'start-return', cat: 'returns', q: 'How do I start a return or exchange?', tags: 'return process exchange request', confirm: true,
+                    a: `<p>Open <a href="account.html#orders">My Account &rarr; Orders</a> to find your order number, then <a href="contact.html?topic=returns">contact us</a> with that number and what you&rsquo;d like to do. Our team will guide you through the next steps.</p>`
+                },
+                {
+                    id: 'refund-time', cat: 'returns', q: 'When will I receive my refund?', tags: 'refund money back time days', confirm: true,
+                    a: `<p>Refund timelines and the way refunds are paid are listed in our <a href="returns-policy.html">Returns &amp; Exchange Policy</a>. If you&rsquo;re waiting on a refund, <a href="contact.html?topic=returns">contact us</a> with your order number and we&rsquo;ll check on it for you.</p>`
+                },
+                {
+                    id: 'exchange-size', cat: 'returns', q: 'Can I exchange for a different size or colour?', tags: 'swap size colour change exchange', confirm: true,
+                    a: `<p>Size and colour exchanges depend on availability and on our <a href="returns-policy.html">Returns &amp; Exchange Policy</a>. <a href="contact.html?topic=returns">Message us</a> with your order number and the size or colour you&rsquo;d like and we&rsquo;ll let you know what&rsquo;s possible.</p>`
+                },
+
+                /* ---------- Sizing & Customisation ---------- */
+                {
+                    id: 'find-size', cat: 'sizing', q: 'How do I find my size?', tags: 'size guide measurements bust waist hip fit chart',
+                    a: `<p>Every piece that comes in sizes has a <strong>Size guide</strong> on its product page, with bust, waist and hip measurements in inches or centimetres. Measure yourself, compare, and choose the closest size.</p><p>Between sizes? Choose the larger size for a relaxed fit, or <a href="contact.html?topic=sizing">ask us</a> and we&rsquo;ll help you decide.</p>`
+                },
+                {
+                    id: 'saree-size', cat: 'sizing', q: 'Are sarees one size?', tags: 'saree length blouse piece free size', confirm: true,
+                    a: `<p>Yes, sarees are <strong>Free Size</strong>. A saree is 5.5 metres long and comes with an unstitched blouse piece of 0.8 metres. The exact details are listed on each product page.</p>`
+                },
+                {
+                    id: 'blouse-stitching', cat: 'sizing', q: 'Does the saree come with a stitched blouse?', tags: 'blouse stitching tailor unstitched',
+                    a: `<p>Sarees come with an <strong>unstitched blouse piece</strong>. Your tailor can stitch it to your measurements &mdash; we suggest leaving a little extra at the seams so it can be adjusted later.</p>`
+                },
+                {
+                    id: 'customisation', cat: 'sizing', q: 'Do you offer customisation or custom sizes?', tags: 'custom made to measure alteration personalise', confirm: true,
+                    a: `<p>Tell us what you have in mind. <a href="contact.html?topic=sizing">Message us</a> with the piece you like and your requirement, and our team will let you know what&rsquo;s possible.</p>`
+                },
+                {
+                    id: 'bulk', cat: 'sizing', q: 'I&rsquo;m planning a large or bulk order. Who do I talk to?', tags: 'bulk wedding group quantity wholesale many pieces', confirm: true,
+                    a: `<p>For weddings, events or larger quantities, please <a href="contact.html">contact us</a> or call <a href="tel:+917987725348">${PHONE}</a> before ordering so we can plan your requirement properly.</p>`
+                },
+
+                /* ---------- Products & Care ---------- */
+                {
+                    id: 'made-where', cat: 'products', q: 'Where are your products made?', tags: 'bhilwara rajasthan manufacturing factory quality in-house origin',
+                    a: `<p>Everything is made at our own manufacturing unit in <strong>Bhilwara, Rajasthan</strong>. Because we make our pieces ourselves, we keep a close eye on quality, sourcing and pricing at every step.</p>`
+                },
+                {
+                    id: 'colour-match', cat: 'products', q: 'Will the colour match the photos?', tags: 'colour shade screen difference photo true to',
+                    a: `<p>We do our best to show colours accurately, but slight differences in shade are natural &mdash; screens display colour differently. If you&rsquo;d like help choosing a shade, <a href="contact.html?topic=product">ask us</a>.</p>`
+                },
+                {
+                    id: 'care', cat: 'products', q: 'How do I care for my garment?', tags: 'wash dry clean silk cotton iron care instructions',
+                    a: `<p>Every product page lists care instructions for that fabric under <strong>Fabric &amp; Care</strong>. As a general guide:</p><ul><li><strong>Silk, organza, net and pashmina blends:</strong> dry clean only, store folded in a muslin cloth and keep away from direct sunlight.</li><li><strong>Cotton and cotton blends:</strong> gentle hand wash in cold water, wash separately for the first two washes, dry in shade and iron on the reverse.</li></ul>`
+                },
+                {
+                    id: 'regional', cat: 'products', q: 'Are your designs based on traditional regional wear?', tags: 'bandhani phulkari kanjeevaram paithani regional states traditions authentic',
+                    a: `<p>Yes. Our designs are inspired by textile traditions from across India &mdash; bandhani from Rajasthan, phulkari from Punjab, kanjeevaram-style silks from the South, and more &mdash; and made in-house. Each product page tells you the fabric, the work and the region it draws from.</p>`
+                },
+
+                /* ---------- Account & Wishlist ---------- */
+                {
+                    id: 'need-account', cat: 'account', q: 'Do I need an account to order?', tags: 'guest register sign up login',
+                    a: `<p>No, you can check out as a guest. An account just makes things easier &mdash; you can track orders, save addresses, reorder your favourites and keep your wishlist. <a href="account.html#register">Create an account</a> any time.</p>`
+                },
+                {
+                    id: 'forgot-password', cat: 'account', q: 'I forgot my password. What do I do?', tags: 'reset password login sign in locked',
+                    a: `<p>Go to the <a href="account.html#forgot">sign-in page</a> and choose <strong>Forgot password?</strong>. Enter your email address and follow the instructions to set a new password.</p>`
+                },
+                {
+                    id: 'update-details', cat: 'account', q: 'How do I update my address or personal details?', tags: 'profile edit address phone name email',
+                    a: `<p>Sign in and open <a href="account.html#addresses">My Account &rarr; Addresses</a> to add, edit or delete addresses, or <a href="account.html#profile">Profile &amp; Security</a> to update your name, mobile number or password.</p>`
+                },
+                {
+                    id: 'wishlist', cat: 'account', q: 'How does the wishlist work?', tags: 'save favourites heart later', confirm: true,
+                    a: `<p>Tap the heart on a piece to save it. You&rsquo;ll find everything you&rsquo;ve saved under <a href="wishlist.html">Wishlist</a> in the menu, where you can choose a colour and size and add pieces to your cart. You can also share your wishlist with a link.</p>`
+                }
+            ];
+
+            const POPULAR = ['track-order', 'ship-cost', 'return-policy', 'find-size', 'payment-methods'];
+
+            /* ---------- Prepare: plain text for search + structured data ---------- */
+            const decode = (html) => { const d = document.createElement('div'); d.innerHTML = html; return d.textContent; };
+            FAQS.forEach(f => { f.qPlain = decode(f.q); f.aPlain = decode(f.a); f.hay = (f.qPlain + ' ' + f.aPlain + ' ' + (f.tags || '')).toLowerCase(); });
+            const catLabel = (id) => (CATEGORIES.find(c => c.id === id) || {}).label || '';
+
+            /* ===========================================================
+               STATE + ELEMENTS
+               =========================================================== */
+            const params = new URLSearchParams(window.location.search);
+            const state = { cat: CATEGORIES.some(c => c.id === params.get('cat')) ? params.get('cat') : 'all', query: (params.get('q') || '').slice(0, 80) };
+            const open = new Set();
+            const votes = () => Sutra.store.read(VOTES_KEY, {});
+
+            const search = $('#fqSearch'), list = $('#fqList'), status = $('#fqStatus');
+
+            /* ===========================================================
+               SEARCH
+               =========================================================== */
+            const tokens = () => state.query.toLowerCase().split(/\s+/).filter(Boolean);
+            function matches() {
+                const t = tokens();
+                let items = FAQS.filter(f => (state.cat === 'all' || f.cat === state.cat) && t.every(w => f.hay.includes(w)));
+                if (t.length) {
+                    const score = (f) => t.reduce((n, w) => n + (f.qPlain.toLowerCase().includes(w) ? 2 : 0) + ((f.tags || '').toLowerCase().includes(w) ? 1 : 0), 0);
+                    items = items.map((f, i) => ({ f, i, s: score(f) })).sort((a, b) => b.s - a.s || a.i - b.i).map(x => x.f);
+                }
+                return items;
+            }
+
+            function highlight(root, words) {
+                if (!words.length) return;
+                const re = new RegExp('(' + words.map(escRe).join('|') + ')', 'gi');
+                const test = new RegExp(words.map(escRe).join('|'), 'i');
+                const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+                const nodes = [];
+                while (walker.nextNode()) nodes.push(walker.currentNode);
+                nodes.forEach(n => {
+                    if (!test.test(n.nodeValue)) return;
+                    const frag = document.createDocumentFragment();
+                    n.nodeValue.split(re).forEach((part, i) => {
+                        if (i % 2) { const m = document.createElement('mark'); m.textContent = part; frag.appendChild(m); }
+                        else if (part) frag.appendChild(document.createTextNode(part));
+                    });
+                    n.replaceWith(frag);
+                });
+            }
+
+            /* ===========================================================
+               RENDER
+               =========================================================== */
+            function itemHTML(f, showCat) {
+                const v = votes()[f.id];
+                const c = CATEGORIES.find(x => x.id === f.cat);
+                return `<details class="fq-item" id="q-${f.id}" data-id="${f.id}"${open.has(f.id) ? ' open' : ''}>
+      <summary><span>${showCat ? `<span class="fq-q-cat">${esc(c.label)}</span>` : ''}<span class="fq-q">${f.q}</span></span></summary>
+      <div class="fq-body">
+        ${REVIEW_MODE && f.confirm ? '<span class="fq-flag">Confirm wording</span>' : ''}
+        <div class="fq-a">${f.a}</div>
+        <div class="fq-foot">
+          <div class="fq-vote" data-id="${f.id}">${v
+                        ? voteThanks(v, c)
+                        : `<span>Was this helpful?</span><button type="button" data-vote="yes" aria-pressed="false">Yes</button><button type="button" data-vote="no" aria-pressed="false">No</button>`}</div>
+          <button type="button" class="fq-link-btn" data-copy="${f.id}">Copy link</button>
+        </div>
+      </div>
+    </details>`;
+            }
+            function voteThanks(v, c) {
+                return v === 'yes'
+                    ? '<span class="fq-thanks">Thanks for letting us know.</span>'
+                    : `<span class="fq-thanks">Sorry about that. <a href="contact.html?topic=${c.topic}">Ask our team</a> and we&rsquo;ll help.</span>`;
+            }
+
+            function render() {
+                const items = matches();
+                const t = tokens();
+                const searching = t.length > 0;
+
+                $('#fqClear').hidden = !state.query;
+                $('#fqTools').hidden = items.length === 0;
+                $('#fqPopular').hidden = searching;
+
+                // category buttons (counts reflect the current search)
+                const base = FAQS.filter(f => t.every(w => f.hay.includes(w)));
+                $('#fqCats').innerHTML = [{ id: 'all', label: 'All topics' }].concat(CATEGORIES).map(c => {
+                    const n = c.id === 'all' ? base.length : base.filter(f => f.cat === c.id).length;
+                    return `<button type="button" class="fq-cat" data-cat="${c.id}" aria-pressed="${state.cat === c.id}"><span>${esc(c.label)}</span><span class="n">${n}</span></button>`;
+                }).join('');
+
+                if (searching) {
+                    status.innerHTML = items.length
+                        ? `<strong>${items.length}</strong> result${items.length === 1 ? '' : 's'} for &ldquo;${esc(state.query)}&rdquo;${state.cat !== 'all' ? ' in ' + esc(catLabel(state.cat)) : ''}`
+                        : '';
+                } else {
+                    status.textContent = `${items.length} question${items.length === 1 ? '' : 's'}${state.cat !== 'all' ? ' in ' + catLabel(state.cat) : ''}`;
+                }
+
+                if (!items.length) {
+                    list.innerHTML = `<div class="fq-empty"><h2>No answers found</h2>
+        <p>We couldn&rsquo;t find anything for &ldquo;${esc(state.query)}&rdquo;. Try a different word, or ask our team directly.</p>
+        <div class="fq-empty-actions"><button type="button" class="fq-btn is-ghost" data-act="reset">Clear search</button><a class="fq-btn" href="contact.html">Contact Us</a></div></div>`;
+                    return;
+                }
+
+                if (searching) {
+                    if (items.length <= 3) items.forEach(f => open.add(f.id));
+                    list.innerHTML = `<div class="fq-group">${items.map(f => itemHTML(f, true)).join('')}</div>`;
+                } else {
+                    const groups = (state.cat === 'all' ? CATEGORIES : CATEGORIES.filter(c => c.id === state.cat));
+                    list.innerHTML = groups.map(c => {
+                        const inGroup = items.filter(f => f.cat === c.id);
+                        return inGroup.length ? `<section class="fq-group" aria-labelledby="g-${c.id}">
+          <div class="fq-group-head"><h2 id="g-${c.id}">${esc(c.label)}</h2></div>
+          ${inGroup.map(f => itemHTML(f, false)).join('')}
+          <p class="fq-more">More questions about ${esc(c.label.toLowerCase())}? <a href="contact.html?topic=${c.topic}">Ask our team</a>.</p></section>` : '';
+                    }).join('');
+                }
+
+                if (searching) {
+                    $$('.fq-item', list).forEach(d => { highlight($('.fq-q', d), t); highlight($('.fq-a', d), t); });
+                }
+            }
+
+            /* ---------- popular chips + review banner ---------- */
+            $('#fqPopular').innerHTML = '<span>Popular:</span>' + POPULAR.map(id => {
+                const f = FAQS.find(x => x.id === id);
+                return `<button type="button" class="fq-pop" data-jump="${id}">${f.q}</button>`;
+            }).join('');
+
+            const toConfirm = FAQS.filter(f => f.confirm).length;
+            if (REVIEW_MODE) {
+                const b = $('#fqReview');
+                b.hidden = false;
+                b.innerHTML = `<strong>Draft content (review mode).</strong> ${toConfirm} answers are marked <em>Confirm wording</em> because they depend on your policies. Edit them in the <code>FAQS</code> list, then set <code>REVIEW_MODE = false</code> in this file before launch.`;
+            }
+
+            /* ===========================================================
+               INTERACTIONS
+               =========================================================== */
+            function setQuery(q, replaceUrl) {
+                state.query = q.slice(0, 80);
+                if (replaceUrl !== false) {
+                    const url = new URL(window.location.href);
+                    if (state.query) url.searchParams.set('q', state.query); else url.searchParams.delete('q');
+                    history.replaceState(history.state, '', url.pathname + url.search + url.hash);
+                }
+                render();
+            }
+            let timer;
+            search.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(() => setQuery(search.value), 120); });
+            $('#fqSearchForm').addEventListener('submit', (e) => e.preventDefault());
+            $('#fqClear').addEventListener('click', () => { search.value = ''; setQuery(''); search.focus(); });
+            search.addEventListener('keydown', (e) => { if (e.key === 'Escape' && search.value) { e.preventDefault(); search.value = ''; setQuery(''); } });
+            document.addEventListener('keydown', (e) => {
+                if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) return;
+                const tag = (document.activeElement && document.activeElement.tagName) || '';
+                if (/INPUT|TEXTAREA|SELECT/.test(tag)) return;
+                e.preventDefault(); search.focus();
+            });
+
+            $('#fqCats').addEventListener('click', (e) => {
+                const b = e.target.closest('[data-cat]'); if (!b) return;
+                state.cat = b.dataset.cat; render();
+            });
+
+            function jumpTo(id, push) {
+                const f = FAQS.find(x => x.id === id); if (!f) return;
+                state.cat = 'all'; search.value = ''; state.query = '';
+                open.add(id);
+                const url = new URL(window.location.href); url.searchParams.delete('q');
+                history.replaceState(history.state, '', url.pathname + url.search + (push ? '#q-' + id : url.hash));
+                render();
+                const node = $('#q-' + id);
+                if (node) { node.open = true; node.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); }
+            }
+            $('#fqPopular').addEventListener('click', (e) => { const b = e.target.closest('[data-jump]'); if (b) jumpTo(b.dataset.jump, true); });
+
+            $('#fqExpand').addEventListener('click', () => { $$('.fq-item', list).forEach(d => { d.open = true; open.add(d.dataset.id); }); });
+            $('#fqCollapse').addEventListener('click', () => { $$('.fq-item', list).forEach(d => { d.open = false; }); open.clear(); });
+
+            // remember open/closed (the toggle event does not bubble, so listen in the capture phase)
+            list.addEventListener('toggle', (e) => {
+                const d = e.target.closest ? e.target.closest('.fq-item') : null;
+                if (!d) return;
+                if (d.open) open.add(d.dataset.id); else open.delete(d.dataset.id);
+            }, true);
+
+            list.addEventListener('click', async (e) => {
+                const reset = e.target.closest('[data-act="reset"]');
+                if (reset) { search.value = ''; state.cat = 'all'; setQuery(''); return; }
+
+                const vote = e.target.closest('[data-vote]');
+                if (vote) {
+                    const box = vote.closest('.fq-vote'), id = box.dataset.id;
+                    const all = votes(); all[id] = vote.dataset.vote; Sutra.store.write(VOTES_KEY, all);
+                    box.innerHTML = voteThanks(vote.dataset.vote, CATEGORIES.find(c => c.id === FAQS.find(f => f.id === id).cat));
+                    return;
+                }
+                const copy = e.target.closest('[data-copy]');
+                if (copy) {
+                    const url = window.location.origin + window.location.pathname + '#q-' + copy.dataset.copy;
+                    try { await navigator.clipboard.writeText(url); Sutra.toast('Link to this answer copied'); }
+                    catch (err) { Sutra.toast(url, { duration: 7000 }); }
+                }
+            });
+
+            /* ---------- deep link (#q-id) ---------- */
+            function fromHash() {
+                const m = /^#q-([\w-]+)$/.exec(window.location.hash);
+                if (m && FAQS.some(f => f.id === m[1])) jumpTo(m[1], false);
+            }
+            window.addEventListener('hashchange', fromHash);
+
+            /* ---------- structured data for search engines ---------- */
+            (function injectSchema() {
+                const data = {
+                    '@context': 'https://schema.org', '@type': 'FAQPage',
+                    mainEntity: FAQS.map(f => ({ '@type': 'Question', name: f.qPlain, acceptedAnswer: { '@type': 'Answer', text: f.aPlain } }))
+                };
+                const tag = document.createElement('script');
+                tag.type = 'application/ld+json'; tag.id = 'faqSchema'; tag.textContent = JSON.stringify(data);
+                document.head.appendChild(tag);
+            })();
+
+            /* ---------- init ---------- */
+            search.value = state.query;
+            render();
+            fromHash();
+        })();
+    </script>
+
+</body>
+
+</html>
